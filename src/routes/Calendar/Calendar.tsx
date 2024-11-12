@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Day from "../../components/Day/Day";
 import { getCalendarDays } from "../../util/calendar";
+import { UserType } from "../../types";
 import "./Calendar.scss";
 
-function Calendar({
-  user,
-  day,
-  setDay,
-  setTransaction,
-  triggers,
-  setTriggers,
-}) {
-  let [calendarDays, setCalendarDays] = useState([]);
+interface CalendarProps {
+  user: UserType;
+  day: moment.Moment;
+  setDay: React.Dispatch<React.SetStateAction<moment.Moment>>;
+}
+
+function Calendar({ user, day, setDay }: CalendarProps) {
+  const [calendarDays, setCalendarDays] = useState<moment.Moment[]>([]);
   const weekdays = [
     "SUNDAY",
     "MONDAY",
@@ -45,10 +45,7 @@ function Calendar({
                 user={user}
                 setDay={setDay}
                 calendarDay={calendarDay}
-                setTransaction={setTransaction}
-                triggers={triggers}
-                setTriggers={setTriggers}
-                key={calendarDay}
+                key={calendarDay.format("YYYY-MM-DD")}
               />
             );
           })}

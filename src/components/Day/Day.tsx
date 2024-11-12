@@ -1,20 +1,21 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Transaction from "../Transaction/Transaction";
 import moment from "moment/moment";
 import "./Day.scss";
 import { getBalanceByDay } from "../../util/balance";
 import { getTransactionsFromDay } from "../../util/transactions";
+import { Navigate } from "react-router-dom";
+import { UserType, TransactionType } from "../../types.d";
 
-function Day({
-  user,
-  setDay,
-  calendarDay,
-  setTransaction,
-  triggers,
-  setTriggers,
-}) {
-  let [transactions, setTransactions] = useState([]);
-  let [balance, setBalance] = useState(0);
+interface DayProps {
+  user: UserType;
+  setDay: React.Dispatch<React.SetStateAction<moment.Moment>>;
+  calendarDay: moment.Moment;
+}
+
+function Day({ user, setDay, calendarDay }: DayProps) {
+  const [transactions, setTransactions] = useState<TransactionType[]>([]);
+  const [balance, setBalance] = useState(0);
 
   useEffect(() => {
     setTransactions(getTransactionsFromDay(user.transactions, calendarDay));
@@ -23,11 +24,11 @@ function Day({
 
   const openDayView = () => {
     setDay(moment(calendarDay));
-    setTriggers({ ...triggers, dayView: true });
+    //setTriggers({ ...triggers, dayView: true });
   };
   const openNewTransaction = () => {
     setDay(moment(calendarDay));
-    setTriggers({ ...triggers, newTransaction: true });
+    <Navigate to="/new-transaction" />;
   };
 
   return (
@@ -51,17 +52,7 @@ function Day({
 
       <div className="transactions-container">
         {transactions.map((transaction, txIndex) => {
-          return (
-            <Transaction
-              setDay={setDay}
-              transaction={transaction}
-              setTransaction={setTransaction}
-              triggers={triggers}
-              setTriggers={setTriggers}
-              isRenderedFromDayView={false}
-              key={txIndex}
-            />
-          );
+          return <Transaction transaction={transaction} key={txIndex} />;
         })}
       </div>
       <div className="bottom-shadow"></div>

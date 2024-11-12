@@ -1,7 +1,11 @@
 import moment from "moment";
+import { TransactionType } from "../types.d";
 import { getTransactionsBalances } from "./transactions";
 
-const getBalanceByDay = (transactions, day) => {
+const getBalanceByDay = (
+  transactions: TransactionType[],
+  day: moment.Moment
+) => {
   const transactionsBalances = getTransactionsBalances(transactions);
   const dates = Object.keys(transactionsBalances);
   let balance = 0;
@@ -20,7 +24,7 @@ const getBalanceByDay = (transactions, day) => {
   return balance;
 };
 
-const calculateBalance = (transactions) => {
+const calculateBalance = (transactions: TransactionType[]) => {
   let balance = 0;
   transactions.forEach((transaction) => {
     balance += transaction.amount;

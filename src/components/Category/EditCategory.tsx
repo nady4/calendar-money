@@ -1,16 +1,17 @@
 import { useState, useEffect, useRef } from "react";
 import { HuePicker } from "react-color";
-import "../../styles/form.scss";
 import API_URL from "../../util/env";
-import { EditCategoryProps } from "../../types.d";
+import { UserType, CategoryType } from "../../types.d";
+import { Navigate } from "react-router-dom";
+import "../../styles/form.scss";
 
-function EditCategory({
-  category,
-  user,
-  setUser,
-  triggers,
-  setTriggers,
-}: EditCategoryProps) {
+interface EditCategoryProps {
+  user: UserType;
+  setUser: React.Dispatch<React.SetStateAction<UserType>>;
+  category: CategoryType;
+}
+
+function EditCategory({ user, setUser, category }: EditCategoryProps) {
   const [name, setName] = useState(category.name);
   const [color, setColor] = useState(category.color);
   const [type, setType] = useState(category.type);
@@ -36,7 +37,7 @@ function EditCategory({
   };
 
   const onExit = () => {
-    setTriggers({ ...triggers, editCategory: false });
+    <Navigate to="/calendar" />;
   };
 
   useEffect(() => {
@@ -49,7 +50,7 @@ function EditCategory({
 
   const handleDeleteSubmit = () => {
     const newCategories = user.categories.filter(
-      (userCategory) => userCategory.id !== category.id
+      (userCategory: CategoryType) => userCategory.id !== category.id
     );
 
     fetch(`${API_URL}/user/${user.id}`, {
@@ -70,8 +71,6 @@ function EditCategory({
           setUser({ ...user, categories: newCategories });
         }
       });
-
-    setTriggers({ ...triggers, editCategory: false });
   };
 
   const handleSubmit = () => {
@@ -80,7 +79,7 @@ function EditCategory({
     category.type = type;
 
     const newCategories = user.categories
-      .filter((userCategory) => userCategory.id !== category.id)
+      .filter((userCategory: CategoryType) => userCategory.id !== category.id)
       .push(category);
 
     fetch(`${API_URL}/user/${user.id}`, {
@@ -106,7 +105,7 @@ function EditCategory({
         }
       });
 
-    setTriggers({ ...triggers, editCategory: false });
+    onExit();
   };
 
   return (

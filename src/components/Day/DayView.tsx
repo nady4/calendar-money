@@ -1,13 +1,21 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getTransactionsFromDay } from "../../util/transactions";
+import { Navigate } from "react-router-dom";
+import { UserType, TransactionType } from "../../types.d";
+import moment from "moment/moment";
 import Transaction from "../Transaction/Transaction";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import moment from "moment/moment";
 import "../../styles/list.scss";
 
-function DayView({ user, day, setDay, setTransaction, triggers, setTriggers }) {
-  let [dayTransactions, setDayTransactions] = useState([]);
+interface DayViewProps {
+  user: UserType;
+  day: moment.Moment;
+  setDay: React.Dispatch<React.SetStateAction<moment.Moment>>;
+}
+
+function DayView({ user, day, setDay }: DayViewProps) {
+  const [dayTransactions, setDayTransactions] = useState<TransactionType[]>([]);
 
   useEffect(() => {
     setDayTransactions(getTransactionsFromDay(user.transactions, day));
@@ -20,10 +28,10 @@ function DayView({ user, day, setDay, setTransaction, triggers, setTriggers }) {
     setDay(moment(day).add(1, "days"));
   };
   const handleCloseButton = () => {
-    setTriggers({ ...triggers, dayView: false });
+    <Navigate to="/calendar" />;
   };
   const openNewTransaction = () => {
-    setTriggers({ ...triggers, dayView: false, newTransaction: true });
+    <Navigate to="/new-transaction" />;
   };
 
   return (
@@ -52,16 +60,7 @@ function DayView({ user, day, setDay, setTransaction, triggers, setTriggers }) {
       </div>
       <div className="items-container">
         {dayTransactions.map((transaction, index) => {
-          return (
-            <Transaction
-              transaction={transaction}
-              setTransaction={setTransaction}
-              triggers={triggers}
-              setTriggers={setTriggers}
-              isRenderedFromDayView={true}
-              key={index}
-            />
-          );
+          return <Transaction transaction={transaction} key={index} />;
         })}
       </div>
       <div className="new-button-container">

@@ -1,11 +1,18 @@
-import React from "react";
 import moment from "moment/moment";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { getBalanceByDay } from "../../util/balance";
+import { UserType } from "../../types.d";
+import { Navigate } from "react-router-dom";
 import "./NavBar.scss";
 
-const NavBar = ({ user, setUser, day, setDay, triggers, setTriggers }) => {
+interface NavBarProps {
+  user: UserType;
+  day: moment.Moment;
+  setDay: React.Dispatch<React.SetStateAction<moment.Moment>>;
+}
+
+const NavBar = ({ user, day, setDay }: NavBarProps) => {
   const handleLeftArrowClick = () => {
     setDay(moment(day).subtract(1, "months"));
   };
@@ -15,10 +22,10 @@ const NavBar = ({ user, setUser, day, setDay, triggers, setTriggers }) => {
   };
   const handleLogoutClick = () => {
     localStorage.removeItem("token");
-    setUser({});
+    window.location.reload();
   };
   const handleCategoriesClick = () => {
-    setTriggers({ ...triggers, categoryList: true });
+    <Navigate to="/categories" />;
   };
 
   return (

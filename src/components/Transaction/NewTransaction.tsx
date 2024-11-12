@@ -1,43 +1,56 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import "../../styles/form.scss";
 import API_URL from "../../util/env";
+import { Navigate } from "react-router-dom";
+import { UserType, CategoryType } from "../../types.d";
 
-function NewTransaction({ user, setUser, day, triggers, setTriggers }) {
+interface NewTransactionProps {
+  user: UserType;
+  setUser: React.Dispatch<React.SetStateAction<UserType>>;
+  day: moment.Moment;
+}
+
+function NewTransaction({ user, setUser, day }: NewTransactionProps) {
   const id = uuidv4();
   const [amount, setAmount] = useState(0);
   const [description, setDescription] = useState("");
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState<CategoryType | null>(null);
   const [disableSubmitButton, setDisableSubmitButton] = useState(true);
-  const [categories, setCategories] = useState([]);
-  const categoryInput = useRef(null);
-  const categoriesDatalist = useRef(null);
+  const [categories, setCategories] = useState<CategoryType[]>([]);
+  const categoryInput = useRef<HTMLInputElement>(null);
+  const categoriesDatalist = useRef<HTMLDataListElement>(null);
 
   useEffect(() => {
     setCategories(user.categories);
 
-    if (categoriesDatalist.current.children.length === 0) {
+    if (
+      categoriesDatalist.current &&
+      categoriesDatalist.current.children.length === 0
+    ) {
       categories.forEach((c) => {
         const option = document.createElement("option");
         option.value = c.name;
-        categoriesDatalist.current.appendChild(option);
+        categoriesDatalist.current?.appendChild(option);
       });
     }
   }, [categories, user.categories]);
 
   useEffect(() => {
-    const isCategoryValid = categories.find(
-      (c) => c.name === categoryInput.current.value
-    );
+    const isCategoryValid =
+      categoryInput.current &&
+      categories.find((c) => c.name === categoryInput.current?.value);
     const isAmountValid = amount >= 0;
     const isDescriptionValid = description.length > 0;
 
-    isCategoryValid && isAmountValid && isDescriptionValid
-      ? setDisableSubmitButton(false)
-      : setDisableSubmitButton(true);
+    if (isCategoryValid && isAmountValid && isDescriptionValid)
+      setDisableSubmitButton(false);
+    else {
+      setDisableSubmitButton(true);
+    }
   }, [amount, categories, category, description]);
 
-  const onAmountChange = (event) => {
+  const onAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (
       event.target.value === "" ||
       !Number.isInteger(parseInt(event.target.value))
@@ -47,14 +60,22 @@ function NewTransaction({ user, setUser, day, triggers, setTriggers }) {
     }
     setAmount(parseFloat(event.target.value));
   };
-  const onDescriptionChange = (event) => {
+
+  const onDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDescription(event.target.value);
   };
-  const onCategoryChange = async (event) => {
-    setCategory(event.target.value);
+
+  const onCategoryChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const selectedCategory = categories.find(
+      (c) => c.name === event.target.value
+    );
+    setCategory(selectedCategory || null);
   };
+
   const onExit = () => {
-    setTriggers({ ...triggers, newTransaction: false });
+    return <Navigate to="/calendar" />;
   };
 
   const handleSubmit = async () => {
@@ -87,7 +108,7 @@ function NewTransaction({ user, setUser, day, triggers, setTriggers }) {
         }
       });
 
-    setTriggers({ ...triggers, newTransaction: false });
+    return <Navigate to="/calendar" />;
   };
 
   return (
@@ -100,7 +121,8 @@ function NewTransaction({ user, setUser, day, triggers, setTriggers }) {
         <label htmlFor="amount">Amount</label>
         <input
           type="text"
-          description="amount"
+          name="amount"
+          id="amount"
           value={amount}
           onChange={onAmountChange}
         />
@@ -108,7 +130,8 @@ function NewTransaction({ user, setUser, day, triggers, setTriggers }) {
         <label htmlFor="description">Description</label>
         <input
           type="text"
-          description="description"
+          name="description"
+          id="description"
           value={description}
           onChange={onDescriptionChange}
         />
@@ -117,7 +140,7 @@ function NewTransaction({ user, setUser, day, triggers, setTriggers }) {
         <input
           id="category-input"
           ref={categoryInput}
-          description="Category"
+          name="category"
           list="categories-datalist"
           onChange={onCategoryChange}
         />

@@ -1,41 +1,50 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { HuePicker } from "react-color";
 import "../../styles/form.scss";
+import { Navigate } from "react-router-dom";
+import { UserType } from "../../types.d";
 import API_URL from "../../util/env";
 
-function NewCategory({ user, setUser, triggers, setTriggers }) {
+interface NewCategoryProps {
+  user: UserType;
+  setUser: React.Dispatch<React.SetStateAction<UserType>>;
+}
+
+function NewCategory({ user, setUser }: NewCategoryProps) {
   const [name, setName] = useState("");
   const [color, setColor] = useState("#ff0000");
   const [type, setType] = useState("");
   const [disableSubmitButton, setDisableSubmitButton] = useState(true);
 
-  const incomeBox = useRef(null);
-  const expenseBox = useRef(null);
+  const incomeBox = useRef<HTMLInputElement>(null);
+  const expenseBox = useRef<HTMLInputElement>(null);
 
   const onExit = () => {
-    setTriggers({ ...triggers, newCategory: false });
+    <Navigate to="/calendar" />;
   };
 
-  const onNameChange = (event) => {
+  const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
   };
-  const onColorChange = (color, event) => {
+  const onColorChange = (color: { hex: string }) => {
     setColor(color.hex);
   };
-  const onTypeChange = (event) => {
-    if (event.target.id === "income-box") {
+  const onTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.id === "income-box" && incomeBox.current) {
       setType("income");
-      expenseBox.current.checked = false;
+      if (expenseBox.current) expenseBox.current.checked = false;
     } else if (event.target.id === "expense-box") {
       setType("expense");
-      incomeBox.current.checked = false;
+      if (incomeBox.current) incomeBox.current.checked = false;
     }
   };
 
   useEffect(() => {
-    name && color && type
-      ? setDisableSubmitButton(false)
-      : setDisableSubmitButton(true);
+    if (name && color && type) {
+      setDisableSubmitButton(false);
+    } else {
+      setDisableSubmitButton(true);
+    }
   }, [name, color, type]);
 
   const handleSubmit = async () => {
@@ -59,7 +68,6 @@ function NewCategory({ user, setUser, triggers, setTriggers }) {
       });
 
       const data = await response.json();
-      console.log("Received user data:", data.user.categories); // Add this log
 
       if (!response.ok) {
         console.error("Error updating categories:", data.error);
@@ -67,7 +75,7 @@ function NewCategory({ user, setUser, triggers, setTriggers }) {
       }
 
       setUser(data.user);
-      setTriggers({ ...triggers, newCategory: false });
+      <Navigate to="/calendar" />;
     } catch (error) {
       console.error("Error updating categories:", error);
     }

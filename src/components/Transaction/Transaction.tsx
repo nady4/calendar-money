@@ -1,14 +1,14 @@
-import React from "react";
+import { Navigate } from "react-router-dom";
+import { TransactionType } from "../../types.d";
 import "./Transaction.scss";
 
-function Transaction({ transaction, setTransaction, triggers, setTriggers }) {
+function Transaction({ transaction }: { transaction: TransactionType }) {
   return (
     <div
       className="transaction"
       onClick={() => {
-        //
-        setTriggers({ ...triggers, dayView: false, editTransaction: true });
-        setTransaction(transaction);
+        //setTransaction(transaction);
+        <Navigate to="/edit-transaction" />;
       }}
       style={{ backgroundColor: transaction.category.color }}
     >

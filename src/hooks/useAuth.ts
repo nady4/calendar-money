@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import API_URL from "../util/env";
-import { User } from "../types.d";
+import { UserType } from "../types.d";
 
 const refreshUserData = async (
   userId: string,
-  setUser: React.Dispatch<React.SetStateAction<User>>
+  setUser: React.Dispatch<React.SetStateAction<UserType>>
 ) => {
   try {
     const response = await fetch(`${API_URL}/user/${userId}`, {
@@ -37,8 +37,8 @@ const refreshUserData = async (
 };
 
 export function useAuth(
-  user: User,
-  setUser: React.Dispatch<React.SetStateAction<User>>
+  user: UserType,
+  setUser: React.Dispatch<React.SetStateAction<UserType>>
 ) {
   useEffect(() => {
     if (user.id) {

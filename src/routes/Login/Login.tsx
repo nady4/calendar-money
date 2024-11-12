@@ -1,23 +1,28 @@
 import API_URL from "../../util/env";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { UserType } from "../../types.d";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./Login.scss";
 
-function Login({ setUser }) {
+function Login({
+  setUser,
+}: {
+  setUser: React.Dispatch<React.SetStateAction<UserType>>;
+}) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const onUsernameChange = (event) => {
+  const onUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(event.target.value);
   };
-  const onPasswordChange = (event) => {
+  const onPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
   };
 
   const toastConfig = {
-    position: "top-center",
+    position: "top-center" as const,
     autoClose: 2000,
     hideProgressBar: true,
     closeOnClick: true,

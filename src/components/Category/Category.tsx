@@ -1,23 +1,9 @@
 import "./Category.scss";
-import { CategoryProps } from "../../types.d";
+import { CategoryType } from "../../types.d";
 
-function Category({
-  category,
-  setCategory,
-  triggers,
-  setTriggers,
-}: CategoryProps) {
-  const openCategoryList = () => {
-    setCategory(category.name);
-    setTriggers({ ...triggers, categoryList: false, editCategory: true });
-  };
-
+function Category({ category }: { category: CategoryType }) {
   return (
-    <div
-      className="category"
-      onClick={openCategoryList}
-      style={{ backgroundColor: category.color }}
-    >
+    <div className="category" style={{ backgroundColor: category.color }}>
       <div className="category-name">
         <h2>{category.name}</h2>
       </div>
