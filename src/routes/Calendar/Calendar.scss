@@ -1,0 +1,57 @@
+@import "../../variables.scss";
+
+.calendar-main {
+  display: flex;
+  flex-direction: column;
+
+  .calendar-container {
+    display: flex;
+    flex-flow: column;
+    width: 100%;
+    height: 130vh;
+    background-color: #a3dcff;
+
+    .weekday-list {
+      display: flex;
+      flex-flow: row;
+      height: 40px;
+      width: 100%;
+      margin-bottom: 6vh;
+
+      background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 1) 0%,
+        rgba(226, 244, 255, 1) 40%,
+        rgba(163, 220, 255, 1) 100%
+      );
+
+      .weekday-item {
+        width: $day-width;
+        margin-left: $day-margin + 0.1%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        p {
+          font-size: 1rem;
+          font-weight: 200;
+          font-family: "Roboto", sans-serif;
+          font-weight: 400;
+        }
+      }
+    }
+
+    .calendar {
+      display: flex;
+      flex-flow: row wrap;
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .calendar-main {
+    .calendar-container {
+      height: 90vh;
+    }
+  }
+}

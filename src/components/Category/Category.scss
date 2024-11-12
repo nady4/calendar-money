@@ -1,0 +1,36 @@
+.category {
+  min-height: 80px;
+  width: 90%;
+  color: #fff;
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  margin-top: 5%;
+  cursor: pointer;
+  transition: 0.4 all ease-out;
+
+  &:hover {
+    transform: scale(1.05);
+    background-color: #dfdfdf;
+  }
+  &:focus {
+    transform: scale(0.95);
+    background-color: #535353;
+  }
+
+  .category-name,
+  .category-type,
+  .category-color {
+    height: 80%;
+    width: 30%;
+    border: 1px solid white;
+    h2 {
+      font-size: 1.1rem;
+    }
+    p {
+      font-size: 1.1rem;
+    }
+  }
+}
