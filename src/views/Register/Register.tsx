@@ -1,7 +1,7 @@
-import API_URL from "../../util/env";
 import React, { useState } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
+import API_URL from "../../util/env";
 import "react-toastify/dist/ReactToastify.css";
 import "./Register.scss";
 
@@ -9,17 +9,8 @@ function Register() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [registered, setRegistered] = useState(false);
 
-  const onUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUsername(event.target.value);
-  };
-  const onEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(event.target.value);
-  };
-  const onPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(event.target.value);
-  };
+  const navigate = useNavigate();
 
   const toastConfig = {
     position: "top-center" as const,
@@ -29,6 +20,16 @@ function Register() {
     pauseOnHover: true,
     draggable: true,
     progress: undefined,
+  };
+
+  const onUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUsername(event.target.value);
+  };
+  const onEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(event.target.value);
+  };
+  const onPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(event.target.value);
   };
 
   const onSubmitRegister = async () => {
@@ -52,7 +53,7 @@ function Register() {
         case 200:
           toast.success("Registration successful", toastConfig);
           setTimeout(() => {
-            setRegistered(true);
+            navigate("/login");
           }, 2000);
           break;
 
@@ -82,9 +83,7 @@ function Register() {
     }
   };
 
-  return registered ? (
-    <Navigate to="/login" />
-  ) : (
+  return (
     <main>
       <ToastContainer />
       <div className="register-container">

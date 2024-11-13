@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { HuePicker } from "react-color";
-import "../../styles/form.scss";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { UserType } from "../../types.d";
 import API_URL from "../../util/env";
+import "../../styles/form.scss";
 
 interface NewCategoryProps {
   user: UserType;
@@ -19,8 +19,9 @@ function NewCategory({ user, setUser }: NewCategoryProps) {
   const incomeBox = useRef<HTMLInputElement>(null);
   const expenseBox = useRef<HTMLInputElement>(null);
 
+  const navigate = useNavigate();
   const onExit = () => {
-    <Navigate to="/calendar" />;
+    navigate("/dashboard");
   };
 
   const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,7 +76,7 @@ function NewCategory({ user, setUser }: NewCategoryProps) {
       }
 
       setUser(data.user);
-      <Navigate to="/calendar" />;
+      navigate("/dashboard");
     } catch (error) {
       console.error("Error updating categories:", error);
     }

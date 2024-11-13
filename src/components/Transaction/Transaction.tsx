@@ -1,14 +1,15 @@
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { TransactionType } from "../../types.d";
 import "./Transaction.scss";
 
 function Transaction({ transaction }: { transaction: TransactionType }) {
+  const navigate = useNavigate();
   return (
     <div
       className="transaction"
       onClick={() => {
         //setTransaction(transaction);
-        <Navigate to="/edit-transaction" />;
+        navigate("/edit-transaction");
       }}
       style={{ backgroundColor: transaction.category.color }}
     >

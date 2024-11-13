@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { HuePicker } from "react-color";
-import API_URL from "../../util/env";
+import { useNavigate } from "react-router-dom";
 import { UserType, CategoryType } from "../../types.d";
-import { Navigate } from "react-router-dom";
+import API_URL from "../../util/env";
 import "../../styles/form.scss";
 
 interface EditCategoryProps {
@@ -36,8 +36,10 @@ function EditCategory({ user, setUser, category }: EditCategoryProps) {
     }
   };
 
+  const navigate = useNavigate();
+
   const onExit = () => {
-    <Navigate to="/calendar" />;
+    navigate("/dashboard");
   };
 
   useEffect(() => {

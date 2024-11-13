@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
-import "../../styles/form.scss";
-import API_URL from "../../util/env";
-import { Navigate } from "react-router-dom";
 import { UserType, CategoryType } from "../../types.d";
+import API_URL from "../../util/env";
+import "../../styles/form.scss";
 
 interface NewTransactionProps {
   user: UserType;
@@ -20,6 +20,7 @@ function NewTransaction({ user, setUser, day }: NewTransactionProps) {
   const [categories, setCategories] = useState<CategoryType[]>([]);
   const categoryInput = useRef<HTMLInputElement>(null);
   const categoriesDatalist = useRef<HTMLDataListElement>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setCategories(user.categories);
@@ -75,7 +76,7 @@ function NewTransaction({ user, setUser, day }: NewTransactionProps) {
   };
 
   const onExit = () => {
-    return <Navigate to="/calendar" />;
+    navigate("/dashboard");
   };
 
   const handleSubmit = async () => {
@@ -108,7 +109,7 @@ function NewTransaction({ user, setUser, day }: NewTransactionProps) {
         }
       });
 
-    return <Navigate to="/calendar" />;
+    navigate("/dashboard");
   };
 
   return (

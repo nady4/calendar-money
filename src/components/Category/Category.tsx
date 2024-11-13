@@ -1,5 +1,5 @@
-import "./Category.scss";
 import { CategoryType } from "../../types.d";
+import "./Category.scss";
 
 function Category({ category }: { category: CategoryType }) {
   return (

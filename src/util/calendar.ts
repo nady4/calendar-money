@@ -1,10 +1,10 @@
 import moment from "moment/moment";
 
-const getCalendarDays = (date) => {
+const getCalendarDays = (date: moment.Moment) => {
   let firstDay = moment(date).startOf("month").startOf("week");
-  let lastDay = moment(date).endOf("month").endOf("week");
+  const lastDay = moment(date).endOf("month").endOf("week");
   const daysInCalendar = lastDay.diff(firstDay, "days") + 1;
-  let days = [];
+  const days = [];
 
   for (let i = 0; i < daysInCalendar; i++) {
     days.push(firstDay);

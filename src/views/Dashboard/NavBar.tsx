@@ -2,8 +2,8 @@ import moment from "moment/moment";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { getBalanceByDay } from "../../util/balance";
-import { UserType } from "../../types.d";
-import { Navigate } from "react-router-dom";
+import { UserType } from "../../types";
+import { useNavigate } from "react-router-dom";
 import "./NavBar.scss";
 
 interface NavBarProps {
@@ -24,8 +24,9 @@ const NavBar = ({ user, day, setDay }: NavBarProps) => {
     localStorage.removeItem("token");
     window.location.reload();
   };
+  const navigate = useNavigate();
   const handleCategoriesClick = () => {
-    <Navigate to="/categories" />;
+    navigate("/categories");
   };
 
   return (

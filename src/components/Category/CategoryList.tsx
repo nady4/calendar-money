@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Category from "./Category";
 import EditCategory from "./EditCategory";
-import "../../styles/list.scss";
 import { UserType, CategoryType } from "../../types.d";
+import "../../styles/list.scss";
 
 interface CategoryListProps {
   user: UserType;
@@ -22,10 +22,13 @@ function CategoryList({ user, setUser }: CategoryListProps) {
 
   const handleCloseButton = () => {
     setSelectedCategory(null);
+    navigate("/dashboard");
   };
 
+  const navigate = useNavigate();
+
   const handleNewCategoryButton = () => {
-    <Navigate to="/new-category" />;
+    navigate("/new-category");
   };
 
   return (

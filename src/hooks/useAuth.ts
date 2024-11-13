@@ -1,5 +1,5 @@
-import { useEffect } from "react";
 import API_URL from "../util/env";
+import { useEffect } from "react";
 import { UserType } from "../types.d";
 
 const refreshUserData = async (

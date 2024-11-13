@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import moment from "moment/moment";
-import Login from "./routes/Login/Login";
-import Register from "./routes/Register/Register.tsx";
-import Calendar from "./routes/Calendar/Calendar.tsx";
-import NavBar from "./routes/Calendar/NavBar";
-import Footer from "./components/Footer/Footer.tsx";
+import Calendar from "./views/Dashboard/Calendar.tsx";
+import NavBar from "./views/Dashboard/NavBar.tsx";
+import Footer from "./views/Dashboard/Footer.tsx";
+import Login from "./views/Login/Login";
+import Register from "./views/Register/Register.tsx";
 import NewTransaction from "./components/Transaction/NewTransaction.tsx";
 import NewCategory from "./components/Category/NewCategory.tsx";
 import CategoryList from "./components/Category/CategoryList";
@@ -35,7 +35,7 @@ function App() {
           path="/"
           element={
             user.loggedIn ? (
-              <Navigate to="/calendar" />
+              <Navigate to="/dashboard" />
             ) : (
               <Navigate to="/login" />
             )
@@ -52,12 +52,17 @@ function App() {
           }
         />
         <Route
-          path="/calendar"
+          path="/dashboard"
           element={
             user.loggedIn ? (
               <div className="app-main">
                 <NavBar user={user} day={day} setDay={setDay} />
-                <Calendar user={user} day={day} setDay={setDay} />
+                <Calendar
+                  user={user}
+                  setUser={setUser}
+                  day={day}
+                  setDay={setDay}
+                />
                 <Footer />
               </div>
             ) : (

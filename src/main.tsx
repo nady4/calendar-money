@@ -3,8 +3,14 @@ import { HashRouter } from "react-router-dom";
 import App from "./App";
 import "./index.css";
 
-ReactDOM.createRoot(document.getElementById("root")).render(
-  <HashRouter>
-    <App />
-  </HashRouter>
-);
+const rootElement = document.getElementById("root");
+
+if (rootElement) {
+  ReactDOM.createRoot(rootElement).render(
+    <HashRouter>
+      <App />
+    </HashRouter>
+  );
+} else {
+  console.error("Root element not found");
+}

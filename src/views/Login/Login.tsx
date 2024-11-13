@@ -1,8 +1,8 @@
-import API_URL from "../../util/env";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { UserType } from "../../types.d";
 import { ToastContainer, toast } from "react-toastify";
+import { UserType } from "../../types.d";
+import API_URL from "../../util/env";
 import "react-toastify/dist/ReactToastify.css";
 import "./Login.scss";
 

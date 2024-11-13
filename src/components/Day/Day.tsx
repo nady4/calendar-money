@@ -1,21 +1,26 @@
 import { useState, useEffect } from "react";
-import Transaction from "../Transaction/Transaction";
+import { useNavigate } from "react-router-dom";
 import moment from "moment/moment";
-import "./Day.scss";
+import Transaction from "../Transaction/Transaction";
+import EditTransaction from "../Transaction/EditTransaction";
 import { getBalanceByDay } from "../../util/balance";
 import { getTransactionsFromDay } from "../../util/transactions";
-import { Navigate } from "react-router-dom";
 import { UserType, TransactionType } from "../../types.d";
+import "./Day.scss";
 
 interface DayProps {
   user: UserType;
+  setUser: React.Dispatch<React.SetStateAction<UserType>>;
   setDay: React.Dispatch<React.SetStateAction<moment.Moment>>;
   calendarDay: moment.Moment;
 }
 
-function Day({ user, setDay, calendarDay }: DayProps) {
-  const [transactions, setTransactions] = useState<TransactionType[]>([]);
+function Day({ user, setUser, setDay, calendarDay }: DayProps) {
   const [balance, setBalance] = useState(0);
+  const [transactions, setTransactions] = useState<TransactionType[]>([]);
+  const [selectedTransaction, setSelectedTransaction] =
+    useState<TransactionType | null>();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setTransactions(getTransactionsFromDay(user.transactions, calendarDay));
@@ -28,35 +33,53 @@ function Day({ user, setDay, calendarDay }: DayProps) {
   };
   const openNewTransaction = () => {
     setDay(moment(calendarDay));
-    <Navigate to="/new-transaction" />;
+    navigate("/new-transaction");
   };
 
   return (
-    <div className="calendar-day" onClick={openDayView}>
-      <div className="day-header">
-        <div className="day-date-container">
-          <p className="day-date">{calendarDay.format("D")}</p>
-        </div>
-        <div className="day-balance-container">
-          <p className="day-balance">${balance}</p>
-        </div>
-        <div className="add-transaction-button-container">
-          <button
-            className="add-transaction-button"
-            onClick={openNewTransaction}
-          >
-            +
-          </button>
-        </div>
-      </div>
+    <>
+      {selectedTransaction ? (
+        <EditTransaction
+          user={user}
+          setUser={setUser}
+          transaction={selectedTransaction}
+        />
+      ) : (
+        <div className="calendar-day" onClick={openDayView}>
+          <div className="day-header">
+            <div className="day-date-container">
+              <p className="day-date">{calendarDay.format("D")}</p>
+            </div>
+            <div className="day-balance-container">
+              <p className="day-balance">${balance}</p>
+            </div>
+            <div className="add-transaction-button-container">
+              <button
+                className="add-transaction-button"
+                onClick={openNewTransaction}
+              >
+                +
+              </button>
+            </div>
+          </div>
 
-      <div className="transactions-container">
-        {transactions.map((transaction, txIndex) => {
-          return <Transaction transaction={transaction} key={txIndex} />;
-        })}
-      </div>
-      <div className="bottom-shadow"></div>
-    </div>
+          <div className="transactions-container">
+            {transactions.map((transaction, index) => {
+              return (
+                <div
+                  key={index}
+                  className="item"
+                  onClick={() => setSelectedTransaction(transaction)}
+                >
+                  <Transaction transaction={transaction} key={index} />
+                </div>
+              );
+            })}
+          </div>
+          <div className="bottom-shadow"></div>
+        </div>
+      )}
+    </>
   );
 }
 

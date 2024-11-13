@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { getTransactionsFromDay } from "../../util/transactions";
-import { Navigate } from "react-router-dom";
-import { UserType, TransactionType } from "../../types.d";
-import moment from "moment/moment";
-import Transaction from "../Transaction/Transaction";
+import { useNavigate } from "react-router-dom";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import moment from "moment/moment";
+import Transaction from "../Transaction/Transaction";
+import { getTransactionsFromDay } from "../../util/transactions";
+import { UserType, TransactionType } from "../../types.d";
 import "../../styles/list.scss";
 
 interface DayViewProps {
@@ -16,6 +16,7 @@ interface DayViewProps {
 
 function DayView({ user, day, setDay }: DayViewProps) {
   const [dayTransactions, setDayTransactions] = useState<TransactionType[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setDayTransactions(getTransactionsFromDay(user.transactions, day));
@@ -28,10 +29,10 @@ function DayView({ user, day, setDay }: DayViewProps) {
     setDay(moment(day).add(1, "days"));
   };
   const handleCloseButton = () => {
-    <Navigate to="/calendar" />;
+    navigate("/dashboard");
   };
   const openNewTransaction = () => {
-    <Navigate to="/new-transaction" />;
+    navigate("/new-transaction");
   };
 
   return (

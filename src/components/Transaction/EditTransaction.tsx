@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from "react";
-import "../../styles/form.scss";
-import API_URL from "../../util/env";
-import { UserType, TransactionType } from "../../types";
 import { useNavigate } from "react-router-dom";
+import { UserType, TransactionType } from "../../types";
+import API_URL from "../../util/env";
+import "../../styles/form.scss";
 
 interface EditTransactionProps {
   user: UserType;
@@ -15,8 +15,8 @@ function EditTransaction({ user, setUser, transaction }: EditTransactionProps) {
   const [description, setDescription] = useState(transaction.description);
   const [category, setCategory] = useState(transaction.category);
 
-  const navigate = useNavigate();
   const categoryInput = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
 
   const onAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAmount(parseFloat(event.target.value));
@@ -41,7 +41,7 @@ function EditTransaction({ user, setUser, transaction }: EditTransactionProps) {
     }
   };
 
-  const onExit = () => navigate("/calendar");
+  const onExit = () => navigate("/dashboard");
 
   const handleSubmit = () => {
     transaction.amount = amount;
@@ -90,7 +90,7 @@ function EditTransaction({ user, setUser, transaction }: EditTransactionProps) {
         }
       });
 
-    navigate("/calendar");
+    navigate("/dashboard");
   };
 
   useEffect(() => {
