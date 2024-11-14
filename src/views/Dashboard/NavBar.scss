@@ -1,5 +1,3 @@
-@import "../../variables.scss";
-
 .navbar {
   height: 80px;
   width: 98vw;
@@ -180,11 +178,6 @@
 
     .logout-container {
       width: 15%;
-
-      logout-button {
-        svg {
-        }
-      }
     }
   }
 }

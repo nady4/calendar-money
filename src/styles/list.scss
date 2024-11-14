@@ -1,5 +1,12 @@
-@use "./exitButton.scss";
-@use "./newButton.scss";
+@use "buttons" as *;
+
+.exit-button {
+  @extend %exit-button;
+}
+
+.new-button-container {
+  @extend %new-button-container;
+}
 
 .list {
   position: fixed;

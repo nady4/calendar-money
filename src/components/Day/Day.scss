@@ -1,9 +1,9 @@
-@import "../../variables.scss";
+@use "../../styles/variables" as vars;
 
 .calendar-day {
-  height: $day-height;
-  width: $day-width;
-  margin-left: $day-margin;
+  height: vars.$day-height;
+  width: vars.$day-width;
+  margin-left: vars.$day-margin;
   margin-bottom: 1%;
   border-right: 1px solid rgb(248, 249, 249);
   border-left: 1px solid rgb(248, 249, 249);
@@ -116,10 +116,10 @@
 
 @media (max-width: 600px) {
   .calendar-day {
-    height: $day-height * 0.6;
+    height: vars.$day-height * 0.6;
     border-right: 0px;
     border-left: 0px;
-    margin-left: $day-margin + 0.15%;
+    margin-left: vars.$day-margin + 0.15%;
 
     .day-header {
       height: 100%;

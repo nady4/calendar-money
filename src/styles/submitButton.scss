@@ -1,4 +1,6 @@
-.submit-button {
+@forward "variables";
+
+%submit-button {
   background-color: #0c78c6;
   color: #fff;
   height: 50px;

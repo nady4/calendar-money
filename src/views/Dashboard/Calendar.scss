@@ -1,4 +1,4 @@
-@import "../../variables.scss";
+@use "../../styles/variables" as vars;
 
 .calendar-main {
   display: flex;
@@ -26,8 +26,8 @@
       );
 
       .weekday-item {
-        width: $day-width;
-        margin-left: $day-margin + 0.1%;
+        width: vars.$day-width;
+        margin-left: vars.$day-margin + 0.1%;
         display: flex;
         justify-content: center;
         align-items: center;

@@ -1,6 +1,16 @@
-@use "./exitButton";
-@use "./deleteButton";
-@use "./submitButton";
+@use "./buttons" as *;
+
+.exit-button {
+  @extend %exit-button;
+}
+
+.delete-button {
+  @extend %delete-button;
+}
+
+.submit-button {
+  @extend %submit-button;
+}
 
 .form {
   background-color: #1b1b1b;

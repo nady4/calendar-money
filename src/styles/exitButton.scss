@@ -1,4 +1,6 @@
-.exit-button {
+@forward "variables";
+
+%exit-button {
   position: absolute;
   top: 40px;
   right: 5%;

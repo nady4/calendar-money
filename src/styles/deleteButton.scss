@@ -1,4 +1,6 @@
-.delete-button {
+@forward "variables";
+
+%delete-button {
   background-color: transparent;
   color: white;
   font-size: 1.2rem;
