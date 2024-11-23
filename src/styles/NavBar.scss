@@ -36,7 +36,7 @@
 
       .today-date {
         color: #333;
-        font-size: 1.1rem;
+        font-size: 1.2rem;
         font-weight: 400;
         text-align: center;
         width: 100%;
@@ -45,10 +45,11 @@
     .user-balance-container {
       height: 30%;
       width: 100%;
+      margin-top: 5px;
 
       .user-balance {
         color: #333;
-        font-size: 0.95rem;
+        font-size: 1.1rem;
         font-weight: 200;
       }
     }
@@ -104,7 +105,7 @@
       }
       &:active {
         color: black;
-        transform: scale(1);
+        transform: scale(0.9);
       }
     }
   }
@@ -115,10 +116,18 @@
       border: none;
       background: none;
       cursor: pointer;
+      transition: 0.2s ease-in-out;
 
       svg {
         height: 30px;
         width: 30px;
+      }
+
+      &:hover {
+        transform: scale(1.2);
+      }
+      &:active {
+        transform: scale(0.8);
       }
     }
   }

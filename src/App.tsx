@@ -1,17 +1,17 @@
 import { useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import moment from "moment/moment";
-import Calendar from "./views/Dashboard/Calendar.tsx";
-import NavBar from "./views/Dashboard/NavBar.tsx";
-import Footer from "./views/Dashboard/Footer.tsx";
 import Login from "./views/Login/Login";
 import Register from "./views/Register/Register.tsx";
-import NewTransaction from "./components/Transaction/NewTransaction.tsx";
-import NewCategory from "./components/Category/NewCategory.tsx";
-import CategoryList from "./components/Category/CategoryList";
-import DayView from "./components/Day/DayView.tsx";
+import Dashboard from "./views/Dashboard/Dashboard.tsx";
+import CategoryList from "./views/Category/CategoryList";
+import NewCategory from "./views/Category/NewCategory.tsx";
+import EditCategory from "./views/Category/EditCategory.tsx";
+import TransactionList from "./views/Transaction/TransactionList.tsx";
+import NewTransaction from "./views/Transaction/NewTransaction.tsx";
+import EditTransaction from "./views/Transaction/EditTransaction.tsx";
 import { useAuth } from "./hooks/useAuth.ts";
-import { UserType } from "./types.d";
+import { UserType, CategoryType, TransactionType } from "./types.d";
 import "./App.scss";
 
 function App() {
@@ -25,6 +25,12 @@ function App() {
     categories: [],
   });
   const [day, setDay] = useState(moment());
+
+  const [selectedCategory, setSelectedCategory] = useState<CategoryType | null>(
+    null
+  );
+  const [selectedTransaction, setSelectedTransaction] =
+    useState<TransactionType | null>(null);
 
   useAuth(user, setUser);
 
@@ -55,36 +61,67 @@ function App() {
           path="/dashboard"
           element={
             user.loggedIn ? (
-              <div className="app-main">
-                <NavBar user={user} day={day} setDay={setDay} />
-                <Calendar
-                  user={user}
-                  setUser={setUser}
-                  day={day}
-                  setDay={setDay}
-                />
-                <Footer />
-              </div>
+              <Dashboard user={user} day={day} setDay={setDay} />
             ) : (
               <Navigate to="/login" />
             )
           }
         />
         <Route
-          path="/new-transaction"
-          element={<NewTransaction user={user} setUser={setUser} day={day} />}
+          path="/categories"
+          element={
+            <CategoryList
+              user={user}
+              setSelectedCategory={setSelectedCategory}
+            />
+          }
+        />
+        <Route
+          path="/edit-category"
+          element={
+            selectedCategory ? (
+              <EditCategory
+                user={user}
+                setUser={setUser}
+                category={selectedCategory}
+              />
+            ) : (
+              <Navigate to="/dashboard" />
+            )
+          }
         />
         <Route
           path="/new-category"
           element={<NewCategory user={user} setUser={setUser} />}
         />
         <Route
-          path="/categories"
-          element={<CategoryList user={user} setUser={setUser} />}
+          path="/transactions"
+          element={
+            <TransactionList
+              user={user}
+              day={day}
+              setDay={setDay}
+              setSelectedTransaction={setSelectedTransaction}
+            />
+          }
         />
         <Route
-          path="/day-view"
-          element={<DayView user={user} day={day} setDay={setDay} />}
+          path="/edit-transaction"
+          element={
+            selectedTransaction ? (
+              <EditTransaction
+                user={user}
+                setUser={setUser}
+                transaction={selectedTransaction}
+              />
+            ) : (
+              <Navigate to="/dashboard" />
+            )
+          }
+        />
+        <Route
+          path="/new-transaction"
+          element={<NewTransaction user={user} setUser={setUser} day={day} />}
         />
       </Routes>
     </main>

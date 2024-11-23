@@ -58,6 +58,11 @@
     font-size: 2.1rem;
   }
 
+  svg {
+    height: 50px;
+    width: 50px;
+  }
+
   .items-container {
     width: 50%;
     min-width: 400px;
@@ -69,5 +74,9 @@
     margin-bottom: 20px;
     overflow-y: scroll;
     background-color: #2828284e;
+
+    .item {
+      width: 90%;
+    }
   }
 }

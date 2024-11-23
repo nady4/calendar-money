@@ -1,29 +1,19 @@
-@use "../../styles/variables" as vars;
+@use "./variables" as vars;
 
 .calendar-main {
   display: flex;
-  flex-direction: column;
+  padding-bottom: 20px;
 
   .calendar-container {
     display: flex;
     flex-flow: column;
-    width: 100%;
-    height: 130vh;
-    background-color: #a3dcff;
 
     .weekday-list {
       display: flex;
       flex-flow: row;
       height: 40px;
-      width: 100%;
-      margin-bottom: 6vh;
-
-      background: linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 1) 0%,
-        rgba(226, 244, 255, 1) 40%,
-        rgba(163, 220, 255, 1) 100%
-      );
+      margin-top: 20px;
+      margin-bottom: 30px;
 
       .weekday-item {
         width: vars.$day-width;

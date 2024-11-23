@@ -1,17 +1,16 @@
 import { useState, useEffect } from "react";
-import Day from "../../components/Day/Day";
+import Day from "../Day/Day";
 import { getCalendarDays } from "../../util/calendar";
 import { UserType } from "../../types";
-import "./Calendar.scss";
+import "../../styles/Calendar.scss";
 
 interface CalendarProps {
   user: UserType;
-  setUser: React.Dispatch<React.SetStateAction<UserType>>;
   day: moment.Moment;
   setDay: React.Dispatch<React.SetStateAction<moment.Moment>>;
 }
 
-function Calendar({ user, setUser, day, setDay }: CalendarProps) {
+function Calendar({ user, day, setDay }: CalendarProps) {
   const [calendarDays, setCalendarDays] = useState<moment.Moment[]>([]);
   const weekdays = [
     "SUNDAY",
@@ -44,9 +43,8 @@ function Calendar({ user, setUser, day, setDay }: CalendarProps) {
             return (
               <Day
                 user={user}
-                setUser={setUser}
+                day={calendarDay}
                 setDay={setDay}
-                calendarDay={calendarDay}
                 key={calendarDay.format("YYYY-MM-DD")}
               />
             );

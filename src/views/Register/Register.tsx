@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import API_URL from "../../util/env";
 import "react-toastify/dist/ReactToastify.css";
-import "./Register.scss";
+import "../../styles/Register.scss";
 
 function Register() {
   const [username, setUsername] = useState("");

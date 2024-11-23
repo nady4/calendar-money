@@ -26,6 +26,11 @@
   justify-content: center;
   flex-direction: column;
 
+  svg {
+    height: 50px;
+    width: 50px;
+  }
+
   h1 {
     font-size: 2rem;
   }

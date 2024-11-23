@@ -4,7 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { UserType } from "../../types.d";
 import API_URL from "../../util/env";
 import "react-toastify/dist/ReactToastify.css";
-import "./Login.scss";
+import "../../styles/Login.scss";
 
 function Login({
   setUser,
@@ -29,6 +29,13 @@ function Login({
     pauseOnHover: true,
     draggable: true,
     progress: undefined,
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      onSubmitLogin();
+    }
   };
 
   const onSubmitLogin = async () => {
@@ -115,6 +122,7 @@ function Login({
               name="password"
               id="password"
               className="log-in-input"
+              onKeyDown={handleKeyDown}
             />
           </div>
         </fieldset>
@@ -136,8 +144,8 @@ function Login({
           <p className="test-login-data">
             If you want to test the app use these credentials
           </p>
-          <p className="test-login-data">Username: test</p>
-          <p className="test-login-data">Password: TEST1234</p>
+          <p className="test-login-data">Username: nady4</p>
+          <p className="test-login-data">Password: Nady4Nady4</p>
         </div>
       </div>
     </main>

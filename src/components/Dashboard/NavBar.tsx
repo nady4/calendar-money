@@ -1,10 +1,11 @@
 import moment from "moment/moment";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import Logo from "../../assets/favicon.svg";
 import { getBalanceByDay } from "../../util/balance";
 import { UserType } from "../../types";
 import { useNavigate } from "react-router-dom";
-import "./NavBar.scss";
+import "../../styles/NavBar.scss";
 
 interface NavBarProps {
   user: UserType;
@@ -32,18 +33,7 @@ const NavBar = ({ user, day, setDay }: NavBarProps) => {
   return (
     <div className="navbar">
       <div className="logo-container" onClick={() => window.location.reload()}>
-        <svg
-          width="40"
-          height="40"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M12 4.5C7 4.5 2.73 7.61 1 12C2.73 16.39 7 19.5 12 19.5C17 19.5 21.27 16.39 23 12C21.27 7.61 17 4.5 12 4.5ZM12 17C9.24 17 7 14.76 7 12C7 9.24 9.24 7 12 7C14.76 7 17 9.24 17 12C17 14.76 14.76 17 12 17ZM12 9C10.34 9 9 10.34 9 12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12C15 10.34 13.66 9 12 9Z"
-            fill="#333"
-          />
-        </svg>
+        <img className="logo" src={Logo} alt="logo" height={"40px"} />
       </div>
       <div className="user-data-container">
         <div className="today-date-container">
@@ -60,51 +50,16 @@ const NavBar = ({ user, day, setDay }: NavBarProps) => {
           <ChevronLeftIcon fontSize="small" />
         </button>
         <div className="date-container">
-          <p className="date">{day.format("MM-YYYY")}</p>
+          <p className="date">{day.format("MM / YYYY")}</p>
         </div>
         <button className="right-arrow" onClick={handleRightArrowClick}>
           <ChevronRightIcon fontSize="small" />
         </button>
       </div>
       <div className="categories-button-container">
-        <button className="categories-button" onClick={handleCategoriesClick}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="18px"
-            height="18px"
-            viewBox="0 0 18 18"
-            version="1.1"
-          >
-            <g
-              id="Icons"
-              stroke="none"
-              strokeWidth="1"
-              fill="none"
-              fillRule="evenodd"
-            >
-              <g id="Outlined" transform="translate(-749.000000, -1263.000000)">
-                <g
-                  id="Communication"
-                  transform="translate(100.000000, 1162.000000)"
-                >
-                  <g
-                    id="Outlined-/-Communication-/-list_alt"
-                    transform="translate(646.000000, 98.000000)"
-                  >
-                    <g>
-                      <polygon id="Path" points="0 0 24 0 24 24 0 24" />
-                      <path
-                        d="M11,7 L17,7 L17,9 L11,9 L11,7 Z M11,11 L17,11 L17,13 L11,13 L11,11 Z M11,15 L17,15 L17,17 L11,17 L11,15 Z M7,7 L9,7 L9,9 L7,9 L7,7 Z M7,11 L9,11 L9,13 L7,13 L7,11 Z M7,15 L9,15 L9,17 L7,17 L7,15 Z M20.1,3 L3.9,3 C3.4,3 3,3.4 3,3.9 L3,20.1 C3,20.5 3.4,21 3.9,21 L20.1,21 C20.5,21 21,20.5 21,20.1 L21,3.9 C21,3.4 20.5,3 20.1,3 Z M19,19 L5,19 L5,5 L19,5 L19,19 Z"
-                        id="🔹-Icon-Color"
-                        fill="#1D1D1D"
-                      />
-                    </g>
-                  </g>
-                </g>
-              </g>
-            </g>
-          </svg>
-        </button>
+        <p className="categories-button" onClick={handleCategoriesClick}>
+          Categories
+        </p>
       </div>
 
       <div className="logout-container">

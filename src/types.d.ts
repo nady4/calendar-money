@@ -1,6 +1,6 @@
 import moment from "moment";
 interface CategoryType {
-  id: string;
+  _id: string;
   name: string;
   type: string;
   color: string;

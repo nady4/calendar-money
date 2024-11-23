@@ -1,39 +1,40 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import moment from "moment/moment";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import moment from "moment/moment";
-import Transaction from "../Transaction/Transaction";
+import Transaction from "../../components/Transaction/Transaction";
 import { getTransactionsFromDay } from "../../util/transactions";
-import { UserType, TransactionType } from "../../types.d";
+import { UserType, TransactionType } from "../../types";
 import "../../styles/list.scss";
 
-interface DayViewProps {
+interface TransactionListProps {
   user: UserType;
   day: moment.Moment;
   setDay: React.Dispatch<React.SetStateAction<moment.Moment>>;
+  setSelectedTransaction: React.Dispatch<
+    React.SetStateAction<TransactionType | null>
+  >;
 }
 
-function DayView({ user, day, setDay }: DayViewProps) {
+function TransactionList({
+  user,
+  day,
+  setDay,
+  setSelectedTransaction,
+}: TransactionListProps) {
   const [dayTransactions, setDayTransactions] = useState<TransactionType[]>([]);
   const navigate = useNavigate();
+
+  const handleCloseButton = () => {
+    setSelectedTransaction(null);
+    setDay(moment());
+    navigate("/dashboard");
+  };
 
   useEffect(() => {
     setDayTransactions(getTransactionsFromDay(user.transactions, day));
   }, [day, user.transactions]);
-
-  const handlePreviousDayButton = () => {
-    setDay(moment(day).subtract(1, "days"));
-  };
-  const handleNextDayButton = () => {
-    setDay(moment(day).add(1, "days"));
-  };
-  const handleCloseButton = () => {
-    navigate("/dashboard");
-  };
-  const openNewTransaction = () => {
-    navigate("/new-transaction");
-  };
 
   return (
     <div className="list">
@@ -46,13 +47,17 @@ function DayView({ user, day, setDay }: DayViewProps) {
           <div className="day-change-buttons-container">
             <button
               className="day-change-button next-day-button"
-              onClick={handlePreviousDayButton}
+              onClick={() => {
+                setDay(moment(day).subtract(1, "days"));
+              }}
             >
               <ChevronLeftIcon />
             </button>
             <button
               className="day-change-button previous-day-button"
-              onClick={handleNextDayButton}
+              onClick={() => {
+                setDay(moment(day).add(1, "days"));
+              }}
             >
               <ChevronRightIcon />
             </button>
@@ -61,11 +66,27 @@ function DayView({ user, day, setDay }: DayViewProps) {
       </div>
       <div className="items-container">
         {dayTransactions.map((transaction, index) => {
-          return <Transaction transaction={transaction} key={index} />;
+          return (
+            <div
+              key={index}
+              className="item"
+              onClick={() => {
+                setSelectedTransaction(transaction);
+                navigate("/edit-transaction");
+              }}
+            >
+              <Transaction transaction={transaction} key={index} />
+            </div>
+          );
         })}
       </div>
       <div className="new-button-container">
-        <button className="new-button" onClick={openNewTransaction}>
+        <button
+          className="new-button"
+          onClick={() => {
+            navigate("/new-transaction");
+          }}
+        >
           Add new transaction
         </button>
       </div>
@@ -73,4 +94,4 @@ function DayView({ user, day, setDay }: DayViewProps) {
   );
 }
 
-export default DayView;
+export default TransactionList;

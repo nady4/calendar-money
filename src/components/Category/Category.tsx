@@ -1,5 +1,5 @@
 import { CategoryType } from "../../types.d";
-import "./Category.scss";
+import "../../styles/Category.scss";
 
 function Category({ category }: { category: CategoryType }) {
   return (
@@ -9,9 +9,6 @@ function Category({ category }: { category: CategoryType }) {
       </div>
       <div className="category-type">
         <p>{category.type}</p>
-      </div>
-      <div className="category-color">
-        <p>{category.color}</p>
       </div>
     </div>
   );

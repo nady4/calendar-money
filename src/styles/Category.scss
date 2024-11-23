@@ -1,7 +1,6 @@
 .category {
   min-height: 80px;
-  width: 90%;
-  color: #fff;
+  color: #000000;
   text-align: center;
   display: flex;
   flex-direction: row;
@@ -10,12 +9,13 @@
   margin-top: 5%;
   cursor: pointer;
   transition: 0.4 all ease-out;
+  border-radius: 20px;
 
   &:hover {
     transform: scale(1.05);
     background-color: #dfdfdf;
   }
-  &:focus {
+  &:active {
     transform: scale(0.95);
     background-color: #535353;
   }
@@ -25,7 +25,6 @@
   .category-color {
     height: 80%;
     width: 30%;
-    border: 1px solid white;
     h2 {
       font-size: 1.1rem;
     }
