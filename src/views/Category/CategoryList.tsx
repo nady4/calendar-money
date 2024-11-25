@@ -14,6 +14,7 @@ interface CategoryListProps {
 
 function CategoryList({ user, setSelectedCategory }: CategoryListProps) {
   const [categories, setCategories] = useState(user.categories || []);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setCategories(user.categories);
@@ -23,8 +24,6 @@ function CategoryList({ user, setSelectedCategory }: CategoryListProps) {
     setSelectedCategory(null);
     navigate("/dashboard");
   };
-
-  const navigate = useNavigate();
 
   const handleNewCategoryButton = () => {
     navigate("/new-category");

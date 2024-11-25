@@ -14,13 +14,6 @@ function Login({
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const onUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUsername(event.target.value);
-  };
-  const onPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(event.target.value);
-  };
-
   const toastConfig = {
     position: "top-center" as const,
     autoClose: 2000,
@@ -29,6 +22,13 @@ function Login({
     pauseOnHover: true,
     draggable: true,
     progress: undefined,
+  };
+
+  const onUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUsername(event.target.value);
+  };
+  const onPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(event.target.value);
   };
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
@@ -51,7 +51,6 @@ function Login({
         }),
       });
 
-      //Error codes
       switch (response.status) {
         case 200:
           toast.success("Login successful", toastConfig);

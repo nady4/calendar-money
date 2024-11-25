@@ -77,7 +77,7 @@ function Register() {
           toast.error("An unexpected error occurred", toastConfig);
       }
     } catch (error) {
-      // Handle network or parsing errors
+      // Network or parsing errors
       console.error("Registration error:", error);
       toast.error("Connection error. Please try again.", toastConfig);
     }

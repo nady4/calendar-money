@@ -27,15 +27,15 @@ function TransactionList({
   const [dayTransactions, setDayTransactions] = useState<TransactionType[]>([]);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    setDayTransactions(getTransactionsFromDay(user.transactions, day));
+  }, [day, user.transactions]);
+
   const handleCloseButton = () => {
     setSelectedTransaction(null);
     setDay(moment());
     navigate("/dashboard");
   };
-
-  useEffect(() => {
-    setDayTransactions(getTransactionsFromDay(user.transactions, day));
-  }, [day, user.transactions]);
 
   return (
     <div className="list">

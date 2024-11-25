@@ -20,7 +20,7 @@ const useValidateTransaction = ({
 }: useValidateTransactionProps) => {
   useEffect(() => {
     const isCategoryValid =
-      category !== null || // Check if a valid category is already set
+      category !== null ||
       (categoryInput.current &&
         user.categories.some((c) => c.name === categoryInput.current?.value));
     const isAmountValid = amount > 0;

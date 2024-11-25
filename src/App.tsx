@@ -20,12 +20,11 @@ function App() {
     username: "",
     email: "",
     password: "",
-    loggedIn: false,
     transactions: [],
     categories: [],
+    loggedIn: false,
   });
   const [day, setDay] = useState(moment());
-
   const [selectedCategory, setSelectedCategory] = useState<CategoryType | null>(
     null
   );
