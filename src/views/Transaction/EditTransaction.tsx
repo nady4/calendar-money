@@ -45,7 +45,7 @@ function EditTransaction({ user, setUser, transaction }: EditTransactionProps) {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const selectedCategory = user.categories.find(
-      (cat) => cat.name === event.target.value
+      (c) => c.name === event.target.value
     );
     if (selectedCategory) {
       await setCategory(selectedCategory);
@@ -60,11 +60,11 @@ function EditTransaction({ user, setUser, transaction }: EditTransactionProps) {
     event?.preventDefault();
 
     const newTransaction = {
-      id: transaction.id,
+      id: transaction._id,
       date: transaction.date,
-      amount: transaction.amount,
-      description: transaction.description,
-      category: transaction.category.id,
+      amount,
+      description,
+      category,
     };
 
     try {
@@ -101,7 +101,7 @@ function EditTransaction({ user, setUser, transaction }: EditTransactionProps) {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        body: JSON.stringify({ id: transaction.id }),
+        body: JSON.stringify({ id: transaction._id }),
       });
 
       const data = await response.json();

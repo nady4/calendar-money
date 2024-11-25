@@ -58,7 +58,7 @@ function EditCategory({ user, setUser, category }: EditCategoryProps) {
     };
 
     try {
-      const response = await fetch(`${API_URL}/users/${user.id}`, {
+      const response = await fetch(`${API_URL}/categories/${user.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -84,7 +84,7 @@ function EditCategory({ user, setUser, category }: EditCategoryProps) {
     event?.preventDefault();
 
     try {
-      const response = await fetch(`${API_URL}/users/${user.id}`, {
+      const response = await fetch(`${API_URL}/categories/${user.id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

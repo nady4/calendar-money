@@ -7,7 +7,7 @@ interface CategoryType {
 }
 
 interface TransactionType {
-  id: string;
+  _id: string;
   amount: number;
   description: string;
   category: Category;
