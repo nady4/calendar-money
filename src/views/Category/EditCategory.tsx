@@ -3,6 +3,7 @@ import { HuePicker } from "react-color";
 import { useNavigate } from "react-router-dom";
 import { UserType, CategoryType } from "../../types.d";
 import API_URL from "../../util/env";
+import exitButton from "../../styles/whiteExitButton.svg";
 import "../../styles/form.scss";
 
 interface EditCategoryProps {
@@ -19,6 +20,16 @@ function EditCategory({ user, setUser, category }: EditCategoryProps) {
 
   const incomeBox = useRef<HTMLInputElement>(null);
   const expenseBox = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
+
+  //Validate form
+  useEffect(() => {
+    if (name && color && type) {
+      setDisableSubmitButton(false);
+    } else {
+      setDisableSubmitButton(true);
+    }
+  }, [name, color, type]);
 
   const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
@@ -36,100 +47,79 @@ function EditCategory({ user, setUser, category }: EditCategoryProps) {
     }
   };
 
-  const navigate = useNavigate();
+  const handleUpdateSubmit = async (event: React.FormEvent) => {
+    event?.preventDefault();
 
-  const onExit = () => {
-    navigate("/dashboard");
-  };
+    const newCategory = {
+      id: category._id,
+      name,
+      color,
+      type,
+    };
 
-  useEffect(() => {
-    if (name && color && type) {
-      setDisableSubmitButton(false);
-    } else {
-      setDisableSubmitButton(true);
+    try {
+      const response = await fetch(`${API_URL}/users/${user.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(newCategory),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error);
+      }
+
+      setUser(data.user);
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Error updating category:", error);
     }
-  }, [name, color, type]);
-
-  const handleDeleteSubmit = () => {
-    const newCategories = user.categories.filter(
-      (userCategory: CategoryType) => userCategory._id !== category._id
-    );
-
-    fetch(`${API_URL}/user/${user.id}`, {
-      method: "put",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-      body: JSON.stringify({
-        categories: newCategories,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.error) {
-          console.log(data.error);
-        } else {
-          setUser({ ...user, categories: newCategories });
-        }
-      });
   };
 
-  const handleSubmit = () => {
-    category.name = name;
-    category.color = color;
-    category.type = type;
+  const handleDeleteSubmit = async (event: React.FormEvent) => {
+    event?.preventDefault();
 
-    const newCategories = user.categories
-      .filter((userCategory: CategoryType) => userCategory._id !== category._id)
-      .push(category);
-
-    fetch(`${API_URL}/user/${user.id}`, {
-      method: "put",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-      body: JSON.stringify({
-        categories: newCategories,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.error) {
-          console.log(data.error);
-        } else {
-          setUser({
-            ...user,
-            categories: data.categories,
-            transactions: data.transactions,
-          });
-        }
+    try {
+      const response = await fetch(`${API_URL}/users/${user.id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({
+          id: category._id,
+        }),
       });
 
-    onExit();
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error);
+      }
+
+      setUser(data.user);
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Error deleting category:", error);
+    }
   };
 
   return (
     <div className="form">
-      <button className="exit-button" onClick={onExit}>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="512"
-          height="512"
-          viewBox="0 0 512 512"
-          fill="none"
-        >
-          <path
-            fillRule="evenodd"
-            clipRule="evenodd"
-            d="M84.9407 448.942C78.6923 455.19 68.5616 455.19 62.3132 448.942C56.0649 442.693 56.0649 432.563 62.3132 426.314L233 255.628L62.3132 84.9417C56.0649 78.6933 56.0649 68.5626 62.3132 62.3142C68.5616 56.0658 78.6923 56.0658 84.9407 62.3142L255.627 233.001L426.313 62.3142C432.562 56.0658 442.692 56.0658 448.941 62.3142C455.189 68.5626 455.189 78.6933 448.941 84.9417L278.254 255.628L448.941 426.314C455.189 432.563 455.189 442.693 448.941 448.942C442.692 455.19 432.562 455.19 426.313 448.942L255.627 278.255L84.9407 448.942Z"
-            fill="white"
-          />
-        </svg>
+      <button
+        className="exit-button"
+        onClick={() => {
+          navigate("/dashboard");
+        }}
+      >
+        <img src={exitButton} className="exit-button-logo" />
       </button>
       <h1>Edit Category</h1>
-      <form id="edit-category-form" onSubmit={handleSubmit}>
+      <form id="edit-category-form" onSubmit={handleUpdateSubmit}>
         <label htmlFor="name" className="label">
           Name
         </label>

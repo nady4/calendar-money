@@ -1,7 +1,10 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserType, CategoryType } from "../../types.d";
 import API_URL from "../../util/env";
+import exitButton from "../../styles/whiteExitButton.svg";
+import useCategoryOptions from "../../hooks/useCategoryOptions";
+import useValidateTransaction from "../../hooks/useValidateTransaction";
 import "../../styles/form.scss";
 
 interface NewTransactionProps {
@@ -15,37 +18,20 @@ function NewTransaction({ user, setUser, day }: NewTransactionProps) {
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState<CategoryType | null>(null);
   const [disableSubmitButton, setDisableSubmitButton] = useState(true);
-  const [categories, setCategories] = useState<CategoryType[]>([]);
-  const categoryInput = useRef<HTMLInputElement>(null);
+
   const categoriesDatalist = useRef<HTMLDataListElement>(null);
+  const categoryInput = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    setCategories(user.categories);
-
-    if (categoriesDatalist.current) {
-      categoriesDatalist.current.innerHTML = ""; // Limpia opciones existentes
-      categories.forEach((c) => {
-        const option = document.createElement("option");
-        option.value = c.name;
-        categoriesDatalist.current?.appendChild(option);
-      });
-    }
-  }, [categories, user.categories]);
-
-  useEffect(() => {
-    const isCategoryValid =
-      categoryInput.current &&
-      categories.find((c) => c.name === categoryInput.current?.value);
-    const isAmountValid = amount >= 0;
-    const isDescriptionValid = description.length > 0;
-
-    if (isCategoryValid && isAmountValid && isDescriptionValid)
-      setDisableSubmitButton(false);
-    else {
-      setDisableSubmitButton(true);
-    }
-  }, [amount, categories, category, description]);
+  useCategoryOptions({ user, categoriesDatalist });
+  useValidateTransaction({
+    user,
+    categoryInput,
+    amount,
+    description,
+    category,
+    setDisableSubmitButton,
+  });
 
   const onAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (
@@ -62,18 +48,19 @@ function NewTransaction({ user, setUser, day }: NewTransactionProps) {
     setDescription(event.target.value);
   };
 
-  const onCategoryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedCategory = categories.find(
+  const onCategoryChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const selectedCategory = user.categories.find(
       (c) => c.name === event.target.value
     );
-    if (!selectedCategory) {
-      console.error("Invalid category selected");
+    if (selectedCategory) {
+      await setCategory(selectedCategory);
+      if (categoryInput.current) {
+        categoryInput.current.placeholder = event.target.value;
+        categoryInput.current.value = "";
+      }
     }
-    setCategory(selectedCategory || null);
-  };
-
-  const onExit = () => {
-    navigate("/dashboard");
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -86,52 +73,40 @@ function NewTransaction({ user, setUser, day }: NewTransactionProps) {
       category: category ? category._id : null,
     };
 
-    console.log(newTransaction);
-
     try {
-      const response = await fetch(`${API_URL}/user/${user.id}`, {
-        method: "PUT",
+      const response = await fetch(`${API_URL}/transactions/${user.id}`, {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        body: JSON.stringify({
-          transactions: [...(user.transactions || []), newTransaction],
-        }),
+        body: JSON.stringify(newTransaction),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        console.error("Error updating transactions:", data.error);
+        console.error("Error creating transaction:", data.error);
         return;
       }
 
       setUser(data.user);
       navigate("/dashboard");
     } catch (error) {
-      console.error("Error updating transactions:", error);
+      console.error("Error creating transaction:", error);
     }
   };
 
   return (
     <div className="form">
       <h1>New Transaction</h1>
-      <button className="exit-button" onClick={onExit}>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="512"
-          height="512"
-          viewBox="0 0 512 512"
-          fill="none"
-        >
-          <path
-            fillRule="evenodd"
-            clipRule="evenodd"
-            d="M84.9407 448.942C78.6923 455.19 68.5616 455.19 62.3132 448.942C56.0649 442.693 56.0649 432.563 62.3132 426.314L233 255.628L62.3132 84.9417C56.0649 78.6933 56.0649 68.5626 62.3132 62.3142C68.5616 56.0658 78.6923 56.0658 84.9407 62.3142L255.627 233.001L426.313 62.3142C432.562 56.0658 442.692 56.0658 448.941 62.3142C455.189 68.5626 455.189 78.6933 448.941 84.9417L278.254 255.628L448.941 426.314C455.189 432.563 455.189 442.693 448.941 448.942C442.692 455.19 432.562 455.19 426.313 448.942L255.627 278.255L84.9407 448.942Z"
-            fill="white"
-          />
-        </svg>
+      <button
+        className="exit-button"
+        onClick={() => {
+          navigate("/dashboard");
+        }}
+      >
+        <img src={exitButton} className="exit-button-logo" />
       </button>
       <form id="new-transaction-form">
         <label htmlFor="amount">Amount</label>

@@ -1,8 +1,10 @@
 @forward "variables";
 
 %exit-button {
+  height: 50px;
+  width: 50px;
   position: absolute;
-  top: 40px;
+  top: 20px;
   right: 5%;
   background-color: transparent;
   border: none;

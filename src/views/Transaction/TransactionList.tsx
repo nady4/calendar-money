@@ -6,6 +6,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import Transaction from "../../components/Transaction/Transaction";
 import { getTransactionsFromDay } from "../../util/transactions";
 import { UserType, TransactionType } from "../../types";
+import exitButton from "../../styles/whiteExitButton.svg";
 import "../../styles/list.scss";
 
 interface TransactionListProps {
@@ -40,7 +41,7 @@ function TransactionList({
     <div className="list">
       <h2>{day.format("DD-MM")}</h2>
       <button className="exit-button" onClick={handleCloseButton}>
-        X
+        <img src={exitButton} className="exit-button-logo" />
       </button>
       <div className="day-view-header">
         <div className="day-view-buttons">

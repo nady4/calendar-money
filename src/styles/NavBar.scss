@@ -112,13 +112,13 @@
 
   .logout-container {
     width: 5%;
-    .logout-button {
+    .logout-button-container {
       border: none;
       background: none;
       cursor: pointer;
       transition: 0.2s ease-in-out;
 
-      svg {
+      .logout-button {
         height: 30px;
         width: 30px;
       }

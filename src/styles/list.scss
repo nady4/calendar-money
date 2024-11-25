@@ -1,11 +1,11 @@
 @use "buttons" as *;
 
-.exit-button {
-  @extend %exit-button;
-}
-
 .new-button-container {
   @extend %new-button-container;
+}
+
+.exit-button-logo {
+  @extend %exit-button;
 }
 
 .list {

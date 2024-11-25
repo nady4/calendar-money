@@ -3,6 +3,7 @@ import { HuePicker } from "react-color";
 import { useNavigate } from "react-router-dom";
 import { UserType } from "../../types.d";
 import API_URL from "../../util/env";
+import exitButton from "../../styles/whiteExitButton.svg";
 import "../../styles/form.scss";
 
 interface NewCategoryProps {
@@ -18,11 +19,16 @@ function NewCategory({ user, setUser }: NewCategoryProps) {
 
   const incomeBox = useRef<HTMLInputElement>(null);
   const expenseBox = useRef<HTMLInputElement>(null);
-
   const navigate = useNavigate();
-  const onExit = () => {
-    navigate("/dashboard");
-  };
+
+  //Validate form
+  useEffect(() => {
+    if (name && color && type) {
+      setDisableSubmitButton(false);
+    } else {
+      setDisableSubmitButton(true);
+    }
+  }, [name, color, type]);
 
   const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
@@ -40,16 +46,9 @@ function NewCategory({ user, setUser }: NewCategoryProps) {
     }
   };
 
-  useEffect(() => {
-    if (name && color && type) {
-      setDisableSubmitButton(false);
-    } else {
-      setDisableSubmitButton(true);
-    }
-  }, [name, color, type]);
-
-  const handleSubmit = async () => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event?.preventDefault();
+
     const newCategory = {
       name,
       color,
@@ -57,15 +56,13 @@ function NewCategory({ user, setUser }: NewCategoryProps) {
     };
 
     try {
-      const response = await fetch(`${API_URL}/user/${user.id}`, {
-        method: "PUT",
+      const response = await fetch(`${API_URL}/categories/${user.id}`, {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        body: JSON.stringify({
-          categories: [...(user.categories || []), newCategory],
-        }),
+        body: JSON.stringify(newCategory),
       });
 
       const data = await response.json();
@@ -84,21 +81,13 @@ function NewCategory({ user, setUser }: NewCategoryProps) {
 
   return (
     <div className="form">
-      <button className="exit-button" onClick={onExit}>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="512"
-          height="512"
-          viewBox="0 0 512 512"
-          fill="none"
-        >
-          <path
-            fillRule="evenodd"
-            clipRule="evenodd"
-            d="M84.9407 448.942C78.6923 455.19 68.5616 455.19 62.3132 448.942C56.0649 442.693 56.0649 432.563 62.3132 426.314L233 255.628L62.3132 84.9417C56.0649 78.6933 56.0649 68.5626 62.3132 62.3142C68.5616 56.0658 78.6923 56.0658 84.9407 62.3142L255.627 233.001L426.313 62.3142C432.562 56.0658 442.692 56.0658 448.941 62.3142C455.189 68.5626 455.189 78.6933 448.941 84.9417L278.254 255.628L448.941 426.314C455.189 432.563 455.189 442.693 448.941 448.942C442.692 455.19 432.562 455.19 426.313 448.942L255.627 278.255L84.9407 448.942Z"
-            fill="white"
-          />
-        </svg>
+      <button
+        className="exit-button"
+        onClick={() => {
+          navigate("/dashboard");
+        }}
+      >
+        <img src={exitButton} className="exit-button-logo" />
       </button>
       <h1>New Category</h1>
       <form id="new-category-form" onSubmit={handleSubmit}>

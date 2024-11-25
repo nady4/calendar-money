@@ -78,9 +78,9 @@ function Login({
             username: data.user.username,
             email: data.user.email,
             password: data.user.password,
-            loggedIn: true,
             transactions: data.user.transactions,
             categories: data.user.categories,
+            loggedIn: true,
           });
           localStorage.setItem("user", JSON.stringify(data.user));
         }
