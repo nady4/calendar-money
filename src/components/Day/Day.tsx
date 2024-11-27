@@ -50,7 +50,6 @@ function Day({ user, day, setDay }: DayProps) {
           </button>
         </div>
       </div>
-
       <div className="transactions-container" onClick={openTransactions}>
         {transactions.map((transaction: TransactionType, index: number) => {
           return <Transaction transaction={transaction} key={index} />;

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
+import Footer from "../../components/Dashboard/Footer";
 import { UserType } from "../../types.d";
 import API_URL from "../../util/env";
 import "react-toastify/dist/ReactToastify.css";
@@ -98,7 +99,7 @@ function Login({
       <ToastContainer />
       <div className="log-in-container">
         <fieldset id="log_up" className="log-in-fieldset">
-          <legend className="log-in-legend">Log In</legend>
+          <legend className="log-in-legend">Nice to see you again! 👋</legend>
           <div className="log-in-input-container">
             <label htmlFor="email-address" className="log-in-label">
               Username
@@ -131,7 +132,7 @@ function Login({
             type="submit"
             className="log-in-submit-button"
           >
-            Enter
+            Log In
           </button>
         </div>
         <div className="register-link-container">
@@ -139,14 +140,8 @@ function Login({
             Register
           </Link>
         </div>
-        <div className="test-login-data-container">
-          <p className="test-login-data">
-            If you want to test the app use these credentials
-          </p>
-          <p className="test-login-data">Username: nady4</p>
-          <p className="test-login-data">Password: Nady4Nady4</p>
-        </div>
       </div>
+      <Footer />
     </main>
   );
 }

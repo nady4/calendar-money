@@ -1,6 +1,5 @@
 .log-in-container {
-  background: linear-gradient(to right, #00b8d4, #b3e5fc, #00b8d4);
-  height: 100vh;
+  height: 85vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -12,6 +11,7 @@
     padding: 0;
     display: flex;
     flex-direction: column;
+    margin-bottom: 1.5rem;
 
     .log-in-legend {
       font-size: 2rem;
@@ -23,16 +23,20 @@
     .log-in-input-container {
       display: flex;
       flex-direction: column;
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
 
       .log-in-label {
-        font-size: 1.5rem;
+        font-size: 1.3rem;
         font-weight: bold;
+        text-align: center;
         margin-bottom: 0.5rem;
       }
 
       .log-in-input {
-        font-size: 1.5rem;
+        margin: 0 auto;
+        font-size: 1.3rem;
+        text-align: center;
+        width: 70%;
         padding: 0.5rem;
         border: 2px solid #333;
         border-radius: 5px;
@@ -41,48 +45,43 @@
   }
 
   .log-in-submit-button {
-    font-size: 1.5rem;
-    font-weight: bold;
+    font-size: 1.3rem;
     padding: 0.5rem 1.5rem;
     border: 2px solid #333;
-    background-color: whitesmoke;
+    background-color: #007aff;
+    color: #fff;
     cursor: pointer;
     border-radius: 10px;
+    transition: all 0.2s ease-in-out;
 
     &:hover {
-      background-color: #333;
-      color: #fff;
+      background-color: #3a99ff;
+      scale: 1.1;
+    }
+
+    &:focus {
+      background-color: #0266d1;
+      scale: 0.9;
     }
   }
+
   .register-link-container {
     margin-top: 1rem;
+
     .register-link {
-      font-size: 1.5rem;
+      font-size: 1.3rem;
       font-weight: bold;
-      color: black;
+      color: rgb(0, 116, 240);
       text-decoration: none;
       margin-top: 1rem;
 
       &:hover {
-        color: lightslategray;
+        color: rgb(0, 84, 173);
       }
-    }
-  }
 
-  .test-login-data-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 20px;
-    background-color: rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    padding: 10px;
-
-    .test-login-data {
-      width: 100%;
-      font-size: 1.1rem;
-      margin-bottom: 10px;
-      text-align: left;
+      &:focus {
+        color: rgb(46, 46, 46);
+      }
     }
   }
 }
