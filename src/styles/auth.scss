@@ -1,3 +1,9 @@
+@use "./buttons" as *;
+
+.submit-button {
+  @extend %submit-button;
+}
+
 .container {
   height: 90vh;
   display: flex;
@@ -39,30 +45,6 @@
         padding: 0.5rem;
         border: 2px solid #333;
         border-radius: 5px;
-      }
-    }
-  }
-
-  .submit-container {
-    .submit-button {
-      margin-top: 2rem;
-      height: 50px;
-      font-size: 1.3rem;
-      border: 2px solid #333;
-      background-color: #007aff;
-      color: #fff;
-      cursor: pointer;
-      border-radius: 10px;
-      transition: all 0.2s ease-in-out;
-
-      &:hover {
-        background-color: #3a99ff;
-        scale: 1.05;
-      }
-
-      &:focus {
-        background-color: #0266d1;
-        scale: 0.95;
       }
     }
   }

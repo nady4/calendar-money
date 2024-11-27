@@ -87,7 +87,7 @@ function Login({
         if (data.token) {
           localStorage.setItem("token", data.token);
         }
-      }, 2000);
+      }, 1000);
     } catch (error) {
       console.error("Error during fetch:", error);
       toast.error("Network error or server is unreachable", toastConfig);

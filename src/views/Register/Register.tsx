@@ -55,7 +55,7 @@ function Register() {
           toast.success("Registration successful", toastConfig);
           setTimeout(() => {
             navigate("/login");
-          }, 2000);
+          }, 1000);
           break;
 
         case 400: // Zod validation errors

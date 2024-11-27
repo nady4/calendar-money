@@ -8,7 +8,7 @@ function Transaction({ transaction }: { transaction: TransactionType }) {
       style={{ border: "2px solid " + transaction.category.color }}
     >
       <div className="transaction-amount">${transaction.amount}</div>
-      <div className="transaction-category">{transaction.category.name}</div>
+      <div className="transaction-description">{transaction.description}</div>
     </div>
   );
 }

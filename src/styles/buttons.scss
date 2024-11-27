@@ -72,15 +72,16 @@
 }
 
 %submit-button {
-  background-color: #0c78c6;
-  color: #fff;
   height: 50px;
   width: 120px;
-  border: none;
+  margin-top: 2rem;
+  background-color: #007aff;
+  color: #fff;
+  border: 2px solid #333;
   border-radius: 10px;
-  font-size: 1.1rem;
+  font-size: 1.3rem;
+  cursor: pointer;
   transition: 0.2s ease-in-out;
-  margin-top: 50px;
 
   &:disabled {
     background-color: #ff4136;
@@ -95,12 +96,12 @@
 
   &:hover {
     cursor: pointer;
-    background-color: rgb(93, 164, 219);
-    transform: scale(1.1);
+    background-color: #3a99ff;
+    scale: 1.05;
   }
 
   &:focus {
-    background-color: rgb(36, 46, 239);
-    transform: scale(0.9);
+    background-color: #0266d1;
+    scale: 0.95;
   }
 }
