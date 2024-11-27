@@ -5,7 +5,7 @@ import Footer from "../../components/Dashboard/Footer";
 import { UserType } from "../../types.d";
 import API_URL from "../../util/env";
 import "react-toastify/dist/ReactToastify.css";
-import "../../styles/Login.scss";
+import "../../styles/auth.scss";
 
 function Login({
   setUser,
@@ -97,11 +97,11 @@ function Login({
   return (
     <main>
       <ToastContainer />
-      <div className="log-in-container">
-        <fieldset id="log_up" className="log-in-fieldset">
-          <legend className="log-in-legend">Nice to see you again! 👋</legend>
-          <div className="log-in-input-container">
-            <label htmlFor="email-address" className="log-in-label">
+      <div className="container">
+        <fieldset id="log_up" className="fieldset">
+          <legend className="legend">Nice to see you again! 👋</legend>
+          <div className="input-container">
+            <label htmlFor="email-address" className="label">
               Username
             </label>
             <input
@@ -109,11 +109,11 @@ function Login({
               type="email"
               name="email-address"
               id="email-address"
-              className="log-in-input"
+              className="input"
             />
           </div>
-          <div className="log-in-input-container">
-            <label htmlFor="password" className="log-in-label">
+          <div className="input-container">
+            <label htmlFor="password" className="label">
               Password
             </label>
             <input
@@ -121,22 +121,22 @@ function Login({
               type="password"
               name="password"
               id="password"
-              className="log-in-input"
+              className="input"
               onKeyDown={handleKeyDown}
             />
           </div>
         </fieldset>
-        <div className="log-in-submit-container">
+        <div className="submit-container">
           <button
             onClick={onSubmitLogin}
             type="submit"
-            className="log-in-submit-button"
+            className="submit-button"
           >
             Log In
           </button>
         </div>
-        <div className="register-link-container">
-          <Link to="/register" className="register-link">
+        <div className="link-container">
+          <Link to="/register" className="link">
             Register
           </Link>
         </div>

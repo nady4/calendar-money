@@ -3,7 +3,7 @@
   display: flex;
   align-items: center;
   justify-content: space-around;
-  height: 15vh;
+  height: 10vh;
 
   .footer-copyright,
   .footer-mail,
@@ -35,6 +35,8 @@
     .footer-repo-label,
     .footer-mail {
       margin-top: 2vh;
+      text-align: center;
+      font-size: 1rem;
     }
 
     a {

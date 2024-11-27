@@ -4,7 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import Footer from "../../components/Dashboard/Footer";
 import API_URL from "../../util/env";
 import "react-toastify/dist/ReactToastify.css";
-import "../../styles/Register.scss";
+import "../../styles/auth.scss";
 
 function Register() {
   const [username, setUsername] = useState("");
@@ -87,11 +87,11 @@ function Register() {
   return (
     <main>
       <ToastContainer />
-      <div className="register-container">
-        <fieldset id="sign_up" className="register-fieldset">
-          <legend className="register-legend">Register</legend>
-          <div className="register-input-container">
-            <label htmlFor="name" className="register-label">
+      <div className="container">
+        <fieldset id="sign_up" className="fieldset">
+          <legend className="legend">Register Your Account 📝</legend>
+          <div className="input-container">
+            <label htmlFor="name" className="label">
               Username
             </label>
             <input
@@ -99,12 +99,12 @@ function Register() {
               type="text"
               name="username"
               id="username"
-              className="register-input"
+              className="input"
             />
           </div>
 
-          <div className="register-input-container">
-            <label htmlFor="email-address" className="register-label">
+          <div className="input-container">
+            <label htmlFor="email-address" className="label">
               Email
             </label>
             <input
@@ -112,12 +112,12 @@ function Register() {
               type="email"
               name="email-address"
               id="email-address"
-              className="register-input"
+              className="input"
             />
           </div>
 
-          <div className="register-input-container">
-            <label htmlFor="password" className="register-label">
+          <div className="input-container">
+            <label htmlFor="password" className="label">
               Password
             </label>
             <input
@@ -125,21 +125,21 @@ function Register() {
               type="password"
               name="password"
               id="password"
-              className="register-input"
+              className="input"
             />
           </div>
         </fieldset>
-        <div className="register-submit-container">
+        <div className="submit-container">
           <button
             onClick={onSubmitRegister}
             type="submit"
-            className="register-submit-button"
+            className="submit-button"
           >
             Register
           </button>
         </div>
-        <div className="login-link-container">
-          <Link to="/login" className="login-link">
+        <div className="link-container">
+          <Link to="/login" className="link">
             Log In
           </Link>
         </div>

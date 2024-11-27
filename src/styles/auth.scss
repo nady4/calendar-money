@@ -1,38 +1,37 @@
-.log-in-container {
-  height: 85vh;
+.container {
+  height: 90vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 
-  .log-in-fieldset {
+  .fieldset {
     border: none;
     margin: 0;
     padding: 0;
     display: flex;
     flex-direction: column;
-    margin-bottom: 1.5rem;
 
-    .log-in-legend {
+    .legend {
       font-size: 2rem;
       font-weight: bold;
       margin-bottom: 2rem;
       text-align: center;
     }
 
-    .log-in-input-container {
+    .input-container {
       display: flex;
       flex-direction: column;
-      margin-bottom: 1.5rem;
+      margin-top: 1.2rem;
 
-      .log-in-label {
+      .label {
         font-size: 1.3rem;
         font-weight: bold;
         text-align: center;
         margin-bottom: 0.5rem;
       }
 
-      .log-in-input {
+      .input {
         margin: 0 auto;
         font-size: 1.3rem;
         text-align: center;
@@ -44,36 +43,38 @@
     }
   }
 
-  .log-in-submit-button {
-    font-size: 1.3rem;
-    padding: 0.5rem 1.5rem;
-    border: 2px solid #333;
-    background-color: #007aff;
-    color: #fff;
-    cursor: pointer;
-    border-radius: 10px;
-    transition: all 0.2s ease-in-out;
+  .submit-container {
+    .submit-button {
+      margin-top: 2rem;
+      height: 50px;
+      font-size: 1.3rem;
+      border: 2px solid #333;
+      background-color: #007aff;
+      color: #fff;
+      cursor: pointer;
+      border-radius: 10px;
+      transition: all 0.2s ease-in-out;
 
-    &:hover {
-      background-color: #3a99ff;
-      scale: 1.1;
-    }
+      &:hover {
+        background-color: #3a99ff;
+        scale: 1.05;
+      }
 
-    &:focus {
-      background-color: #0266d1;
-      scale: 0.9;
+      &:focus {
+        background-color: #0266d1;
+        scale: 0.95;
+      }
     }
   }
 
-  .register-link-container {
+  .link-container {
     margin-top: 1rem;
 
-    .register-link {
+    .link {
       font-size: 1.3rem;
       font-weight: bold;
       color: rgb(0, 116, 240);
       text-decoration: none;
-      margin-top: 1rem;
 
       &:hover {
         color: rgb(0, 84, 173);
