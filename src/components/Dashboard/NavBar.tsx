@@ -1,12 +1,12 @@
 import moment from "moment/moment";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import Logo from "../../assets/favicon.svg";
 import { getBalanceByDay } from "../../util/balance";
 import { UserType } from "../../types";
 import { useNavigate } from "react-router-dom";
-import "../../styles/NavBar.scss";
+import menuButton from "../../styles/menuButton.svg";
 import exitButton from "../../styles/blackExitButton.svg";
+import "../../styles/NavBar.scss";
 
 interface NavBarProps {
   user: UserType;
@@ -34,7 +34,7 @@ const NavBar = ({ user, day, setDay }: NavBarProps) => {
   return (
     <div className="navbar">
       <div className="logo-container" onClick={() => window.location.reload()}>
-        <img className="logo" src={Logo} alt="logo" height={"40px"} />
+        <img className="logo" src={menuButton} alt="logo" height={"40px"} />
       </div>
       <div className="user-data-container">
         <div className="today-date-container">
