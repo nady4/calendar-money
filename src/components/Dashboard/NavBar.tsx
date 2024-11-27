@@ -33,8 +33,16 @@ const NavBar = ({ user, day, setDay }: NavBarProps) => {
 
   return (
     <div className="navbar">
-      <div className="logo-container" onClick={() => window.location.reload()}>
-        <img className="logo" src={menuButton} alt="logo" height={"40px"} />
+      <div
+        className="menu-button-container"
+        onClick={() => window.location.reload()}
+      >
+        <img
+          className="menu-button"
+          src={menuButton}
+          alt="logo"
+          height={"40px"}
+        />
       </div>
       <div className="user-data-container">
         <div className="today-date-container">
@@ -51,7 +59,7 @@ const NavBar = ({ user, day, setDay }: NavBarProps) => {
           <ChevronLeftIcon fontSize="small" />
         </button>
         <div className="date-container">
-          <p className="date">{day.format("MM / YYYY")}</p>
+          <p className="date">{day.format("MMMM YYYY")}</p>
         </div>
         <button className="right-arrow" onClick={handleRightArrowClick}>
           <ChevronRightIcon fontSize="small" />

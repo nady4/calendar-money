@@ -14,15 +14,15 @@
     justify-content: center;
   }
 
-  .logo-container {
+  .menu-button-container {
     width: 5%;
     background-color: transparent;
     cursor: pointer;
     transition: 0.2s ease-in-out;
 
-    svg {
-      height: 60%;
-      width: 60%;
+    .menu-button {
+      height: 40px;
+      width: 40px;
     }
 
     &:hover {
@@ -128,15 +128,15 @@
       transition: 0.2s ease-in-out;
 
       .logout-button {
-        height: 30px;
-        width: 30px;
+        height: 35px;
+        width: 35px;
       }
 
       &:hover {
-        transform: scale(1.2);
+        transform: scale(1.1);
       }
       &:active {
-        transform: scale(0.8);
+        transform: scale(0.9);
       }
     }
   }
