@@ -41,7 +41,7 @@ function Calendar({ user, selectedDay, setSelectedDay }: CalendarProps) {
           {weekdays.map((weekday) => (
             <div className="weekday-item" key={weekday}>
               <p className="weekday">
-                {window.innerWidth > 768 ? weekday : weekday.slice(0, 1)}
+                {window.innerWidth > 600 ? weekday : weekday.slice(0, 1)}
               </p>
             </div>
           ))}

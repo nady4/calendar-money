@@ -144,34 +144,26 @@
 
 @media (max-width: 600px) {
   .calendar-day {
-    height: vars.$day-height * 0.6;
-    border-right: 0px;
-    border-left: 0px;
+    height: vars.$day-height * 0.5;
     margin-left: vars.$day-margin + 0.15%;
+    border: 0;
 
     .day-header {
       height: 100%;
       flex-direction: column;
-      background-color: lightcyan;
-      border-radius: 5px;
-      box-shadow: 3px 2px 2px grey;
 
       .day-date-container {
-        height: 50%;
-        width: 100%;
-        border-radius: 10px;
-
         .day-date {
           height: 50%;
         }
       }
 
       .day-balance-container {
-        height: 50%;
-        width: 100%;
+        display: none;
       }
+
       &:active {
-        background-color: #85e5f2;
+        background-color: vars.$button-focus-color;
       }
     }
 
@@ -180,16 +172,9 @@
     }
 
     .add-transaction-button-container {
-      width: 0%;
-      height: 0%;
-
       button {
         display: none;
       }
-    }
-
-    .bottom-shadow {
-      display: none;
     }
   }
 }

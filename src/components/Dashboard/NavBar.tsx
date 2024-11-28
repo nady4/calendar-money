@@ -1,20 +1,16 @@
 import moment from "moment/moment";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import { getBalanceByDay } from "../../util/balance";
-import { UserType } from "../../types";
-import { useNavigate } from "react-router-dom";
 import menuButton from "../../styles/menuButton.svg";
 import exitButton from "../../styles/blackExitButton.svg";
 import "../../styles/NavBar.scss";
 
 interface NavBarProps {
-  user: UserType;
   selectedDay: moment.Moment;
   setSelectedDay: React.Dispatch<React.SetStateAction<moment.Moment>>;
 }
 
-const NavBar = ({ user, selectedDay, setSelectedDay }: NavBarProps) => {
+const NavBar = ({ selectedDay, setSelectedDay }: NavBarProps) => {
   const handleLeftArrowClick = () => {
     setSelectedDay(moment(selectedDay).subtract(1, "months"));
   };
@@ -25,10 +21,6 @@ const NavBar = ({ user, selectedDay, setSelectedDay }: NavBarProps) => {
   const handleLogoutClick = () => {
     localStorage.removeItem("token");
     window.location.reload();
-  };
-  const navigate = useNavigate();
-  const handleCategoriesClick = () => {
-    navigate("/categories");
   };
 
   return (
@@ -44,16 +36,6 @@ const NavBar = ({ user, selectedDay, setSelectedDay }: NavBarProps) => {
           height={"40px"}
         />
       </div>
-      <div className="user-data-container">
-        <div className="today-date-container">
-          <p className="today-date">{moment().format("DD MMM")}</p>
-        </div>
-        <div className="user-balance-container">
-          <p className="user-balance">
-            ${getBalanceByDay(user.transactions, selectedDay)}
-          </p>
-        </div>
-      </div>
       <div className="date-change-container">
         <button className="left-arrow" onClick={handleLeftArrowClick}>
           <ChevronLeftIcon fontSize="small" />
@@ -64,11 +46,6 @@ const NavBar = ({ user, selectedDay, setSelectedDay }: NavBarProps) => {
         <button className="right-arrow" onClick={handleRightArrowClick}>
           <ChevronRightIcon fontSize="small" />
         </button>
-      </div>
-      <div className="categories-button-container">
-        <p className="categories-button" onClick={handleCategoriesClick}>
-          Categories
-        </p>
       </div>
       <div className="logout-container">
         <button className="logout-button-container" onClick={handleLogoutClick}>

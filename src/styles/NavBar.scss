@@ -34,42 +34,12 @@
     }
   }
 
-  .user-data-container {
-    width: 10%;
-    margin-left: 1rem;
-    flex-direction: column;
-
-    .today-date-container {
-      height: 30%;
-      width: 100%;
-
-      .today-date {
-        color: #333;
-        font-size: 1.2rem;
-        font-weight: 400;
-        text-align: center;
-        width: 100%;
-      }
-    }
-    .user-balance-container {
-      height: 30%;
-      width: 100%;
-      margin-top: 5px;
-
-      .user-balance {
-        color: #333;
-        font-size: 1.1rem;
-        font-weight: 200;
-      }
-    }
-  }
-
   .date-change-container {
     width: 20%;
 
     .date-container {
       .date {
-        font-size: 1.3rem;
+        font-size: 1.2rem;
       }
     }
 
@@ -78,7 +48,6 @@
       background-color: transparent;
       border: none;
       color: #333;
-      font-size: 2rem;
       cursor: pointer;
 
       &:hover {
@@ -92,35 +61,9 @@
     }
   }
 
-  .categories-button-container {
-    width: 10%;
-
-    .categories-button {
-      background-color: transparent;
-      border: none;
-      color: #333;
-      font-size: 1.2rem;
-      cursor: pointer;
-      transition: 0.2s ease-in-out;
-
-      svg {
-        height: 30px;
-        width: 30px;
-      }
-
-      &:hover {
-        color: #666;
-        transform: scale(1.1);
-      }
-      &:active {
-        color: black;
-        transform: scale(0.9);
-      }
-    }
-  }
-
   .logout-container {
     width: 5%;
+
     .logout-button-container {
       border: none;
       background: none;
@@ -144,54 +87,12 @@
 
 @media (max-width: 600px) {
   .navbar {
-    .logo-container {
+    .menu-button-container {
       width: 15%;
-
-      svg {
-        height: 40px;
-        width: 40px;
-      }
-    }
-
-    .user-data-container {
-      width: 15%;
-      .today-date-container {
-        .today-date {
-          font-size: 0.9rem;
-        }
-      }
-      .user-balance-container {
-        .user-balance {
-          font-size: 0.8rem;
-        }
-      }
     }
 
     .date-change-container {
-      width: 30%;
-      .date-container {
-        .date {
-          text-align: center;
-          max-width: 50px;
-          font-size: 1.1rem;
-        }
-      }
-      .left-arrow,
-      .right-arrow {
-        font-size: 1.5rem;
-      }
-      p {
-        font-size: 1.2rem;
-      }
-    }
-
-    .categories-button-container {
-      width: 15%;
-      .categories-button {
-        p {
-          font-size: 0.9rem;
-        }
-      }
+      width: 50%;
     }
 
     .logout-container {
