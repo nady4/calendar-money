@@ -99,7 +99,7 @@ function NewTransaction({ user, setUser, selectedDay }: NewTransactionProps) {
 
   return (
     <div className="form">
-      <h1>New Transaction</h1>
+      <h2>New Transaction</h2>
       <img
         src={exitButton}
         className="exit-button"

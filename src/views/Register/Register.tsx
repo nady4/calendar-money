@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
+import useValidateUser from "../../hooks/useValidateUser";
 import Footer from "../../components/Dashboard/Footer";
 import API_URL from "../../util/api";
 import "react-toastify/dist/ReactToastify.css";
@@ -10,8 +11,10 @@ function Register() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const [disableSubmitButton, setDisableSubmitButton] = useState(true);
   const navigate = useNavigate();
+
+  useValidateUser({ username, email, password, setDisableSubmitButton });
 
   const toastConfig = {
     position: "top-center" as const,
@@ -134,6 +137,7 @@ function Register() {
             onClick={onSubmitRegister}
             type="submit"
             className="submit-button"
+            disabled={disableSubmitButton}
           >
             Register
           </button>
