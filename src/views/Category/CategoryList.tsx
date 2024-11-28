@@ -13,7 +13,11 @@ interface CategoryListProps {
 }
 
 function CategoryList({ user, setSelectedCategory }: CategoryListProps) {
-  const [categories, setCategories] = useState(user.categories || []);
+  const [categories, setCategories] = useState(
+    user.categories.sort((a: CategoryType, b: CategoryType) =>
+      a.name.localeCompare(b.name)
+    ) || []
+  );
   const navigate = useNavigate();
 
   useEffect(() => {
