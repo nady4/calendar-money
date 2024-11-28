@@ -1,3 +1,5 @@
+@use "./variables" as vars;
+
 %exit-button {
   height: 50px;
   width: 50px;
@@ -75,8 +77,8 @@
   height: 50px;
   width: 120px;
   margin-top: 2rem;
-  background-color: #007aff;
-  color: #fff;
+  background-color: vars.$button-primary-color;
+  color: white;
   border: 2px solid #333;
   border-radius: 10px;
   font-size: 1.3rem;
@@ -84,8 +86,8 @@
   transition: 0.2s ease-in-out;
 
   &:disabled {
-    background-color: #ff4136;
-    color: #fff;
+    background-color: vars.$button-disabled-color;
+    color: white;
     border: none;
     opacity: 0.5;
 
@@ -96,12 +98,12 @@
 
   &:hover {
     cursor: pointer;
-    background-color: #3a99ff;
+    background-color: vars.$button-hover-color;
     scale: 1.05;
   }
 
   &:focus {
-    background-color: #0266d1;
+    background-color: vars.$button-focus-color;
     scale: 0.95;
   }
 }

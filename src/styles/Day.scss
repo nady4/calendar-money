@@ -63,8 +63,8 @@
       transition: all 0.3s ease-in-out;
 
       .add-transaction-button {
-        background-color: #6bdd6b;
-        color: black;
+        background-color: vars.$button-primary-color;
+        color: rgb(255, 255, 255);
         border-radius: 100%;
         height: 25px;
         width: 25px;
@@ -74,14 +74,12 @@
         transition: all 0.15s ease-in-out;
 
         &:hover {
-          background-color: #7afc7a;
-          color: rgb(62, 62, 62);
+          background-color: vars.$button-hover-color;
           transform: scale(1.5);
         }
 
-        &:active {
-          background-color: #5dbe5d;
-          color: rgb(62, 62, 62);
+        &:focus {
+          background-color: vars.$button-focus-color;
           transform: scale(1);
         }
       }
@@ -96,11 +94,6 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-  }
-
-  &:hover .add-transaction-button {
-    background-color: #64b8ed;
-    transform: scale(1.1);
   }
 
   .item {
@@ -123,6 +116,12 @@
 .negative {
   .day-header {
     color: rgb(250, 101, 101);
+
+    .day-balance-container {
+      .day-balance {
+        color: rgb(250, 101, 101);
+      }
+    }
   }
 
   .transactions-container {
@@ -143,7 +142,6 @@
   }
 }
 
-/*
 @media (max-width: 600px) {
   .calendar-day {
     height: vars.$day-height * 0.6;
@@ -195,4 +193,3 @@
     }
   }
 }
-*/
