@@ -12,7 +12,6 @@ import NewTransaction from "./views/Transaction/NewTransaction.tsx";
 import EditTransaction from "./views/Transaction/EditTransaction.tsx";
 import { useAuth } from "./hooks/useAuth.ts";
 import { UserType, CategoryType, TransactionType } from "./types.d";
-import "./App.scss";
 
 function App() {
   const [user, setUser] = useState<UserType>({

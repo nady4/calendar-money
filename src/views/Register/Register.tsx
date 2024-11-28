@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import Footer from "../../components/Dashboard/Footer";
-import API_URL from "../../util/env";
+import API_URL from "../../util/api";
 import "react-toastify/dist/ReactToastify.css";
 import "../../styles/auth.scss";
 

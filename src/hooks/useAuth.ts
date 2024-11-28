@@ -1,4 +1,4 @@
-import API_URL from "../util/env";
+import API_URL from "../util/api";
 import { useEffect } from "react";
 import { UserType } from "../types.d";
 

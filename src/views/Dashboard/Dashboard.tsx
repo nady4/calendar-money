@@ -12,11 +12,7 @@ interface DashboardProps {
 function Dashboard({ user, selectedDay, setSelectedDay }: DashboardProps) {
   return (
     <div className="app-main">
-      <NavBar
-        user={user}
-        selectedDay={selectedDay}
-        setSelectedDay={setSelectedDay}
-      />
+      <NavBar selectedDay={selectedDay} setSelectedDay={setSelectedDay} />
       <Calendar
         user={user}
         selectedDay={selectedDay}
