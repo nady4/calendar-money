@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import moment from "moment/moment";
 import Transaction from "../Transaction/Transaction";
-import { getBalanceByDay, getTransactionsFromDay } from "../../util/functions";
+import { getDayBalance, getDayTransactions } from "../../util/functions";
 import { UserType, TransactionType } from "../../types.d";
 import "../../styles/Day.scss";
 
@@ -21,8 +21,8 @@ function Day({ user, date, selectedDay, setSelectedDay }: DayProps) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    setTransactions(getTransactionsFromDay(user.transactions, date));
-    setBalance(getBalanceByDay(user.transactions, date));
+    setTransactions(getDayTransactions(user.transactions, date));
+    setBalance(getDayBalance(user.transactions, date));
   }, [date, user.transactions, user.categories, selectedDay]);
 
   const openTransactions = () => {

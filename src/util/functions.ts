@@ -1,7 +1,7 @@
 import moment from "moment";
 import { TransactionType } from "../types";
 
-const getTransactionsBalances = (transactions: TransactionType[]) => {
+const getTransactionsBalance = (transactions: TransactionType[]) => {
   transactions.sort((a, b) => {
     return moment(a.date).isAfter(b.date) ? 1 : -1;
   });
@@ -22,11 +22,8 @@ const getTransactionsBalances = (transactions: TransactionType[]) => {
   return balanceByDay;
 };
 
-const getBalanceByDay = (
-  transactions: TransactionType[],
-  day: moment.Moment
-) => {
-  const transactionsBalances = getTransactionsBalances(transactions);
+const getDayBalance = (transactions: TransactionType[], day: moment.Moment) => {
+  const transactionsBalances = getTransactionsBalance(transactions);
   const dates = Object.keys(transactionsBalances);
   let balance = 0;
 
@@ -44,7 +41,7 @@ const getBalanceByDay = (
   return balance;
 };
 
-const getTransactionsFromDay = (
+const getDayTransactions = (
   transactions: TransactionType[],
   day: moment.Moment
 ) => {
@@ -55,4 +52,4 @@ const getTransactionsFromDay = (
     });
 };
 
-export { getBalanceByDay, getTransactionsFromDay };
+export { getDayBalance, getDayTransactions };
