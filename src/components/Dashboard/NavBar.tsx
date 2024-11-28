@@ -1,8 +1,8 @@
 import moment from "moment/moment";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import menuButton from "../../styles/menuButton.svg";
-import exitButton from "../../styles/blackExitButton.svg";
+import menuButton from "../../assets/menuButton.svg";
+import exitButton from "../../assets/whiteExitButton.svg";
 import "../../styles/NavBar.scss";
 
 interface NavBarProps {

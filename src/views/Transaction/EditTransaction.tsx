@@ -4,7 +4,7 @@ import API_URL from "../../util/env";
 import useCategoryOptions from "../../hooks/useCategoryOptions";
 import useValidateTransaction from "../../hooks/useValidateTransaction";
 import { UserType, TransactionType } from "../../types";
-import exitButton from "../../styles/whiteExitButton.svg";
+import exitButton from "../../assets/whiteExitButton.svg";
 import "../../styles/form.scss";
 
 interface EditTransactionProps {

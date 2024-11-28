@@ -6,7 +6,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import Transaction from "../../components/Transaction/Transaction";
 import { getTransactionsFromDay } from "../../util/transactions";
 import { UserType, TransactionType } from "../../types";
-import exitButton from "../../styles/whiteExitButton.svg";
+import exitButton from "../../assets/whiteExitButton.svg";
 import "../../styles/list.scss";
 
 interface TransactionListProps {

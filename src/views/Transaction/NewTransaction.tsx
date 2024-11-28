@@ -2,9 +2,9 @@ import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserType, CategoryType } from "../../types.d";
 import API_URL from "../../util/env";
-import exitButton from "../../styles/whiteExitButton.svg";
 import useCategoryOptions from "../../hooks/useCategoryOptions";
 import useValidateTransaction from "../../hooks/useValidateTransaction";
+import exitButton from "../../assets/whiteExitButton.svg";
 import "../../styles/form.scss";
 
 interface NewTransactionProps {

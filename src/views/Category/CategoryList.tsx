@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserType, CategoryType } from "../../types.d";
 import Category from "../../components/Category/Category";
-import exitButton from "../../styles/whiteExitButton.svg";
+import exitButton from "../../assets/whiteExitButton.svg";
 import "../../styles/list.scss";
 
 interface CategoryListProps {

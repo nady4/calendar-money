@@ -3,7 +3,7 @@ import { HuePicker } from "react-color";
 import { useNavigate } from "react-router-dom";
 import { UserType, CategoryType } from "../../types.d";
 import API_URL from "../../util/env";
-import exitButton from "../../styles/whiteExitButton.svg";
+import exitButton from "../../assets/whiteExitButton.svg";
 import "../../styles/form.scss";
 
 interface EditCategoryProps {
