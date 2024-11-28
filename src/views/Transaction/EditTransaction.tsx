@@ -120,7 +120,7 @@ function EditTransaction({ user, setUser, transaction }: EditTransactionProps) {
 
   return (
     <div className="form">
-      <h1>Edit Transaction</h1>
+      <h2>Edit Transaction</h2>
       <img
         src={exitButton}
         className="exit-button"
