@@ -135,7 +135,7 @@ function Login({
             Log In
           </button>
         </div>
-        <div className="link-container">
+        <div className="link-button">
           <Link to="/register" className="link">
             Register
           </Link>

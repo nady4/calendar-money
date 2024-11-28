@@ -110,15 +110,14 @@ function EditCategory({ user, setUser, category }: EditCategoryProps) {
 
   return (
     <div className="form">
-      <button
+      <img
+        src={exitButton}
         className="exit-button"
         onClick={() => {
           navigate("/dashboard");
         }}
-      >
-        <img src={exitButton} className="exit-button-logo" />
-      </button>
-      <h1>Edit Category</h1>
+      />
+      <h2>Edit Category</h2>
       <form id="edit-category-form" onSubmit={handleUpdateSubmit}>
         <label htmlFor="name" className="label">
           Name
@@ -147,14 +146,14 @@ function EditCategory({ user, setUser, category }: EditCategoryProps) {
               onChange={onTypeChange}
               id="income-box"
               ref={incomeBox}
-              defaultChecked={type === "income" ? true : false}
+              defaultChecked={type === "Income" ? true : false}
             />
             <input
               type="checkbox"
               onChange={onTypeChange}
               id="expense-box"
               ref={expenseBox}
-              defaultChecked={type === "expense" ? true : false}
+              defaultChecked={type === "Expense" ? true : false}
             />
             <label htmlFor="expense-box">Expense</label>
           </div>
@@ -167,9 +166,9 @@ function EditCategory({ user, setUser, category }: EditCategoryProps) {
           Submit
         </button>
       </form>
-      <button className="delete-button-container" onClick={handleDeleteSubmit}>
-        <p className="delete-button">Delete category</p>
-      </button>
+      <div className="link-button" onClick={handleDeleteSubmit}>
+        <p className="link">Delete category</p>
+      </div>
     </div>
   );
 }

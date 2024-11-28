@@ -1,12 +1,5 @@
+@use "variables" as vars;
 @use "buttons" as *;
-
-.new-button-container {
-  @extend %new-button-container;
-}
-
-.exit-button-logo {
-  @extend %exit-button;
-}
 
 .list {
   position: fixed;
@@ -22,6 +15,14 @@
   align-items: center;
   justify-content: center;
 
+  h2 {
+    font-size: 2.1rem;
+  }
+
+  .exit-button {
+    @extend %exit-button;
+  }
+
   .day-view-header {
     .day-view-buttons {
       .day-change-buttons-container {
@@ -34,49 +35,48 @@
       }
 
       .day-change-button {
+        background-color: transparent;
+        border: none;
+        color: white;
         cursor: pointer;
-        transition: 0.4 all ease-in-out;
-        background-color: white;
+        transition: 0.2s ease-in-out;
 
         &:hover {
-          transform: scale(1.15);
-          background-color: #dfdfdf;
+          transform: scale(1.2);
+          color: rgb(177, 177, 177);
         }
+
         &:active {
-          transform: scale(0.95);
-          background-color: #535353;
+          transform: scale(0.9);
+          color: rgb(61, 61, 61);
         }
-        &:active:after {
-          transform: scale(1);
-          background-color: white;
+
+        svg {
+          height: 50px;
+          width: 50px;
         }
       }
     }
-  }
-
-  h2 {
-    font-size: 2.1rem;
-  }
-
-  svg {
-    height: 50px;
-    width: 50px;
   }
 
   .items-container {
     width: 50%;
     min-width: 400px;
     height: 60%;
+    margin: 20px 0;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    margin-bottom: 20px;
     overflow-y: scroll;
     background-color: #2828284e;
 
     .item {
       width: 90%;
     }
+  }
+
+  .link-button {
+    @extend %link-button;
   }
 }

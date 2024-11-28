@@ -24,23 +24,24 @@ function CategoryList({ user, setSelectedCategory }: CategoryListProps) {
     setCategories(user.categories);
   }, [user.categories]);
 
-  const handleCloseButton = () => {
-    setSelectedCategory(null);
-    navigate("/dashboard");
-  };
-
-  const handleNewCategoryButton = () => {
-    navigate("/new-category");
-  };
-
   return (
     <div className="list">
       <h2>Categories</h2>
-      <button className="exit-button" onClick={handleCloseButton}>
-        <img src={exitButton} className="exit-button-logo" />
-      </button>
-      <div className="new-button-container">
-        <button className="new-button" onClick={handleNewCategoryButton}>
+      <img
+        src={exitButton}
+        className="exit-button"
+        onClick={() => {
+          setSelectedCategory(null);
+          navigate("/dashboard");
+        }}
+      />
+      <div className="link-button">
+        <button
+          className="link"
+          onClick={() => {
+            navigate("/new-category");
+          }}
+        >
           New Category
         </button>
       </div>

@@ -100,14 +100,13 @@ function NewTransaction({ user, setUser, selectedDay }: NewTransactionProps) {
   return (
     <div className="form">
       <h1>New Transaction</h1>
-      <button
+      <img
+        src={exitButton}
         className="exit-button"
         onClick={() => {
           navigate("/dashboard");
         }}
-      >
-        <img src={exitButton} className="exit-button-logo" />
-      </button>
+      />
       <form id="new-transaction-form">
         <label htmlFor="amount">Amount</label>
         <input

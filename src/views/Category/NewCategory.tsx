@@ -81,15 +81,14 @@ function NewCategory({ user, setUser }: NewCategoryProps) {
 
   return (
     <div className="form">
-      <button
+      <h2>New Category</h2>
+      <img
+        src={exitButton}
         className="exit-button"
         onClick={() => {
           navigate("/dashboard");
         }}
-      >
-        <img src={exitButton} className="exit-button-logo" />
-      </button>
-      <h1>New Category</h1>
+      />
       <form id="new-category-form" onSubmit={handleSubmit}>
         <label htmlFor="name" className="label">
           Name

@@ -121,14 +121,13 @@ function EditTransaction({ user, setUser, transaction }: EditTransactionProps) {
   return (
     <div className="form">
       <h1>Edit Transaction</h1>
-      <button
+      <img
+        src={exitButton}
         className="exit-button"
         onClick={() => {
           navigate("/dashboard");
         }}
-      >
-        <img src={exitButton} className="exit-button-logo" />
-      </button>
+      />
       <form id="edit-transaction-form">
         <label htmlFor="amount">Amount</label>
         <input
@@ -166,9 +165,11 @@ function EditTransaction({ user, setUser, transaction }: EditTransactionProps) {
           Submit
         </button>
       </form>
-      <button className="delete-button-container" onClick={handleDeleteSubmit}>
-        <p className="delete-button">Delete</p>
-      </button>
+      <div className="link-button">
+        <button className="link" onClick={handleDeleteSubmit}>
+          Delete Transaction
+        </button>
+      </div>
     </div>
   );
 }

@@ -138,7 +138,7 @@ function Register() {
             Register
           </button>
         </div>
-        <div className="link-container">
+        <div className="link-button">
           <Link to="/login" className="link">
             Log In
           </Link>

@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import moment from "moment/moment";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import Transaction from "../../components/Transaction/Transaction";
 import { getDayTransactions } from "../../util/functions";
 import { UserType, TransactionType } from "../../types";
+import LeftIcon from "@mui/icons-material/ChevronLeft";
+import RightIcon from "@mui/icons-material/ChevronRight";
 import exitButton from "../../assets/whiteExitButton.svg";
 import "../../styles/list.scss";
 
@@ -31,18 +31,18 @@ function TransactionList({
     setDayTransactions(getDayTransactions(user.transactions, selectedDay));
   }, [selectedDay, user.transactions]);
 
-  const handleCloseButton = () => {
-    setSelectedTransaction(null);
-    setSelectedDay(moment());
-    navigate("/dashboard");
-  };
-
   return (
     <div className="list">
-      <h2>{selectedDay.format("DD-MM")}</h2>
-      <button className="exit-button" onClick={handleCloseButton}>
-        <img src={exitButton} className="exit-button-logo" />
-      </button>
+      <h2>{selectedDay.format("MMMM D")}</h2>
+      <img
+        src={exitButton}
+        className="exit-button"
+        onClick={() => {
+          setSelectedTransaction(null);
+          setSelectedDay(moment());
+          navigate("/dashboard");
+        }}
+      />
       <div className="day-view-header">
         <div className="day-view-buttons">
           <div className="day-change-buttons-container">
@@ -52,7 +52,7 @@ function TransactionList({
                 setSelectedDay(moment(selectedDay).subtract(1, "days"));
               }}
             >
-              <ChevronLeftIcon />
+              <LeftIcon />
             </button>
             <button
               className="day-change-button previous-day-button"
@@ -60,7 +60,7 @@ function TransactionList({
                 setSelectedDay(moment(selectedDay).add(1, "days"));
               }}
             >
-              <ChevronRightIcon />
+              <RightIcon />
             </button>
           </div>
         </div>
@@ -81,9 +81,9 @@ function TransactionList({
           );
         })}
       </div>
-      <div className="new-button-container">
+      <div className="link-button">
         <button
-          className="new-button"
+          className="link"
           onClick={() => {
             navigate("/new-transaction");
           }}

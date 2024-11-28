@@ -1,9 +1,5 @@
 @use "./buttons" as *;
 
-.exit-button {
-  @extend %exit-button;
-}
-
 .delete-button {
   @extend %delete-button;
 }
@@ -26,19 +22,20 @@
   justify-content: center;
   flex-direction: column;
 
-  svg {
-    height: 50px;
-    width: 50px;
+  h2 {
+    font-size: 2rem;
   }
 
-  h1 {
-    font-size: 2rem;
+  .exit-button {
+    @extend %exit-button;
   }
 
   form {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
 
     label {
       font-size: 1.3rem;
@@ -112,12 +109,7 @@
     }
   }
 
-  .delete-button-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: transparent;
-    border: none;
-    width: 15%;
+  .link-button {
+    @extend %link-button;
   }
 }
