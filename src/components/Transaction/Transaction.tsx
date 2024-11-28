@@ -7,7 +7,10 @@ function Transaction({ transaction }: { transaction: TransactionType }) {
       className="transaction"
       style={{ border: "2px solid " + transaction.category.color }}
     >
-      <div className="transaction-amount">${transaction.amount}</div>
+      <div className="transaction-amount">
+        {transaction.category.type === "Income" ? "+" : "-"}$
+        {transaction.amount}
+      </div>
       <div className="transaction-description">{transaction.description}</div>
     </div>
   );

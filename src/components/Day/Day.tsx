@@ -2,8 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import moment from "moment/moment";
 import Transaction from "../Transaction/Transaction";
-import { getBalanceByDay } from "../../util/balance";
-import { getTransactionsFromDay } from "../../util/transactions";
+import { getBalanceByDay, getTransactionsFromDay } from "../../util/functions";
 import { UserType, TransactionType } from "../../types.d";
 import "../../styles/Day.scss";
 

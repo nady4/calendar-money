@@ -4,7 +4,7 @@ import moment from "moment/moment";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import Transaction from "../../components/Transaction/Transaction";
-import { getTransactionsFromDay } from "../../util/transactions";
+import { getTransactionsFromDay } from "../../util/functions";
 import { UserType, TransactionType } from "../../types";
 import exitButton from "../../assets/whiteExitButton.svg";
 import "../../styles/list.scss";
