@@ -35,29 +35,29 @@
   }
 
   .date-change-container {
-    width: 20%;
-
     .date-container {
+      margin: 0 10px;
+
       .date {
         font-size: 1.2rem;
       }
     }
 
-    .left-arrow,
-    .right-arrow {
+    .arrow {
       background-color: transparent;
       border: none;
       color: #333;
       cursor: pointer;
+      transition: 0.2s ease-in-out;
 
       &:hover {
-        color: #666;
+        transform: scale(1.2);
+        color: black;
       }
-    }
 
-    p {
-      font-size: 1.5rem;
-      margin: 0 0.5rem;
+      &:active {
+        transform: scale(0.9);
+      }
     }
   }
 
@@ -89,10 +89,6 @@
   .navbar {
     .menu-button-container {
       width: 15%;
-    }
-
-    .date-change-container {
-      width: 50%;
     }
 
     .logout-container {

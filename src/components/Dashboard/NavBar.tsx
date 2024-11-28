@@ -37,14 +37,14 @@ const NavBar = ({ selectedDay, setSelectedDay }: NavBarProps) => {
         />
       </div>
       <div className="date-change-container">
-        <button className="left-arrow" onClick={handleLeftArrowClick}>
-          <ChevronLeftIcon fontSize="small" />
+        <button className="arrow" onClick={handleLeftArrowClick}>
+          <ChevronLeftIcon fontSize="medium" />
         </button>
         <div className="date-container">
           <p className="date">{selectedDay.format("MMMM YYYY")}</p>
         </div>
-        <button className="right-arrow" onClick={handleRightArrowClick}>
-          <ChevronRightIcon fontSize="small" />
+        <button className="arrow" onClick={handleRightArrowClick}>
+          <ChevronRightIcon fontSize="medium" />
         </button>
       </div>
       <div className="logout-container">
