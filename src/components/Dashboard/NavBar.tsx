@@ -1,16 +1,24 @@
 import moment from "moment/moment";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import menuButton from "../../assets/menuButton.svg";
-import exitButton from "../../assets/blackExitButton.svg";
+import LeftIcon from "@mui/icons-material/ChevronLeft";
+import RightIcon from "@mui/icons-material/ChevronRight";
+import BlackMenuButton from "../../assets/blackMenuButton.svg";
+import WhiteMenuButton from "../../assets/whiteMenuButton.svg";
+import ExitButton from "../../assets/blackExitButton.svg";
 import "../../styles/NavBar.scss";
 
 interface NavBarProps {
   selectedDay: moment.Moment;
   setSelectedDay: React.Dispatch<React.SetStateAction<moment.Moment>>;
+  isDropdownOpen: boolean;
+  setIsDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const NavBar = ({ selectedDay, setSelectedDay }: NavBarProps) => {
+const NavBar = ({
+  selectedDay,
+  setSelectedDay,
+  isDropdownOpen,
+  setIsDropdownOpen,
+}: NavBarProps) => {
   const handleLeftArrowClick = () => {
     setSelectedDay(moment(selectedDay).subtract(1, "months"));
   };
@@ -18,38 +26,42 @@ const NavBar = ({ selectedDay, setSelectedDay }: NavBarProps) => {
   const handleRightArrowClick = () => {
     setSelectedDay(moment(selectedDay).add(1, "months"));
   };
-  const handleLogoutClick = () => {
-    localStorage.removeItem("token");
-    window.location.reload();
-  };
 
   return (
     <div className="navbar">
       <div
         className="menu-button-container"
-        onClick={() => window.location.reload()}
+        onClick={() => {
+          setIsDropdownOpen(!isDropdownOpen);
+        }}
       >
         <img
           className="menu-button"
-          src={menuButton}
+          src={isDropdownOpen ? WhiteMenuButton : BlackMenuButton}
           alt="logo"
           height={"40px"}
         />
       </div>
       <div className="date-change-container">
         <button className="arrow" onClick={handleLeftArrowClick}>
-          <ChevronLeftIcon fontSize="medium" />
+          <LeftIcon fontSize="medium" />
         </button>
         <div className="date-container">
           <p className="date">{selectedDay.format("MMMM YYYY")}</p>
         </div>
         <button className="arrow" onClick={handleRightArrowClick}>
-          <ChevronRightIcon fontSize="medium" />
+          <RightIcon fontSize="medium" />
         </button>
       </div>
       <div className="logout-container">
-        <button className="logout-button-container" onClick={handleLogoutClick}>
-          <img className="logout-button" src={exitButton} alt="logout" />
+        <button
+          className="logout-button-container"
+          onClick={() => {
+            localStorage.removeItem("token");
+            window.location.reload();
+          }}
+        >
+          <img className="logout-button" src={ExitButton} alt="logout" />
         </button>
       </div>
     </div>

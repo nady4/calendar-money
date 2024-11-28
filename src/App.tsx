@@ -10,6 +10,8 @@ import EditCategory from "./views/Category/EditCategory.tsx";
 import TransactionList from "./views/Transaction/TransactionList.tsx";
 import NewTransaction from "./views/Transaction/NewTransaction.tsx";
 import EditTransaction from "./views/Transaction/EditTransaction.tsx";
+import Account from "./views/Account/Account.tsx";
+import Stats from "./views/Stats/Stats.tsx";
 import { useAuth } from "./hooks/useAuth.ts";
 import { UserType, CategoryType, TransactionType } from "./types.d";
 
@@ -57,6 +59,10 @@ function App() {
           }
         />
         <Route
+          path="/account"
+          element={<Account user={user} setUser={setUser} />}
+        />
+        <Route
           path="/dashboard"
           element={
             user.loggedIn ? (
@@ -70,6 +76,7 @@ function App() {
             )
           }
         />
+        <Route path="/stats" element={<Stats />} />
         <Route
           path="/categories"
           element={

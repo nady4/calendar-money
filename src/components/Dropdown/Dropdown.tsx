@@ -1,7 +1,0 @@
-/* 
-- Account
-- Categories
-- Stats
-- ....
-- Logout
-*/

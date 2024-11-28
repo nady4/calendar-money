@@ -1,3 +1,5 @@
+import { useState } from "react";
+import Dropdown from "../../components/Dashboard/Dropdown";
 import NavBar from "../../components/Dashboard/NavBar";
 import Calendar from "../../components/Dashboard/Calendar";
 import Footer from "../../components/Dashboard/Footer";
@@ -10,9 +12,17 @@ interface DashboardProps {
 }
 
 function Dashboard({ user, selectedDay, setSelectedDay }: DashboardProps) {
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
   return (
     <div className="app-main">
-      <NavBar selectedDay={selectedDay} setSelectedDay={setSelectedDay} />
+      <Dropdown user={user} isDropdownOpen={isDropdownOpen} />
+      <NavBar
+        selectedDay={selectedDay}
+        setSelectedDay={setSelectedDay}
+        isDropdownOpen={isDropdownOpen}
+        setIsDropdownOpen={setIsDropdownOpen}
+      />
       <Calendar
         user={user}
         selectedDay={selectedDay}
