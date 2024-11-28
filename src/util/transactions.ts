@@ -24,7 +24,8 @@ const getTransactionsBalances = (transactions: TransactionType[]) => {
     if (lastDate) {
       balance = balanceByDay[lastDate];
     }
-    balance += transaction.amount;
+    if (transaction.category.type === "Income") balance += transaction.amount;
+    else balance -= transaction.amount;
     const date = moment(transaction.date).format("DD-MM-YYYY");
     balanceByDay[date] = balance;
   });

@@ -24,7 +24,8 @@ function App() {
     categories: [],
     loggedIn: false,
   });
-  const [day, setDay] = useState(moment());
+
+  const [selectedDay, setSelectedDay] = useState(moment());
   const [selectedCategory, setSelectedCategory] = useState<CategoryType | null>(
     null
   );
@@ -60,7 +61,11 @@ function App() {
           path="/dashboard"
           element={
             user.loggedIn ? (
-              <Dashboard user={user} day={day} setDay={setDay} />
+              <Dashboard
+                user={user}
+                selectedDay={selectedDay}
+                setSelectedDay={setSelectedDay}
+              />
             ) : (
               <Navigate to="/login" />
             )
@@ -98,8 +103,8 @@ function App() {
           element={
             <TransactionList
               user={user}
-              day={day}
-              setDay={setDay}
+              selectedDay={selectedDay}
+              setSelectedDay={setSelectedDay}
               setSelectedTransaction={setSelectedTransaction}
             />
           }
@@ -120,7 +125,13 @@ function App() {
         />
         <Route
           path="/new-transaction"
-          element={<NewTransaction user={user} setUser={setUser} day={day} />}
+          element={
+            <NewTransaction
+              user={user}
+              setUser={setUser}
+              selectedDay={selectedDay}
+            />
+          }
         />
       </Routes>
     </main>

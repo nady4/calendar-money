@@ -5,15 +5,23 @@ import { UserType } from "../../types";
 
 interface DashboardProps {
   user: UserType;
-  day: moment.Moment;
-  setDay: React.Dispatch<React.SetStateAction<moment.Moment>>;
+  selectedDay: moment.Moment;
+  setSelectedDay: React.Dispatch<React.SetStateAction<moment.Moment>>;
 }
 
-function Dashboard({ user, day, setDay }: DashboardProps) {
+function Dashboard({ user, selectedDay, setSelectedDay }: DashboardProps) {
   return (
     <div className="app-main">
-      <NavBar user={user} day={day} setDay={setDay} />
-      <Calendar user={user} day={day} setDay={setDay} />
+      <NavBar
+        user={user}
+        selectedDay={selectedDay}
+        setSelectedDay={setSelectedDay}
+      />
+      <Calendar
+        user={user}
+        selectedDay={selectedDay}
+        setSelectedDay={setSelectedDay}
+      />
       <Footer />
     </div>
   );

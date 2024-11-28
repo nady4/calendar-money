@@ -11,8 +11,8 @@ import "../../styles/list.scss";
 
 interface TransactionListProps {
   user: UserType;
-  day: moment.Moment;
-  setDay: React.Dispatch<React.SetStateAction<moment.Moment>>;
+  selectedDay: moment.Moment;
+  setSelectedDay: React.Dispatch<React.SetStateAction<moment.Moment>>;
   setSelectedTransaction: React.Dispatch<
     React.SetStateAction<TransactionType | null>
   >;
@@ -20,26 +20,26 @@ interface TransactionListProps {
 
 function TransactionList({
   user,
-  day,
-  setDay,
+  selectedDay,
+  setSelectedDay,
   setSelectedTransaction,
 }: TransactionListProps) {
   const [dayTransactions, setDayTransactions] = useState<TransactionType[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    setDayTransactions(getTransactionsFromDay(user.transactions, day));
-  }, [day, user.transactions]);
+    setDayTransactions(getTransactionsFromDay(user.transactions, selectedDay));
+  }, [selectedDay, user.transactions]);
 
   const handleCloseButton = () => {
     setSelectedTransaction(null);
-    setDay(moment());
+    setSelectedDay(moment());
     navigate("/dashboard");
   };
 
   return (
     <div className="list">
-      <h2>{day.format("DD-MM")}</h2>
+      <h2>{selectedDay.format("DD-MM")}</h2>
       <button className="exit-button" onClick={handleCloseButton}>
         <img src={exitButton} className="exit-button-logo" />
       </button>
@@ -49,7 +49,7 @@ function TransactionList({
             <button
               className="day-change-button next-day-button"
               onClick={() => {
-                setDay(moment(day).subtract(1, "days"));
+                setSelectedDay(moment(selectedDay).subtract(1, "days"));
               }}
             >
               <ChevronLeftIcon />
@@ -57,7 +57,7 @@ function TransactionList({
             <button
               className="day-change-button previous-day-button"
               onClick={() => {
-                setDay(moment(day).add(1, "days"));
+                setSelectedDay(moment(selectedDay).add(1, "days"));
               }}
             >
               <ChevronRightIcon />

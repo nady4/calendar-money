@@ -10,17 +10,17 @@ import "../../styles/NavBar.scss";
 
 interface NavBarProps {
   user: UserType;
-  day: moment.Moment;
-  setDay: React.Dispatch<React.SetStateAction<moment.Moment>>;
+  selectedDay: moment.Moment;
+  setSelectedDay: React.Dispatch<React.SetStateAction<moment.Moment>>;
 }
 
-const NavBar = ({ user, day, setDay }: NavBarProps) => {
+const NavBar = ({ user, selectedDay, setSelectedDay }: NavBarProps) => {
   const handleLeftArrowClick = () => {
-    setDay(moment(day).subtract(1, "months"));
+    setSelectedDay(moment(selectedDay).subtract(1, "months"));
   };
 
   const handleRightArrowClick = () => {
-    setDay(moment(day).add(1, "months"));
+    setSelectedDay(moment(selectedDay).add(1, "months"));
   };
   const handleLogoutClick = () => {
     localStorage.removeItem("token");
@@ -50,7 +50,7 @@ const NavBar = ({ user, day, setDay }: NavBarProps) => {
         </div>
         <div className="user-balance-container">
           <p className="user-balance">
-            ${getBalanceByDay(user.transactions, day)}
+            ${getBalanceByDay(user.transactions, selectedDay)}
           </p>
         </div>
       </div>
@@ -59,7 +59,7 @@ const NavBar = ({ user, day, setDay }: NavBarProps) => {
           <ChevronLeftIcon fontSize="small" />
         </button>
         <div className="date-container">
-          <p className="date">{day.format("MMMM YYYY")}</p>
+          <p className="date">{selectedDay.format("MMMM YYYY")}</p>
         </div>
         <button className="right-arrow" onClick={handleRightArrowClick}>
           <ChevronRightIcon fontSize="small" />

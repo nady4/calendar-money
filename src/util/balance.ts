@@ -27,7 +27,8 @@ const getBalanceByDay = (
 const calculateBalance = (transactions: TransactionType[]) => {
   let balance = 0;
   transactions.forEach((transaction) => {
-    balance += transaction.amount;
+    if (transaction.category.type === "Income") balance += transaction.amount;
+    else balance -= transaction.amount;
   });
   return balance;
 };

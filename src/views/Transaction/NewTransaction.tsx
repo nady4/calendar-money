@@ -10,10 +10,10 @@ import "../../styles/form.scss";
 interface NewTransactionProps {
   user: UserType;
   setUser: React.Dispatch<React.SetStateAction<UserType>>;
-  day: moment.Moment;
+  selectedDay: moment.Moment;
 }
 
-function NewTransaction({ user, setUser, day }: NewTransactionProps) {
+function NewTransaction({ user, setUser, selectedDay }: NewTransactionProps) {
   const [amount, setAmount] = useState(0);
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState<CategoryType | null>(null);
@@ -67,7 +67,7 @@ function NewTransaction({ user, setUser, day }: NewTransactionProps) {
     event?.preventDefault();
 
     const newTransaction = {
-      date: day.format(),
+      date: selectedDay.format(),
       amount,
       description,
       category: category ? category._id : null,
