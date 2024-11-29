@@ -28,10 +28,9 @@ const getDayBalance = (transactions: TransactionType[], day: moment.Moment) => {
   let balance = 0;
 
   for (const date of dates) {
-    if (
-      moment(date, "DD-MM-YYYY").isSame(day) ||
-      moment(date, "DD-MM-YYYY").isBefore(day)
-    ) {
+    const parsedDate = moment(date, "DD-MM-YYYY");
+
+    if (parsedDate.isSame(day) || parsedDate.isBefore(day)) {
       balance = transactionsBalances[date];
     } else {
       break;

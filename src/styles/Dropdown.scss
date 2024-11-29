@@ -54,7 +54,6 @@
       width: 40%;
       display: flex;
       align-items: center;
-      justify-content: self-start;
       cursor: pointer;
 
       .dropdown-item-icon {
@@ -64,7 +63,7 @@
       }
 
       .dropdown-item-text {
-        font-weight: 800;
+        font-weight: 600;
       }
     }
   }

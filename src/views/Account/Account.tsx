@@ -14,7 +14,7 @@ interface AccountProps {
 const Account = ({ user, setUser }: AccountProps) => {
   const [username, setUsername] = useState(user.username);
   const [email, setEmail] = useState(user.email);
-  const [password, setPassword] = useState(user.password);
+  const [password, setPassword] = useState("");
   const [disableSubmitButton, setDisableSubmitButton] = useState(true);
   const navigate = useNavigate();
 
@@ -44,6 +44,7 @@ const Account = ({ user, setUser }: AccountProps) => {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify(newUser),
       });
@@ -91,6 +92,7 @@ const Account = ({ user, setUser }: AccountProps) => {
         <input
           type="password"
           placeholder="Password"
+          value={password}
           onChange={onPasswordChange}
         />
         <div className="submit-button-container">
