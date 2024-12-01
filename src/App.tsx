@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import moment from "moment/moment";
+import { Temporal } from "@js-temporal/polyfill";
 import Login from "./views/Login/Login";
 import Register from "./views/Register/Register.tsx";
 import Dashboard from "./views/Dashboard/Dashboard.tsx";
@@ -26,7 +26,9 @@ function App() {
     loggedIn: false,
   });
 
-  const [selectedDay, setSelectedDay] = useState(moment());
+  const [selectedDay, setSelectedDay] = useState(
+    Temporal.Now.plainDate("gregory")
+  );
   const [selectedCategory, setSelectedCategory] = useState<CategoryType | null>(
     null
   );

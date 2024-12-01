@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import moment from "moment/moment";
+import { Temporal } from "@js-temporal/polyfill";
 import Transaction from "../Transaction/Transaction";
 import { getDayTotal, getDayTransactions } from "../../util/functions";
 import { UserType, TransactionType } from "../../types.d";
@@ -8,9 +8,9 @@ import "../../styles/Day.scss";
 
 interface DayProps {
   user: UserType;
-  date: moment.Moment;
-  selectedDay: moment.Moment;
-  setSelectedDay: React.Dispatch<React.SetStateAction<moment.Moment>>;
+  date: Temporal.PlainDate;
+  selectedDay: Temporal.PlainDate;
+  setSelectedDay: React.Dispatch<React.SetStateAction<Temporal.PlainDate>>;
 }
 
 function Day({ date, user, selectedDay, setSelectedDay }: DayProps) {
@@ -24,8 +24,8 @@ function Day({ date, user, selectedDay, setSelectedDay }: DayProps) {
     balance: 0,
   });
   const [transactions, setTransactions] = useState<TransactionType[]>([]);
-  const isActiveMonth = selectedDay.month() === date.month();
-  const isActiveDay = date.isSame(moment(), "day");
+  const isActiveMonth = selectedDay.month === date.month;
+  const isActiveDay = date.equals(Temporal.Now.plainDateISO());
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -34,11 +34,11 @@ function Day({ date, user, selectedDay, setSelectedDay }: DayProps) {
   }, [date, user.transactions]);
 
   const openTransactions = () => {
-    setSelectedDay(moment(date));
+    setSelectedDay(date);
     navigate("/transactions");
   };
   const openNewTransaction = () => {
-    setSelectedDay(moment(date));
+    setSelectedDay(date);
     navigate("/new-transaction");
   };
 
@@ -54,7 +54,7 @@ function Day({ date, user, selectedDay, setSelectedDay }: DayProps) {
           <p className="day-balance">${total.balance}</p>
         </div>
         <div className="day-date-container">
-          <p className="day-date">{date.format("D")}</p>
+          <p className="day-date">{date.day}</p>
         </div>
         <div className="add-transaction-button-container">
           <button

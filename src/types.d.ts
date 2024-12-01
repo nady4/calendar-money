@@ -1,4 +1,4 @@
-import moment from "moment";
+import { Temporal } from "@js-temporal/polyfill";
 interface CategoryType {
   _id: string;
   name: string;
@@ -11,7 +11,7 @@ interface TransactionType {
   amount: number;
   description: string;
   category: Category;
-  date: moment.Moment;
+  date: Temporal.PlainDate;
 }
 
 interface UserType {

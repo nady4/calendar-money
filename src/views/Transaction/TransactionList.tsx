@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import moment from "moment/moment";
+import { Temporal } from "@js-temporal/polyfill";
 import Transaction from "../../components/Transaction/Transaction";
 import { getDayTransactions } from "../../util/functions";
 import { UserType, TransactionType } from "../../types";
@@ -11,8 +11,8 @@ import "../../styles/list.scss";
 
 interface TransactionListProps {
   user: UserType;
-  selectedDay: moment.Moment;
-  setSelectedDay: React.Dispatch<React.SetStateAction<moment.Moment>>;
+  selectedDay: Temporal.PlainDate;
+  setSelectedDay: React.Dispatch<React.SetStateAction<Temporal.PlainDate>>;
   setSelectedTransaction: React.Dispatch<
     React.SetStateAction<TransactionType | null>
   >;
@@ -33,13 +33,15 @@ function TransactionList({
 
   return (
     <div className="list">
-      <h2>{selectedDay.format("MMMM D")}</h2>
+      <h2>
+        {selectedDay.toLocaleString("en", { month: "long", day: "numeric" })}
+      </h2>
       <img
         src={exitButton}
         className="exit-button"
         onClick={() => {
           setSelectedTransaction(null);
-          setSelectedDay(moment());
+          setSelectedDay(Temporal.Now.plainDate("gregory"));
           navigate("/dashboard");
         }}
       />
@@ -49,7 +51,7 @@ function TransactionList({
             <button
               className="day-change-button next-day-button"
               onClick={() => {
-                setSelectedDay(moment(selectedDay).subtract(1, "days"));
+                setSelectedDay(selectedDay.subtract({ days: 1 }));
               }}
             >
               <LeftIcon />
@@ -57,7 +59,7 @@ function TransactionList({
             <button
               className="day-change-button previous-day-button"
               onClick={() => {
-                setSelectedDay(moment(selectedDay).add(1, "days"));
+                setSelectedDay(selectedDay.add({ days: 1 }));
               }}
             >
               <RightIcon />

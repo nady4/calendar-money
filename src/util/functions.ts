@@ -1,9 +1,17 @@
-import moment from "moment";
+import { Temporal } from "@js-temporal/polyfill";
 import { TransactionType } from "../types";
+
+const toPlainDate = (date: string | Temporal.PlainDate): Temporal.PlainDate => {
+  if (typeof date === "string") {
+    return Temporal.PlainDate.from(date.split("T")[0]);
+  }
+  return date;
+};
 
 const getDaysWithTransactionsTotal = (transactions: TransactionType[]) => {
   transactions.sort((a, b) => {
-    return moment(a.date).isAfter(b.date) ? 1 : -1;
+    return toPlainDate(a.date.toString()).since(toPlainDate(b.date.toString()))
+      .sign;
   });
 
   const total: {
@@ -19,7 +27,6 @@ const getDaysWithTransactionsTotal = (transactions: TransactionType[]) => {
   let balance = 0;
 
   transactions.forEach((transaction) => {
-    console.log(transaction.date);
     if (transaction.category.type === "Income") {
       income += transaction.amount;
     } else {
@@ -27,7 +34,7 @@ const getDaysWithTransactionsTotal = (transactions: TransactionType[]) => {
     }
     balance = income - expenses;
 
-    const date = moment(transaction.date).format("DD-MM-YYYY");
+    const date = transaction.date.toString();
     total[date] = {
       income,
       expenses,
@@ -38,12 +45,15 @@ const getDaysWithTransactionsTotal = (transactions: TransactionType[]) => {
   return total;
 };
 
-const getDayTotal = (transactions: TransactionType[], day: moment.Moment) => {
+const getDayTotal = (
+  transactions: TransactionType[],
+  day: Temporal.PlainDate
+) => {
   const daysWithTransactionsTotal = getDaysWithTransactionsTotal(transactions);
   const dates = Object.keys(daysWithTransactionsTotal);
 
   dates.sort((a, b) =>
-    moment(a, "DD-MM-YYYY").isAfter(moment(b, "DD-MM-YYYY")) ? 1 : -1
+    Temporal.PlainDate.compare(toPlainDate(a), toPlainDate(b))
   );
 
   let total: {
@@ -57,9 +67,9 @@ const getDayTotal = (transactions: TransactionType[], day: moment.Moment) => {
   };
 
   for (const date of dates) {
-    const parsedDate = moment(date, "DD-MM-YYYY");
+    const parsedDate = toPlainDate(date);
 
-    if (parsedDate.isSameOrBefore(day, "day")) {
+    if (Temporal.PlainDate.compare(parsedDate, day) <= 0) {
       total = daysWithTransactionsTotal[date];
     } else {
       break;
@@ -71,7 +81,7 @@ const getDayTotal = (transactions: TransactionType[], day: moment.Moment) => {
 
 const getDaysTotal = (
   transactions: TransactionType[],
-  calendarDays: moment.Moment[]
+  calendarDays: Temporal.PlainDate[]
 ): {
   [date: string]: { income: number; expenses: number; balance: number };
 } => {
@@ -92,7 +102,7 @@ const getDaysTotal = (
   };
 
   for (const day of calendarDays) {
-    const date = moment(day).format("DD-MM-YYYY");
+    const date = day.toString();
 
     if (daysWithTransactionsTotal[date]) {
       lastKnownTotal = daysWithTransactionsTotal[date];
@@ -106,34 +116,40 @@ const getDaysTotal = (
 
 const getDayTransactions = (
   transactions: TransactionType[],
-  day: moment.Moment
+  day: Temporal.PlainDate
 ) => {
   return transactions
-    .filter((transaction) => moment(transaction.date).isSame(day.format()))
+    .filter(
+      (transaction) =>
+        Temporal.PlainDate.compare(toPlainDate(transaction.date), day) === 0
+    )
     .sort((a, b) => {
-      return moment(a.date).isAfter(b.date) ? 1 : -1;
+      return Temporal.PlainDate.compare(
+        toPlainDate(a.date),
+        toPlainDate(b.date)
+      );
     });
 };
 
 const getDaysTransactions = (
   transactions: TransactionType[],
-  days: moment.Moment[]
+  days: Temporal.PlainDate[]
 ): { [date: string]: TransactionType[] } => {
   const result: { [date: string]: TransactionType[] } = {};
   days.forEach((day) => {
-    const formattedDate = day.format("DD-MM-YYYY");
+    const formattedDate = day.toString();
     result[formattedDate] = [];
   });
 
   transactions.forEach((transaction) => {
-    const transactionDate = moment(transaction.date).format("DD-MM-YYYY");
+    const transactionDate = transaction.date.toString();
     if (result[transactionDate]) {
       result[transactionDate].push(transaction);
     }
   });
 
   for (const date in result) {
-    result[date].sort((a, b) => (moment(a.date).isAfter(b.date) ? 1 : -1));
+    result[date].sort((a, b) => a.date.since(b.date).sign);
   }
 
   return result;

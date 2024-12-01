@@ -1,17 +1,17 @@
 import { useState, useEffect } from "react";
-import moment from "moment";
+import { Temporal } from "@js-temporal/polyfill";
 import Day from "../Day/Day";
 import { UserType } from "../../types";
 import "../../styles/Calendar.scss";
 
 interface CalendarProps {
   user: UserType;
-  selectedDay: moment.Moment;
-  setSelectedDay: React.Dispatch<React.SetStateAction<moment.Moment>>;
+  selectedDay: Temporal.PlainDate;
+  setSelectedDay: React.Dispatch<React.SetStateAction<Temporal.PlainDate>>;
 }
 
 function Calendar({ user, selectedDay, setSelectedDay }: CalendarProps) {
-  const [calendarDays, setCalendarDays] = useState<moment.Moment[]>([]);
+  const [calendarDays, setCalendarDays] = useState<Temporal.PlainDate[]>([]);
   const weekdays = [
     "SUNDAY",
     "MONDAY",
@@ -21,13 +21,16 @@ function Calendar({ user, selectedDay, setSelectedDay }: CalendarProps) {
     "FRIDAY",
     "SATURDAY",
   ];
+
   useEffect(() => {
     const days = [];
-    let day = moment(selectedDay).startOf("month").startOf("week");
+    let day = selectedDay
+      .with({ day: 1 })
+      .subtract({ days: selectedDay.with({ day: 1 }).dayOfWeek - 1 });
 
     for (let i = 0; i < 35; i++) {
-      days.push(moment(day));
-      day = moment(day).add(1, "days");
+      days.push(day);
+      day = day.add({ days: 1 });
     }
 
     setCalendarDays(days);
@@ -54,7 +57,7 @@ function Calendar({ user, selectedDay, setSelectedDay }: CalendarProps) {
                 user={user}
                 selectedDay={selectedDay}
                 setSelectedDay={setSelectedDay}
-                key={calendarDay.format("DD-MM-YYYY")}
+                key={calendarDay.toString()}
               />
             );
           })}
