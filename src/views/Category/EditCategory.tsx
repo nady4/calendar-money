@@ -22,9 +22,8 @@ function EditCategory({ user, setUser, category }: EditCategoryProps) {
   const expenseBox = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
-  //Validate form
   useEffect(() => {
-    if (name && color && type) {
+    if (name.length > 3 && color && type) {
       setDisableSubmitButton(false);
     } else {
       setDisableSubmitButton(true);

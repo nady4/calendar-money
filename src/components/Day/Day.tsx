@@ -2,28 +2,38 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import moment from "moment/moment";
 import Transaction from "../Transaction/Transaction";
-import { getDayBalance, getDayTransactions } from "../../util/functions";
 import { UserType, TransactionType } from "../../types.d";
 import "../../styles/Day.scss";
 
 interface DayProps {
   user: UserType;
   date: moment.Moment;
+  total: {
+    income: number;
+    expenses: number;
+    balance: number;
+  };
+  transactions: TransactionType[] | [];
   selectedDay: moment.Moment;
   setSelectedDay: React.Dispatch<React.SetStateAction<moment.Moment>>;
 }
 
-function Day({ user, date, selectedDay, setSelectedDay }: DayProps) {
+function Day({
+  user,
+  date,
+  transactions,
+  total,
+  selectedDay,
+  setSelectedDay,
+}: DayProps) {
   const [balance, setBalance] = useState(0);
-  const [transactions, setTransactions] = useState<TransactionType[]>([]);
   const isActiveMonth = selectedDay.month() === date.month();
   const isActiveDay = date.isSame(moment(), "day");
   const navigate = useNavigate();
 
   useEffect(() => {
-    setTransactions(getDayTransactions(user.transactions, date));
-    setBalance(getDayBalance(user.transactions, date));
-  }, [date, user.transactions, user.categories, selectedDay]);
+    setBalance(total.balance);
+  }, [date, user.transactions, total.balance]);
 
   const openTransactions = () => {
     setSelectedDay(moment(date));

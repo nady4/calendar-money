@@ -24,7 +24,7 @@ const useValidateTransaction = ({
       (categoryInput.current &&
         user.categories.some((c) => c.name === categoryInput.current?.value));
     const isAmountValid = amount > 0;
-    const isDescriptionValid = description.trim().length > 0;
+    const isDescriptionValid = description.length > 0;
 
     setDisableSubmitButton(
       !(isCategoryValid && isAmountValid && isDescriptionValid)

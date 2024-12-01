@@ -1,43 +1,75 @@
 import moment from "moment";
 import { TransactionType } from "../types";
 
-const getTransactionsBalance = (transactions: TransactionType[]) => {
+const getDaysWithTransactionsTotal = (transactions: TransactionType[]) => {
   transactions.sort((a, b) => {
     return moment(a.date).isAfter(b.date) ? 1 : -1;
   });
 
+  const total: {
+    [date: string]: {
+      income: number;
+      expenses: number;
+      balance: number;
+    };
+  } = {};
+
+  let income = 0;
+  let expenses = 0;
   let balance = 0;
-  const balanceByDay: { [date: string]: number } = {};
 
   transactions.forEach((transaction) => {
-    balance +=
-      transaction.category.type === "Income"
-        ? transaction.amount
-        : -transaction.amount;
+    if (transaction.category.type === "Income") {
+      income += transaction.amount;
+    } else {
+      expenses += transaction.amount;
+    }
+    balance = income - expenses;
 
     const date = moment(transaction.date).format("DD-MM-YYYY");
-    balanceByDay[date] = balance;
+    total[date] = {
+      income,
+      expenses,
+      balance,
+    };
   });
 
-  return balanceByDay;
+  return total;
 };
 
-const getDayBalance = (transactions: TransactionType[], day: moment.Moment) => {
-  const transactionsBalances = getTransactionsBalance(transactions);
-  const dates = Object.keys(transactionsBalances);
-  let balance = 0;
+const getDaysTotal = (
+  transactions: TransactionType[],
+  calendarDays: moment.Moment[]
+): {
+  [date: string]: { income: number; expenses: number; balance: number };
+} => {
+  const daysWithTransactionsTotal = getDaysWithTransactionsTotal(transactions);
 
-  for (const date of dates) {
-    const parsedDate = moment(date, "DD-MM-YYYY");
+  const total: {
+    [date: string]: {
+      income: number;
+      expenses: number;
+      balance: number;
+    };
+  } = {};
 
-    if (parsedDate.isSame(day) || parsedDate.isBefore(day)) {
-      balance = transactionsBalances[date];
-    } else {
-      break;
+  let lastKnownTotal: { income: number; expenses: number; balance: number } = {
+    income: 0,
+    expenses: 0,
+    balance: 0,
+  };
+
+  for (const day of calendarDays) {
+    const date = moment(day).format("DD-MM-YYYY");
+
+    if (daysWithTransactionsTotal[date]) {
+      lastKnownTotal = daysWithTransactionsTotal[date];
     }
+
+    total[date] = { ...lastKnownTotal };
   }
 
-  return balance;
+  return total;
 };
 
 const getDayTransactions = (
@@ -51,4 +83,28 @@ const getDayTransactions = (
     });
 };
 
-export { getDayBalance, getDayTransactions };
+const getDaysTransactions = (
+  transactions: TransactionType[],
+  days: moment.Moment[]
+): { [date: string]: TransactionType[] } => {
+  const result: { [date: string]: TransactionType[] } = {};
+  days.forEach((day) => {
+    const formattedDate = day.format("DD-MM-YYYY");
+    result[formattedDate] = [];
+  });
+
+  transactions.forEach((transaction) => {
+    const transactionDate = moment(transaction.date).format("DD-MM-YYYY");
+    if (result[transactionDate]) {
+      result[transactionDate].push(transaction);
+    }
+  });
+
+  for (const date in result) {
+    result[date].sort((a, b) => (moment(a.date).isAfter(b.date) ? 1 : -1));
+  }
+
+  return result;
+};
+
+export { getDaysTotal, getDayTransactions, getDaysTransactions };
