@@ -66,8 +66,6 @@ const getDayTotal = (transactions: TransactionType[], day: moment.Moment) => {
     }
   }
 
-  console.log(day.format("DD-MM-YYYY"), total);
-
   return total;
 };
 
