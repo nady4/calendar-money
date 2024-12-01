@@ -19,6 +19,7 @@ const getDaysWithTransactionsTotal = (transactions: TransactionType[]) => {
   let balance = 0;
 
   transactions.forEach((transaction) => {
+    console.log(transaction.date);
     if (transaction.category.type === "Income") {
       income += transaction.amount;
     } else {
@@ -33,6 +34,39 @@ const getDaysWithTransactionsTotal = (transactions: TransactionType[]) => {
       balance,
     };
   });
+
+  return total;
+};
+
+const getDayTotal = (transactions: TransactionType[], day: moment.Moment) => {
+  const daysWithTransactionsTotal = getDaysWithTransactionsTotal(transactions);
+  const dates = Object.keys(daysWithTransactionsTotal);
+
+  dates.sort((a, b) =>
+    moment(a, "DD-MM-YYYY").isAfter(moment(b, "DD-MM-YYYY")) ? 1 : -1
+  );
+
+  let total: {
+    income: number;
+    expenses: number;
+    balance: number;
+  } = {
+    income: 0,
+    expenses: 0,
+    balance: 0,
+  };
+
+  for (const date of dates) {
+    const parsedDate = moment(date, "DD-MM-YYYY");
+
+    if (parsedDate.isSameOrBefore(day, "day")) {
+      total = daysWithTransactionsTotal[date];
+    } else {
+      break;
+    }
+  }
+
+  console.log(day.format("DD-MM-YYYY"), total);
 
   return total;
 };
@@ -107,4 +141,4 @@ const getDaysTransactions = (
   return result;
 };
 
-export { getDaysTotal, getDayTransactions, getDaysTransactions };
+export { getDayTotal, getDaysTotal, getDayTransactions, getDaysTransactions };

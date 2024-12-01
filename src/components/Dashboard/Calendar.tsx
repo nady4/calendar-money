@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import moment from "moment";
 import Day from "../Day/Day";
-import { getDaysTotal, getDaysTransactions } from "../../util/functions";
-import { UserType, TransactionType } from "../../types";
+import { UserType } from "../../types";
 import "../../styles/Calendar.scss";
 
 interface CalendarProps {
@@ -22,14 +21,6 @@ function Calendar({ user, selectedDay, setSelectedDay }: CalendarProps) {
     "FRIDAY",
     "SATURDAY",
   ];
-
-  const [daysTransactions, setDaysTransactions] = useState<{
-    [date: string]: TransactionType[];
-  }>({});
-  const [daysTotal, setDaysTotal] = useState<{
-    [date: string]: { income: number; expenses: number; balance: number };
-  }>({});
-
   useEffect(() => {
     const days = [];
     let day = moment(selectedDay).startOf("month").startOf("week");
@@ -40,12 +31,6 @@ function Calendar({ user, selectedDay, setSelectedDay }: CalendarProps) {
     }
 
     setCalendarDays(days);
-
-    const daysTransactions = getDaysTransactions(user.transactions, days);
-    const daysTotal = getDaysTotal(user.transactions, days);
-
-    setDaysTransactions(daysTransactions);
-    setDaysTotal(daysTotal);
   }, [selectedDay, user.transactions]);
 
   return (
@@ -65,12 +50,8 @@ function Calendar({ user, selectedDay, setSelectedDay }: CalendarProps) {
           {calendarDays.map((calendarDay) => {
             return (
               <Day
-                user={user}
                 date={calendarDay}
-                total={daysTotal[calendarDay.format("DD-MM-YYYY")]}
-                transactions={
-                  daysTransactions[calendarDay.format("DD-MM-YYYY")] || []
-                }
+                user={user}
                 selectedDay={selectedDay}
                 setSelectedDay={setSelectedDay}
                 key={calendarDay.format("DD-MM-YYYY")}
