@@ -34,7 +34,7 @@ function Calendar({ user, selectedDay, setSelectedDay }: CalendarProps) {
     }
 
     setCalendarDays(days);
-  }, [selectedDay, user.transactions]);
+  }, [selectedDay]);
 
   return (
     <main className="calendar-main">

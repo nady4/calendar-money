@@ -25,7 +25,7 @@ function Day({ date, user, selectedDay, setSelectedDay }: DayProps) {
   });
   const [transactions, setTransactions] = useState<TransactionType[]>([]);
   const isActiveMonth = selectedDay.month === date.month;
-  const isActiveDay = date.equals(Temporal.Now.plainDateISO());
+  const isActiveDay = date.equals(Temporal.Now.plainDate("gregory"));
   const navigate = useNavigate();
 
   useEffect(() => {
