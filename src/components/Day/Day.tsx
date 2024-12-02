@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Temporal } from "@js-temporal/polyfill";
-import Transaction from "../Transaction/Transaction";
 import { getDayTotal, getDayTransactions } from "../../util/functions";
 import { UserType, TransactionType } from "../../types.d";
+import Transaction from "../Transaction/Transaction";
 import "../../styles/Day.scss";
 
 interface DayProps {

@@ -8,7 +8,11 @@ const toPlainDate = (date: string | Temporal.PlainDate): Temporal.PlainDate => {
   return date;
 };
 
-const getDaysWithTransactionsTotal = (transactions: TransactionType[]) => {
+const getDaysWithTransactionsTotal = (
+  transactions: TransactionType[]
+): {
+  [date: string]: TotalType;
+} => {
   transactions.sort((a, b) => {
     return toPlainDate(a.date.toString()).since(toPlainDate(b.date.toString()))
       .sign;
@@ -71,32 +75,33 @@ const getDayTotal = (
   return total;
 };
 
-const getDaysTotal = (
+const getMonthTotal = (
   transactions: TransactionType[],
-  calendarDays: Temporal.PlainDate[]
-): {
-  [date: string]: TotalType;
-} => {
-  const daysWithTransactionsTotal = getDaysWithTransactionsTotal(transactions);
-
-  const total: {
-    [date: string]: TotalType;
-  } = {};
-
-  let lastKnownTotal: TotalType = {
+  month: string
+): TotalType => {
+  const total: TotalType = {
     income: 0,
     expenses: 0,
     balance: 0,
   };
 
-  for (const day of calendarDays) {
-    const date = day.toString();
+  for (const transaction of transactions) {
+    const transactionDate = Temporal.PlainDate.from(
+      transaction.date.toString().replace("Z", "")
+    );
+    const transactionMonth = transactionDate.toLocaleString("en-US", {
+      month: "long",
+    });
 
-    if (daysWithTransactionsTotal[date]) {
-      lastKnownTotal = daysWithTransactionsTotal[date];
+    if (transactionMonth == month) {
+      if (transaction.category.type === "Income") {
+        total.income += transaction.amount;
+      } else {
+        total.expenses += transaction.amount;
+      }
+
+      total.balance = total.income - total.expenses;
     }
-
-    total[date] = { ...lastKnownTotal };
   }
 
   return total;
@@ -119,28 +124,4 @@ const getDayTransactions = (
     });
 };
 
-const getDaysTransactions = (
-  transactions: TransactionType[],
-  days: Temporal.PlainDate[]
-): { [date: string]: TransactionType[] } => {
-  const result: { [date: string]: TransactionType[] } = {};
-  days.forEach((day) => {
-    const formattedDate = day.toString();
-    result[formattedDate] = [];
-  });
-
-  transactions.forEach((transaction) => {
-    const transactionDate = transaction.date.toString();
-    if (result[transactionDate]) {
-      result[transactionDate].push(transaction);
-    }
-  });
-
-  for (const date in result) {
-    result[date].sort((a, b) => a.date.since(b.date).sign);
-  }
-
-  return result;
-};
-
-export { getDayTotal, getDaysTotal, getDayTransactions, getDaysTransactions };
+export { getDayTotal, getMonthTotal, getDayTransactions };

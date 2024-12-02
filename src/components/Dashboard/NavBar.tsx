@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Temporal } from "@js-temporal/polyfill";
-import { getDayTotal } from "../../util/functions";
+import { getMonthTotal } from "../../util/functions";
 import { UserType } from "../../types";
 import LeftIcon from "@mui/icons-material/ChevronLeft";
 import RightIcon from "@mui/icons-material/ChevronRight";
@@ -38,12 +38,8 @@ const NavBar = ({
     "November",
     "December",
   ];
-  const [isNavBarOpen, setIsNavBarOpen] = useState(false);
 
-  const getLastDayOfMonth = (date: Temporal.PlainDate, month: number) => {
-    const firstDayOfMonth = date.with({ month, day: 1 });
-    return firstDayOfMonth.add({ months: 1 }).subtract({ days: 1 });
-  };
+  const [isNavBarOpen, setIsNavBarOpen] = useState(false);
 
   const handleLeftArrowClick = () => {
     setSelectedDay(selectedDay.subtract({ months: 1 }));
@@ -115,10 +111,7 @@ const NavBar = ({
               <p
                 className={`month ${
                   window.innerWidth < 600
-                    ? getDayTotal(
-                        user.transactions,
-                        getLastDayOfMonth(selectedDay, index + 1)
-                      ).balance >= 0
+                    ? getMonthTotal(user.transactions, month).balance >= 0
                       ? "positive-month"
                       : "negative-month"
                     : ""
@@ -130,30 +123,15 @@ const NavBar = ({
             <div className="month-body">
               <p className="month-income">
                 +$
-                {
-                  getDayTotal(
-                    user.transactions,
-                    getLastDayOfMonth(selectedDay, index + 1)
-                  ).income
-                }
+                {getMonthTotal(user.transactions, month).income}
               </p>
               <p className="month-expenses">
                 -$
-                {
-                  getDayTotal(
-                    user.transactions,
-                    getLastDayOfMonth(selectedDay, index + 1)
-                  ).expenses
-                }
+                {getMonthTotal(user.transactions, month).expenses}
               </p>
               <p className="month-balance">
                 =$
-                {
-                  getDayTotal(
-                    user.transactions,
-                    getLastDayOfMonth(selectedDay, index + 1)
-                  ).balance
-                }
+                {getMonthTotal(user.transactions, month).balance}
               </p>
             </div>
           </div>

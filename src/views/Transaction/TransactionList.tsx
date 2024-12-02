@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Temporal } from "@js-temporal/polyfill";
-import Transaction from "../../components/Transaction/Transaction";
 import { getDayTransactions } from "../../util/functions";
 import { UserType, TransactionType } from "../../types";
+import Transaction from "../../components/Transaction/Transaction";
 import LeftIcon from "@mui/icons-material/ChevronLeft";
 import RightIcon from "@mui/icons-material/ChevronRight";
 import exitButton from "../../assets/whiteExitButton.svg";

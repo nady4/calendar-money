@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Temporal } from "@js-temporal/polyfill";
+import { UserType } from "../../types";
 import Dropdown from "../../components/Dashboard/Dropdown";
 import NavBar from "../../components/Dashboard/NavBar";
 import Calendar from "../../components/Dashboard/Calendar";
 import Footer from "../../components/Dashboard/Footer";
-import { UserType } from "../../types";
 
 interface DashboardProps {
   user: UserType;

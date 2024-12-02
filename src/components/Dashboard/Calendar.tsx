@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Temporal } from "@js-temporal/polyfill";
-import Day from "../Day/Day";
 import { UserType } from "../../types";
+import Day from "../Day/Day";
 import "../../styles/Calendar.scss";
 
 interface CalendarProps {
@@ -34,7 +34,7 @@ function Calendar({ user, selectedDay, setSelectedDay }: CalendarProps) {
     }
 
     setCalendarDays(days);
-  }, [selectedDay]);
+  }, [selectedDay, setCalendarDays]);
 
   return (
     <main className="calendar-main">
