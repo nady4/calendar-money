@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Temporal } from "@js-temporal/polyfill";
-import { getMonthTotal } from "../../util/functions";
 import { UserType } from "../../types";
+import { getMonthTotal } from "../../util/functions";
+import { months } from "../../util/constants";
 import LeftIcon from "@mui/icons-material/ChevronLeft";
 import RightIcon from "@mui/icons-material/ChevronRight";
 import BlackMenuButton from "../../assets/blackMenuButton.svg";
@@ -24,21 +25,6 @@ const NavBar = ({
   isDropdownOpen,
   setIsDropdownOpen,
 }: NavBarProps) => {
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-
   const [isNavBarOpen, setIsNavBarOpen] = useState(false);
 
   const handleLeftArrowClick = () => {
@@ -101,7 +87,9 @@ const NavBar = ({
       >
         {months.map((month, index) => (
           <div
-            className="month-container"
+            className={`month-container ${
+              selectedDay.month === index + 1 ? "active-month" : ""
+            }`}
             key={index}
             onClick={() => {
               setSelectedDay(selectedDay.with({ month: index + 1 }));

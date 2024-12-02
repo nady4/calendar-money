@@ -1,3 +1,5 @@
+@use "./variables" as vars;
+
 .navbar {
   position: relative;
   height: 70px;
@@ -14,7 +16,6 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    z-index: 2;
 
     div {
       height: 100%;
@@ -31,6 +32,7 @@
       z-index: 3;
 
       .menu-button {
+        position: fixed;
         height: 40px;
         width: 40px;
       }
@@ -45,6 +47,7 @@
     }
 
     .date-change-container {
+      align-self: center;
       width: 50%;
 
       .date-container {
@@ -121,11 +124,11 @@
       transition: all 0.3s ease-in-out;
 
       &:hover {
-        transform: scale(1.1);
+        font-size: 1.2rem;
       }
 
       &:active {
-        transform: scale(0.9);
+        font-size: 0.9rem;
       }
 
       .month-header {
@@ -138,7 +141,7 @@
         }
 
         .positive-month {
-          color: rgb(46, 104, 46);
+          color: rgb(60, 175, 60);
         }
 
         .negative-month {
@@ -161,11 +164,26 @@
         }
 
         .month-income {
-          color: rgb(46, 104, 46);
+          color: rgb(45, 160, 45);
         }
 
         .month-expenses {
           color: rgb(170, 47, 47);
+        }
+      }
+    }
+
+    .active-month {
+      color: white;
+      background-color: vars.$primary-color;
+
+      .month-body {
+        .month-income {
+          color: rgb(66, 235, 66);
+        }
+
+        .month-expenses {
+          color: rgb(226, 72, 72);
         }
       }
     }

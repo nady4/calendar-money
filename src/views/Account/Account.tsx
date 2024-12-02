@@ -30,7 +30,7 @@ const Account = ({ user, setUser }: AccountProps) => {
     setPassword(event.target.value);
   };
 
-  const handleSubmit = async (event: React.FormEvent) => {
+  const handleUpdateSubmit = async (event: React.FormEvent) => {
     event?.preventDefault();
 
     const newUser = {
@@ -62,6 +62,29 @@ const Account = ({ user, setUser }: AccountProps) => {
     }
   };
 
+  const handleDeleteSubmit = async (event: React.FormEvent) => {
+    event?.preventDefault();
+
+    try {
+      const response = await fetch(`${API_URL}/users/${user.id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
+
+      setUser({} as UserType);
+      localStorage.removeItem("token");
+      navigate("/");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className="form">
       <h2>Account</h2>
@@ -72,7 +95,7 @@ const Account = ({ user, setUser }: AccountProps) => {
           navigate("/dashboard");
         }}
       />
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleUpdateSubmit}>
         <label htmlFor="username">Username</label>
         <input
           type="text"
@@ -100,10 +123,13 @@ const Account = ({ user, setUser }: AccountProps) => {
             type="button"
             className="submit-button"
             disabled={disableSubmitButton}
-            onClick={handleSubmit}
+            onClick={handleUpdateSubmit}
           >
             Submit
           </button>
+        </div>
+        <div className="link-button" onClick={handleDeleteSubmit}>
+          <p className="link">Delete User</p>
         </div>
       </form>
     </div>

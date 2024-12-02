@@ -1,7 +1,7 @@
 @use "./variables" as vars;
 
 .dropdown-container {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: -30%;
   width: 25%;

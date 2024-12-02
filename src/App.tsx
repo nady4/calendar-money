@@ -14,6 +14,10 @@ import Account from "./views/Account/Account.tsx";
 import Stats from "./views/Stats/Stats.tsx";
 import { useAuth } from "./hooks/useAuth.ts";
 import { UserType, CategoryType, TransactionType } from "./types.d";
+import {
+  getMonthlyTotalFromCategories,
+  getYearlyTotalFromCategories,
+} from "./util/functions.ts";
 
 function App() {
   const [user, setUser] = useState<UserType>({
@@ -25,6 +29,17 @@ function App() {
     categories: [],
     loggedIn: false,
   });
+
+  console.log(
+    getMonthlyTotalFromCategories(
+      user.transactions,
+      user.categories,
+      "December"
+    )
+  );
+  console.log(
+    getYearlyTotalFromCategories(user.transactions, user.categories, 2024)
+  );
 
   const [selectedDay, setSelectedDay] = useState(
     Temporal.Now.plainDate("gregory")
@@ -78,7 +93,10 @@ function App() {
             )
           }
         />
-        <Route path="/stats" element={<Stats />} />
+        <Route
+          path="/stats"
+          element={<Stats transactions={user.transactions} />}
+        />
         <Route
           path="/categories"
           element={

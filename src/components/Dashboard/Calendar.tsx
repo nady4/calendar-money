@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Temporal } from "@js-temporal/polyfill";
 import { UserType } from "../../types";
+import { weekdays } from "../../util/constants";
 import Day from "../Day/Day";
 import "../../styles/Calendar.scss";
 
@@ -12,21 +13,15 @@ interface CalendarProps {
 
 function Calendar({ user, selectedDay, setSelectedDay }: CalendarProps) {
   const [calendarDays, setCalendarDays] = useState<Temporal.PlainDate[]>([]);
-  const weekdays = [
-    "SUNDAY",
-    "MONDAY",
-    "TUESDAY",
-    "WEDNESDAY",
-    "THURSDAY",
-    "FRIDAY",
-    "SATURDAY",
-  ];
 
   useEffect(() => {
     const days = [];
-    let day = selectedDay
-      .with({ day: 1 })
-      .subtract({ days: selectedDay.with({ day: 1 }).dayOfWeek - 1 });
+    const firstDayOfMonth = selectedDay.with({ day: 1 });
+
+    let day =
+      firstDayOfMonth.dayOfWeek === 7
+        ? firstDayOfMonth
+        : firstDayOfMonth.subtract({ days: firstDayOfMonth.dayOfWeek });
 
     for (let i = 0; i < 35; i++) {
       days.push(day);

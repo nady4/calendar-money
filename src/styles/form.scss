@@ -120,3 +120,13 @@
     @extend %link-button;
   }
 }
+
+@media (max-width: 600px) {
+  .form {
+    background-color: white;
+    margin-top: 25%;
+    h2 {
+      font-size: 1.5rem;
+    }
+  }
+}
