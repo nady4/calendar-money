@@ -24,4 +24,10 @@ interface UserType {
   categories: Category[];
 }
 
-export { CategoryType, TransactionType, UserType };
+interface TotalType {
+  income: number;
+  expenses: number;
+  balance: number;
+}
+
+export { CategoryType, TransactionType, UserType, TotalType };

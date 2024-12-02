@@ -1,7 +1,8 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { UserType, CategoryType } from "../../types.d";
+import { Temporal } from "@js-temporal/polyfill";
 import API_URL from "../../util/api";
+import { UserType, CategoryType } from "../../types.d";
 import useCategoryOptions from "../../hooks/useCategoryOptions";
 import useValidateTransaction from "../../hooks/useValidateTransaction";
 import exitButton from "../../assets/whiteExitButton.svg";
@@ -10,7 +11,7 @@ import "../../styles/form.scss";
 interface NewTransactionProps {
   user: UserType;
   setUser: React.Dispatch<React.SetStateAction<UserType>>;
-  selectedDay: moment.Moment;
+  selectedDay: Temporal.PlainDate;
 }
 
 function NewTransaction({ user, setUser, selectedDay }: NewTransactionProps) {
@@ -67,7 +68,7 @@ function NewTransaction({ user, setUser, selectedDay }: NewTransactionProps) {
     event?.preventDefault();
 
     const newTransaction = {
-      date: selectedDay.format(),
+      date: new Date(selectedDay.year, selectedDay.month - 1, selectedDay.day),
       amount,
       description,
       category: category ? category._id : null,

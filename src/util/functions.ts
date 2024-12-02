@@ -1,5 +1,5 @@
 import { Temporal } from "@js-temporal/polyfill";
-import { TransactionType } from "../types";
+import { TransactionType, TotalType } from "../types";
 
 const toPlainDate = (date: string | Temporal.PlainDate): Temporal.PlainDate => {
   if (typeof date === "string") {
@@ -15,11 +15,7 @@ const getDaysWithTransactionsTotal = (transactions: TransactionType[]) => {
   });
 
   const total: {
-    [date: string]: {
-      income: number;
-      expenses: number;
-      balance: number;
-    };
+    [date: string]: TotalType;
   } = {};
 
   let income = 0;
@@ -48,7 +44,7 @@ const getDaysWithTransactionsTotal = (transactions: TransactionType[]) => {
 const getDayTotal = (
   transactions: TransactionType[],
   day: Temporal.PlainDate
-) => {
+): TotalType => {
   const daysWithTransactionsTotal = getDaysWithTransactionsTotal(transactions);
   const dates = Object.keys(daysWithTransactionsTotal);
 
@@ -56,11 +52,7 @@ const getDayTotal = (
     Temporal.PlainDate.compare(toPlainDate(a), toPlainDate(b))
   );
 
-  let total: {
-    income: number;
-    expenses: number;
-    balance: number;
-  } = {
+  let total: TotalType = {
     income: 0,
     expenses: 0,
     balance: 0,
@@ -83,19 +75,15 @@ const getDaysTotal = (
   transactions: TransactionType[],
   calendarDays: Temporal.PlainDate[]
 ): {
-  [date: string]: { income: number; expenses: number; balance: number };
+  [date: string]: TotalType;
 } => {
   const daysWithTransactionsTotal = getDaysWithTransactionsTotal(transactions);
 
   const total: {
-    [date: string]: {
-      income: number;
-      expenses: number;
-      balance: number;
-    };
+    [date: string]: TotalType;
   } = {};
 
-  let lastKnownTotal: { income: number; expenses: number; balance: number } = {
+  let lastKnownTotal: TotalType = {
     income: 0,
     expenses: 0,
     balance: 0,
@@ -117,7 +105,7 @@ const getDaysTotal = (
 const getDayTransactions = (
   transactions: TransactionType[],
   day: Temporal.PlainDate
-) => {
+): TransactionType[] => {
   return transactions
     .filter(
       (transaction) =>

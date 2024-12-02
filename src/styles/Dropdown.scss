@@ -6,7 +6,6 @@
   left: -30%;
   width: 25%;
   height: 100%;
-  z-index: 1;
   color: white;
   background-color: vars.$primary-color;
   display: flex;
@@ -14,6 +13,7 @@
   align-items: center;
   justify-content: space-between;
   transition: all 0.3s ease-in-out;
+  z-index: 2;
 
   div {
     width: 100%;
@@ -95,7 +95,7 @@
   }
 }
 
-.open {
+.dropdown-open {
   transform: translateX(120%);
 }
 
@@ -105,7 +105,7 @@
     width: 100%;
   }
 
-  .open {
+  .dropdown-open {
     transform: translateX(100%);
   }
 }

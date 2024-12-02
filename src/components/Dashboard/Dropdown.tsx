@@ -16,7 +16,11 @@ const Dropdown = ({ user, isDropdownOpen }: DropdownProps) => {
   const navigate = useNavigate();
 
   return (
-    <div className={`dropdown-container ${isDropdownOpen ? "open" : "closed"}`}>
+    <div
+      className={`dropdown-container dropdown-${
+        isDropdownOpen ? "open" : "closed"
+      }`}
+    >
       <div className="dropdown-header">
         <img className="dropdown-user-icon" src={CatUser} alt="user" />
         <h2 className="dropdown-username">{user.username}</h2>

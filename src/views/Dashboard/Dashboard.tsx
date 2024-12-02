@@ -19,6 +19,7 @@ function Dashboard({ user, selectedDay, setSelectedDay }: DashboardProps) {
     <div className="app-main">
       <Dropdown user={user} isDropdownOpen={isDropdownOpen} />
       <NavBar
+        user={user}
         selectedDay={selectedDay}
         setSelectedDay={setSelectedDay}
         isDropdownOpen={isDropdownOpen}

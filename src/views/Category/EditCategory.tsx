@@ -38,10 +38,10 @@ function EditCategory({ user, setUser, category }: EditCategoryProps) {
   };
   const onTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.id === "income-box" && incomeBox.current) {
-      setType("income");
+      setType("Income");
       if (expenseBox.current) expenseBox.current.checked = false;
     } else if (event.target.id === "expense-box" && expenseBox.current) {
-      setType("expense");
+      setType("Expense");
       if (incomeBox.current) incomeBox.current.checked = false;
     }
   };

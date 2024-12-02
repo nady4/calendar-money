@@ -1,103 +1,242 @@
 .navbar {
+  position: relative;
   height: 70px;
   width: 100%;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-between;
   background-color: rgb(243, 243, 243);
 
-  div {
-    height: 100%;
+  .navbar-top {
+    position: relative;
+    height: 70px;
+    width: 100%;
     display: flex;
     align-items: center;
-    justify-content: center;
-  }
-
-  .menu-button-container {
-    width: 5%;
-    background-color: transparent;
-    cursor: pointer;
-    transition: 0.2s ease-in-out;
+    justify-content: space-between;
     z-index: 2;
 
-    .menu-button {
-      height: 40px;
-      width: 40px;
+    div {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    &:hover {
-      transform: scale(1.1);
-    }
-
-    &:active {
-      transform: scale(0.9);
-    }
-  }
-
-  .date-change-container {
-    width: 50%;
-
-    .date-container {
-      text-align: center;
-      margin: 0 10px;
-
-      .date {
-        font-size: 1.2rem;
-      }
-    }
-
-    .arrow {
+    .menu-button-container {
+      width: 5%;
       background-color: transparent;
-      border: none;
-      color: #333;
       cursor: pointer;
       transition: 0.2s ease-in-out;
+      z-index: 3;
 
-      &:hover {
-        transform: scale(1.2);
-        color: black;
-      }
-
-      &:active {
-        transform: scale(0.9);
-      }
-    }
-  }
-
-  .logout-container {
-    width: 5%;
-
-    .logout-button-container {
-      border: none;
-      background: none;
-      cursor: pointer;
-      transition: 0.2s ease-in-out;
-
-      .logout-button {
-        height: 35px;
-        width: 35px;
+      .menu-button {
+        height: 40px;
+        width: 40px;
       }
 
       &:hover {
         transform: scale(1.1);
       }
+
       &:active {
         transform: scale(0.9);
       }
     }
+
+    .date-change-container {
+      width: 50%;
+
+      .date-container {
+        text-align: center;
+        margin: 0 10px;
+
+        .date {
+          cursor: pointer;
+          font-size: 1.2rem;
+        }
+      }
+
+      .arrow {
+        background-color: transparent;
+        border: none;
+        color: #333;
+        cursor: pointer;
+        transition: 0.2s ease-in-out;
+
+        &:hover {
+          transform: scale(1.2);
+          color: black;
+        }
+
+        &:active {
+          transform: scale(0.9);
+        }
+      }
+    }
+
+    .logout-container {
+      width: 5%;
+
+      .logout-button-container {
+        border: none;
+        background: none;
+        cursor: pointer;
+        transition: 0.2s ease-in-out;
+
+        .logout-button {
+          height: 35px;
+          width: 35px;
+        }
+
+        &:hover {
+          transform: scale(1.1);
+        }
+        &:active {
+          transform: scale(0.9);
+        }
+      }
+    }
+  }
+
+  .navbar-bottom {
+    position: absolute;
+    top: 70px;
+    width: 100%;
+    height: 150px;
+    background-color: rgb(243, 243, 243);
+    display: flex;
+    opacity: 1;
+    justify-content: space-between;
+    z-index: 1;
+    transition: all 0.2s ease-in-out;
+
+    .month-container {
+      width: 8%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: all 0.3s ease-in-out;
+
+      &:hover {
+        transform: scale(1.1);
+      }
+
+      &:active {
+        transform: scale(0.9);
+      }
+
+      .month-header {
+        width: 100%;
+        height: 30%;
+        text-align: center;
+
+        .month {
+          font-size: 1.1rem;
+        }
+
+        .positive-month {
+          color: rgb(46, 104, 46);
+        }
+
+        .negative-month {
+          color: rgb(170, 47, 47);
+        }
+      }
+
+      .month-body {
+        width: 100%;
+        height: 70%;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        p {
+          height: 10%;
+          margin-top: 0;
+        }
+
+        .month-income {
+          color: rgb(46, 104, 46);
+        }
+
+        .month-expenses {
+          color: rgb(170, 47, 47);
+        }
+      }
+    }
+  }
+
+  .gradient-border-bottom {
+    width: 100%;
+    height: 15px;
+    position: absolute;
+    top: 220px;
+    z-index: 1;
+    transition: all 0.2s ease-in-out;
+    background-image: linear-gradient(0deg, transparent, rgba(0, 0, 0, 0.1));
+  }
+
+  .gradient-closed {
+    top: -220px;
+  }
+
+  .navbar-closed {
+    top: -160px;
+    opacity: 0;
   }
 }
 
 @media (max-width: 600px) {
   .navbar {
-    .menu-button-container {
-      margin-left: 10px;
-      width: 15%;
+    height: 90px;
+
+    .navbar-top {
+      height: 90px;
+      .menu-button-container {
+        margin-left: 10px;
+        width: 15%;
+      }
+
+      .logout-container {
+        margin-left: 10px;
+        width: 15%;
+      }
     }
 
-    .logout-container {
-      margin-left: 10px;
-      width: 15%;
+    .navbar-bottom {
+      top: 90px;
+      height: 50px;
+
+      .month-container {
+        .month-header {
+          height: 100%;
+
+          .month {
+            font-size: 1rem;
+          }
+        }
+
+        .month-body {
+          display: none;
+        }
+      }
+    }
+
+    .gradient-border-bottom {
+      top: 140px;
+    }
+
+    .gradient-closed {
+      top: -140px;
+    }
+
+    .navbar-closed {
+      top: -110px;
     }
   }
 }
