@@ -1,9 +1,12 @@
 import MonthLineChart from "../../components/Stats/MonthLineChart";
 import YearLineChart from "../../components/Stats/YearLineChart";
+import MonthBarChart from "../../components/Stats/MonthBarChart";
+import YearBarChart from "../../components/Stats/YearBarChart";
 import NavBar from "../../components/Dashboard/NavBar";
 import Dropdown from "../../components/Dashboard/Dropdown";
 import { Temporal } from "@js-temporal/polyfill";
 import { UserType } from "../../types";
+import "../../styles/Stats.scss";
 
 interface StatsProps {
   user: UserType;
@@ -21,7 +24,7 @@ const Stats = ({
   setIsDropdownOpen,
 }: StatsProps) => {
   return (
-    <div className="stats-container">
+    <div className="stats-view">
       <Dropdown
         user={user}
         isDropdownOpen={isDropdownOpen}
@@ -35,8 +38,34 @@ const Stats = ({
         setIsDropdownOpen={setIsDropdownOpen}
         isStatsView={true}
       />
-      <MonthLineChart transactions={user.transactions} month="November" />
-      <YearLineChart transactions={user.transactions} />
+      <div className="stats-container">
+        <div className="stat">
+          <MonthLineChart
+            transactions={user.transactions}
+            selectedDay={selectedDay}
+          />
+        </div>
+        <div className="stat">
+          <YearLineChart
+            transactions={user.transactions}
+            selectedDay={selectedDay}
+          />
+        </div>
+        <div className="stat">
+          <MonthBarChart
+            transactions={user.transactions}
+            categories={user.categories}
+            selectedDay={selectedDay}
+          />
+        </div>
+        <div className="stat">
+          <YearBarChart
+            transactions={user.transactions}
+            categories={user.categories}
+            selectedYear={selectedDay.year}
+          />
+        </div>
+      </div>
     </div>
   );
 };

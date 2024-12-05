@@ -178,6 +178,7 @@ const getMonthTotal = (
 
   return total;
 };
+
 const getMonthlyTotalFromCategories = (
   transactions: TransactionType[],
   categories: CategoryType[],
