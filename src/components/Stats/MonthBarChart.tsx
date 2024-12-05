@@ -75,16 +75,16 @@ const MonthlyCategoryBarChart: React.FC<MonthlyCategoryBarChartProps> = ({
 
   // Chart options
   const chartOptions = {
-    indexAxis: "y" as const, // This makes the bar chart horizontal
+    indexAxis: "y" as const,
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        display: false, // Hide legend as it's not very informative here
+        display: false,
       },
       title: {
         display: true,
-        text: `Category Balance - ${months[selectedDay.month - 1]}`,
+        text: `${months[selectedDay.month - 1]} Categories`,
         color: "#1F2937",
         font: {
           family: "Nunito Sans, sans-serif",
@@ -108,7 +108,6 @@ const MonthlyCategoryBarChart: React.FC<MonthlyCategoryBarChartProps> = ({
         },
         title: {
           display: true,
-          text: "Balance",
           color: "#374151",
           font: {
             size: 14,
@@ -124,7 +123,6 @@ const MonthlyCategoryBarChart: React.FC<MonthlyCategoryBarChartProps> = ({
         },
         title: {
           display: true,
-          text: "Categories",
           color: "#374151",
           font: {
             size: 14,

@@ -25,7 +25,6 @@ function NewTransaction({
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState<CategoryType | null>(null);
   const [disableSubmitButton, setDisableSubmitButton] = useState(true);
-  console.log(selectedDay);
   const categoriesDatalist = useRef<HTMLDataListElement>(null);
   const categoryInput = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
@@ -158,13 +157,17 @@ function NewTransaction({
         <datalist id="categories-datalist" ref={categoriesDatalist}></datalist>
 
         <label htmlFor="date">Date</label>
-        <input
-          type="date"
-          name="date"
-          id="date"
-          onChange={onDateChange}
-          value={selectedDay.toString().slice(0, 10)}
-        />
+        <div>
+          <input
+            type="date"
+            name="date"
+            id="date"
+            onChange={onDateChange}
+            value={selectedDay.toString().slice(0, 10)}
+          />
+        </div>
+        <label htmlFor="repeat">Repeat each Month</label>
+        <input type="checkbox" name="repeat" id="repeat" />
 
         <div className="submit-button-container">
           <button

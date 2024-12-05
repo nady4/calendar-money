@@ -43,7 +43,7 @@ const YearCategoryBarChart: React.FC<YearCategoryBarChartProps> = ({
     .map(([categoryName, total]) => {
       const category = categories.find((cat) => cat.name === categoryName);
       return {
-        categoryName, // 'categoryName' used here
+        categoryName,
         balance: total,
         color: category?.color || "rgba(59, 130, 246, 0.6)",
       };
@@ -70,18 +70,17 @@ const YearCategoryBarChart: React.FC<YearCategoryBarChartProps> = ({
     ],
   };
 
-  // Chart options
   const chartOptions = {
-    indexAxis: "y" as const, // This makes the bar chart horizontal
+    indexAxis: "y" as const,
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        display: false, // Hide legend as it's not very informative here
+        display: false,
       },
       title: {
         display: true,
-        text: `Category Balance - ${selectedYear}`,
+        text: `${selectedYear} Categories`,
         color: "#1F2937",
         font: {
           family: "Nunito Sans, sans-serif",
@@ -105,7 +104,6 @@ const YearCategoryBarChart: React.FC<YearCategoryBarChartProps> = ({
         },
         title: {
           display: true,
-          text: "Balance",
           color: "#374151",
           font: {
             size: 14,
@@ -121,7 +119,6 @@ const YearCategoryBarChart: React.FC<YearCategoryBarChartProps> = ({
         },
         title: {
           display: true,
-          text: "Categories",
           color: "#374151",
           font: {
             size: 14,
