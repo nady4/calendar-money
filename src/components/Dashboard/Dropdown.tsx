@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { UserType } from "../../types";
 import CatUser from "../../assets/catUser.svg";
 import UserIcon from "../../assets/userIcon.svg";
+import CalendarIcon from "../../assets/calendarIcon.svg";
 import CategoriesIcon from "../../assets/categoriesIcon.svg";
 import StatsIcon from "../../assets/statsIcon.svg";
 import LogoutIcon from "../../assets/logoutIcon.svg";
@@ -10,9 +11,14 @@ import "../../styles/Dropdown.scss";
 interface DropdownProps {
   user: UserType;
   isDropdownOpen: boolean;
+  setIsDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Dropdown = ({ user, isDropdownOpen }: DropdownProps) => {
+const Dropdown = ({
+  user,
+  isDropdownOpen,
+  setIsDropdownOpen,
+}: DropdownProps) => {
   const navigate = useNavigate();
 
   return (
@@ -30,6 +36,7 @@ const Dropdown = ({ user, isDropdownOpen }: DropdownProps) => {
         <div
           className="dropdown-item"
           onClick={() => {
+            setIsDropdownOpen(false);
             navigate("/account");
           }}
         >
@@ -39,6 +46,21 @@ const Dropdown = ({ user, isDropdownOpen }: DropdownProps) => {
         <div
           className="dropdown-item"
           onClick={() => {
+            setIsDropdownOpen(false);
+            navigate("/dashboard");
+          }}
+        >
+          <img
+            className="dropdown-item-icon"
+            src={CalendarIcon}
+            alt="dashboard"
+          />
+          <p className="dropdown-item-text">CALENDAR</p>
+        </div>
+        <div
+          className="dropdown-item"
+          onClick={() => {
+            setIsDropdownOpen(false);
             navigate("/categories");
           }}
         >
@@ -52,6 +74,7 @@ const Dropdown = ({ user, isDropdownOpen }: DropdownProps) => {
         <div
           className="dropdown-item"
           onClick={() => {
+            setIsDropdownOpen(false);
             navigate("/stats");
           }}
         >

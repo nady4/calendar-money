@@ -1,34 +1,25 @@
-.category {
+.item {
   min-height: 80px;
   margin-top: 5%;
-  color: #000000;
   border-radius: 20px;
   text-align: center;
+  color: black;
   display: flex;
   align-items: center;
   justify-content: space-around;
   cursor: pointer;
   transition: 0.4 all ease-out;
 
+  div {
+    width: 30%;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
   &:hover {
     transform: scale(1.05);
-    background-color: #dfdfdf;
   }
   &:active {
     transform: scale(0.95);
-    background-color: #535353;
-  }
-
-  .category-name,
-  .category-type,
-  .category-color {
-    height: 80%;
-    width: 30%;
-    h2 {
-      font-size: 1.1rem;
-    }
-    p {
-      font-size: 1.1rem;
-    }
   }
 }

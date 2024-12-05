@@ -1,20 +1,19 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-import useValidateUser from "../../hooks/useValidateUser";
 import Footer from "../../components/Dashboard/Footer";
+import { UserType } from "../../types.d";
 import API_URL from "../../util/api";
 import "react-toastify/dist/ReactToastify.css";
 import "../../styles/auth.scss";
 
-function Register() {
+function Login({
+  setUser,
+}: {
+  setUser: React.Dispatch<React.SetStateAction<UserType>>;
+}) {
   const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [disableSubmitButton, setDisableSubmitButton] = useState(true);
-  const navigate = useNavigate();
-
-  useValidateUser({ username, email, password, setDisableSubmitButton });
 
   const toastConfig = {
     position: "top-center" as const,
@@ -29,61 +28,69 @@ function Register() {
   const onUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(event.target.value);
   };
-  const onEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(event.target.value);
-  };
   const onPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
   };
 
-  const onSubmitRegister = async () => {
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      onSubmitLogin();
+    }
+  };
+
+  const onSubmitLogin = async () => {
     try {
-      const response = await fetch(`${API_URL}/register`, {
+      const response = await fetch(`${API_URL}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
         },
         body: JSON.stringify({
           username,
-          email,
           password,
         }),
       });
 
-      const data = await response.text();
-
       switch (response.status) {
         case 200:
-          toast.success("Registration successful", toastConfig);
-          setTimeout(() => {
-            navigate("/login");
-          }, 1000);
+          toast.success("Login successful", toastConfig);
           break;
 
-        case 400: // Zod validation errors
-          toast.error(data, toastConfig);
+        case 400:
+          toast.error("Username not found", toastConfig);
           break;
 
-        case 402: // Username not available
-          toast.error(data, toastConfig);
-          break;
-
-        case 403: // Email not available
-          toast.error(data, toastConfig);
-          break;
-
-        case 500: // Server error
-          toast.error(data, toastConfig);
+        case 401:
+          toast.error("Password incorrect", toastConfig);
           break;
 
         default:
-          toast.error("An unexpected error occurred", toastConfig);
+          toast.error(`Error: ${response.status}`, toastConfig);
       }
+
+      const data = await response.json();
+
+      setTimeout(() => {
+        if (data.user) {
+          setUser({
+            id: data.user._id,
+            username: data.user.username,
+            email: data.user.email,
+            password: data.user.password,
+            transactions: data.user.transactions,
+            categories: data.user.categories,
+            loggedIn: true,
+          });
+          localStorage.setItem("user", JSON.stringify(data.user));
+        }
+        if (data.token) {
+          localStorage.setItem("token", data.token);
+        }
+      }, 1000);
     } catch (error) {
-      // Network or parsing errors
-      console.error("Registration error:", error);
-      toast.error("Connection error. Please try again.", toastConfig);
+      console.error("Error during fetch:", error);
+      toast.error("Network error or server is unreachable", toastConfig);
     }
   };
 
@@ -91,34 +98,20 @@ function Register() {
     <main>
       <ToastContainer />
       <div className="container">
-        <fieldset id="sign_up" className="fieldset">
-          <legend className="legend">Register Your Account 📝</legend>
+        <fieldset id="log_up" className="fieldset">
+          <legend className="legend">Nice to see you again! 👋</legend>
           <div className="input-container">
-            <label htmlFor="name" className="label">
+            <label htmlFor="email-address" className="label">
               Username
             </label>
             <input
               onChange={onUsernameChange}
-              type="text"
-              name="username"
-              id="username"
-              className="input"
-            />
-          </div>
-
-          <div className="input-container">
-            <label htmlFor="email-address" className="label">
-              Email
-            </label>
-            <input
-              onChange={onEmailChange}
               type="email"
               name="email-address"
               id="email-address"
               className="input"
             />
           </div>
-
           <div className="input-container">
             <label htmlFor="password" className="label">
               Password
@@ -129,22 +122,22 @@ function Register() {
               name="password"
               id="password"
               className="input"
+              onKeyDown={handleKeyDown}
             />
           </div>
         </fieldset>
         <div className="submit-container">
           <button
-            onClick={onSubmitRegister}
+            onClick={onSubmitLogin}
             type="submit"
             className="submit-button"
-            disabled={disableSubmitButton}
           >
-            Register
+            Log In
           </button>
         </div>
-        <div className="link-button">
-          <Link to="/login" className="link">
-            Log In
+        <div className="add-button">
+          <Link to="/register" className="add">
+            Register
           </Link>
         </div>
       </div>
@@ -153,4 +146,4 @@ function Register() {
   );
 }
 
-export default Register;
+export default Login;

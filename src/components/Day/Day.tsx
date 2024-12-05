@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { Temporal } from "@js-temporal/polyfill";
 import { getDayTotal, getDayTransactions } from "../../util/functions";
 import { UserType, TransactionType } from "../../types.d";
-import Transaction from "../Transaction/Transaction";
 import "../../styles/Day.scss";
 
 interface DayProps {
@@ -37,7 +36,8 @@ function Day({ date, user, selectedDay, setSelectedDay }: DayProps) {
     setSelectedDay(date);
     navigate("/transactions");
   };
-  const openNewTransaction = () => {
+  const openNewTransaction = (e: React.MouseEvent) => {
+    e.stopPropagation();
     setSelectedDay(date);
     navigate("/new-transaction");
   };
@@ -48,6 +48,7 @@ function Day({ date, user, selectedDay, setSelectedDay }: DayProps) {
         ${isActiveMonth ? "active-month" : "inactive-month"} ${
         total.balance < 0 ? "negative" : "positive"
       } calendar-day`}
+      onClick={openTransactions}
     >
       <div className="day-header">
         <div className="day-balance-container">
@@ -65,9 +66,21 @@ function Day({ date, user, selectedDay, setSelectedDay }: DayProps) {
           </button>
         </div>
       </div>
-      <div className="transactions-container" onClick={openTransactions}>
+      <div className="transactions-container">
         {transactions.map((transaction: TransactionType, index: number) => {
-          return <Transaction transaction={transaction} key={index} />;
+          return (
+            <div className="day-item" key={index}>
+              <div
+                className="item-color"
+                style={{ backgroundColor: transaction.category.color }}
+              ></div>
+              <div className="item-amount">
+                {transaction.category.type === "Income" ? "+" : "-"}$
+                {transaction.amount}
+              </div>
+              <div className="item-description">{transaction.description}</div>
+            </div>
+          );
         })}
       </div>
     </div>

@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { Temporal } from "@js-temporal/polyfill";
 import API_URL from "../../util/api";
 import useCategoryOptions from "../../hooks/useCategoryOptions";
 import useValidateTransaction from "../../hooks/useValidateTransaction";
@@ -17,6 +18,9 @@ function EditTransaction({ user, setUser, transaction }: EditTransactionProps) {
   const [amount, setAmount] = useState(Math.abs(transaction.amount));
   const [description, setDescription] = useState(transaction.description);
   const [category, setCategory] = useState(transaction.category);
+  const [date, setDate] = useState(
+    Temporal.PlainDate.from(transaction.date.toString().slice(0, 10))
+  );
   const [disableSubmitButton, setDisableSubmitButton] = useState(true);
 
   const categoriesDatalist = useRef<HTMLDataListElement>(null);
@@ -50,8 +54,22 @@ function EditTransaction({ user, setUser, transaction }: EditTransactionProps) {
     if (selectedCategory) {
       await setCategory(selectedCategory);
       if (categoryInput.current) {
-        categoryInput.current.placeholder = event.target.value;
+        categoryInput.current.placeholder = `${
+          selectedCategory.type === "Income" ? "( + )" : "( - )"
+        } ${event.target.value} `;
         categoryInput.current.value = "";
+      }
+    }
+  };
+
+  const onDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (value) {
+      try {
+        const parsedDate = Temporal.PlainDate.from(value);
+        setDate(parsedDate);
+      } catch (error) {
+        console.error("Invalid date format:", error);
       }
     }
   };
@@ -61,7 +79,7 @@ function EditTransaction({ user, setUser, transaction }: EditTransactionProps) {
 
     const newTransaction = {
       id: transaction._id,
-      date: transaction.date,
+      date: new Date(date.year, date.month - 1, date.day),
       amount,
       description,
       category,
@@ -147,7 +165,7 @@ function EditTransaction({ user, setUser, transaction }: EditTransactionProps) {
 
         <label htmlFor="category">Category</label>
         <input
-          id="category-input"
+          className="category-input"
           ref={categoryInput}
           name="category"
           list="categories"
@@ -155,6 +173,15 @@ function EditTransaction({ user, setUser, transaction }: EditTransactionProps) {
           placeholder={category?.name || ""}
         />
         <datalist id="categories" ref={categoriesDatalist}></datalist>
+
+        <label htmlFor="date">Date</label>
+        <input
+          type="date"
+          name="date"
+          id="date"
+          onChange={onDateChange}
+          value={date.toString().slice(0, 10)}
+        />
 
         <button
           type="button"
@@ -165,8 +192,8 @@ function EditTransaction({ user, setUser, transaction }: EditTransactionProps) {
           Submit
         </button>
       </form>
-      <div className="link-button">
-        <button className="link" onClick={handleDeleteSubmit}>
+      <div className="delete-button">
+        <button className="delete" onClick={handleDeleteSubmit}>
           Delete Transaction
         </button>
       </div>

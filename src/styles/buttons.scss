@@ -24,22 +24,11 @@
   }
 }
 
-%delete-button {
-  background-color: transparent;
-  color: white;
-  font-size: 1.2rem;
-  cursor: pointer;
-  margin-top: 50px;
-  transition: 0.2s ease-in-out;
-
-  &:hover {
-    color: rgb(240, 212, 216);
-    transform: scale(1.1);
-  }
-
-  &:active {
-    color: rgb(255, 65, 54);
-    transform: scale(0.9);
+@media (max-width: 600px) {
+  %exit-button {
+    height: 40px;
+    width: 40px;
+    top: 20px;
   }
 }
 
@@ -56,7 +45,7 @@
   transition: 0.2s ease-in-out;
 
   &:disabled {
-    background-color: vars.$disabled-color;
+    background-color: vars.$disabled-primary-color;
     color: white;
     border: none;
     opacity: 0.5;
@@ -82,21 +71,53 @@
   margin-top: 30px;
   margin-bottom: 20px;
 
-  .link {
+  .add,
+  .delete {
     font-size: 1.3rem;
     font-weight: bold;
-    color: vars.$primary-color;
     text-decoration: none;
     border: none;
     background: none;
     cursor: pointer;
 
     &:hover {
+      scale: 1.05;
+    }
+
+    &:active {
+      scale: 0.95;
+    }
+  }
+}
+
+%add-button {
+  @extend %link-button;
+
+  .add {
+    color: vars.$primary-color;
+
+    &:hover {
       color: vars.$secondary-color;
     }
 
-    &:focus {
+    &:active {
       color: vars.$tertiary-color;
+    }
+  }
+}
+
+%delete-button {
+  @extend %link-button;
+
+  .delete {
+    color: vars.$disabled-primary-color;
+
+    &:hover {
+      color: vars.$disabled-secondary-color;
+    }
+
+    &:active {
+      color: vars.$disabled-tertiary-color;
     }
   }
 }

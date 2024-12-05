@@ -24,6 +24,15 @@
       justify-content: center;
     }
 
+    .gradient-border-top {
+      width: 100%;
+      height: 15px;
+      position: absolute;
+      top: 70px;
+      z-index: 2;
+      background-image: linear-gradient(0deg, transparent, rgba(0, 0, 0, 0.1));
+    }
+
     .menu-button-container {
       width: 5%;
       background-color: transparent;
@@ -141,7 +150,7 @@
         }
 
         .positive-month {
-          color: rgb(60, 175, 60);
+          color: rgb(45, 160, 45);
         }
 
         .negative-month {
@@ -176,6 +185,12 @@
     .active-month {
       color: white;
       background-color: vars.$primary-color;
+
+      .month-header {
+        .positive-month {
+          color: rgb(66, 235, 66);
+        }
+      }
 
       .month-body {
         .month-income {
@@ -215,6 +230,11 @@
 
     .navbar-top {
       height: 90px;
+
+      .gradient-border-top {
+        top: 90px;
+      }
+
       .menu-button-container {
         margin-left: 10px;
         width: 15%;

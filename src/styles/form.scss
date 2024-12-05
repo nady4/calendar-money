@@ -1,22 +1,12 @@
 @use "./buttons" as *;
 
-.delete-button {
-  @extend %delete-button;
-}
-
-.submit-button {
-  @extend %submit-button;
-}
-
 .form {
-  background-color: #1b1b1b;
-  color: #fff;
-  position: fixed;
-  top: 0;
-  left: 0;
   width: 100%;
   height: 100%;
+  position: fixed;
   z-index: 100;
+  background-color: #1b1b1b;
+  color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -61,6 +51,10 @@
         border-style: double;
         border: 2px solid rgb(233, 255, 234);
       }
+    }
+
+    .category-input {
+      width: 250px;
     }
 
     .email-input {
@@ -116,15 +110,21 @@
     }
   }
 
-  .link-button {
-    @extend %link-button;
+  .submit-button {
+    @extend %submit-button;
+  }
+
+  .add-button {
+    @extend %add-button;
+  }
+
+  .delete-button {
+    @extend %delete-button;
   }
 }
 
 @media (max-width: 600px) {
   .form {
-    background-color: white;
-    margin-top: 25%;
     h2 {
       font-size: 1.5rem;
     }

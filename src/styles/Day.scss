@@ -2,6 +2,7 @@
 
 .calendar-day {
   overflow-y: hidden;
+  overflow-x: hidden;
   height: vars.$day-height;
   min-height: 140px;
   width: vars.$day-width;
@@ -97,10 +98,31 @@
     justify-content: flex-start;
   }
 
-  .item {
-    width: 90%;
+  .day-item {
+    width: 100%;
+    margin-top: 5px;
+    height: 25px;
     display: flex;
-    justify-content: center;
+    justify-content: left;
+    align-items: center;
+
+    div {
+      font-size: 0.9rem;
+    }
+
+    .item-color {
+      margin-left: 20px;
+      height: 5px;
+      width: 5px;
+      border-radius: 100%;
+    }
+
+    .item-amount {
+      text-align: center;
+      font-weight: 600;
+      width: 40%;
+      min-width: 80px;
+    }
   }
 }
 

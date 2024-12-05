@@ -12,14 +12,20 @@ interface NewTransactionProps {
   user: UserType;
   setUser: React.Dispatch<React.SetStateAction<UserType>>;
   selectedDay: Temporal.PlainDate;
+  setSelectedDay: React.Dispatch<React.SetStateAction<Temporal.PlainDate>>;
 }
 
-function NewTransaction({ user, setUser, selectedDay }: NewTransactionProps) {
+function NewTransaction({
+  user,
+  setUser,
+  selectedDay,
+  setSelectedDay,
+}: NewTransactionProps) {
   const [amount, setAmount] = useState(0);
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState<CategoryType | null>(null);
   const [disableSubmitButton, setDisableSubmitButton] = useState(true);
-
+  console.log(selectedDay);
   const categoriesDatalist = useRef<HTMLDataListElement>(null);
   const categoryInput = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
@@ -58,8 +64,22 @@ function NewTransaction({ user, setUser, selectedDay }: NewTransactionProps) {
     if (selectedCategory) {
       await setCategory(selectedCategory);
       if (categoryInput.current) {
-        categoryInput.current.placeholder = event.target.value;
+        categoryInput.current.placeholder = `${
+          selectedCategory.type === "Income" ? "( + )" : "( - )"
+        } ${event.target.value} `;
         categoryInput.current.value = "";
+      }
+    }
+  };
+
+  const onDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (value) {
+      try {
+        const parsedDate = Temporal.PlainDate.from(value);
+        setSelectedDay(parsedDate);
+      } catch (error) {
+        console.error("Invalid date format:", error);
       }
     }
   };
@@ -129,13 +149,23 @@ function NewTransaction({ user, setUser, selectedDay }: NewTransactionProps) {
 
         <label htmlFor="category">Category</label>
         <input
-          id="category-input"
+          className="category-input"
           ref={categoryInput}
           name="category"
           list="categories-datalist"
           onChange={onCategoryChange}
         />
         <datalist id="categories-datalist" ref={categoriesDatalist}></datalist>
+
+        <label htmlFor="date">Date</label>
+        <input
+          type="date"
+          name="date"
+          id="date"
+          onChange={onDateChange}
+          value={selectedDay.toString().slice(0, 10)}
+        />
+
         <div className="submit-button-container">
           <button
             type="button"

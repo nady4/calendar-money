@@ -1,15 +1,11 @@
 import { CategoryType } from "../../types.d";
-import "../../styles/Category.scss";
+import "../../styles/list-item.scss";
 
 function Category({ category }: { category: CategoryType }) {
   return (
-    <div className="category" style={{ backgroundColor: category.color }}>
-      <div className="category-name">
-        <h2>{category.name}</h2>
-      </div>
-      <div className="category-type">
-        <p>{category.type}</p>
-      </div>
+    <div className="item" style={{ backgroundColor: category.color }}>
+      <div className="category-name">{category.name}</div>
+      <div className="category-type">{category.type}</div>
     </div>
   );
 }

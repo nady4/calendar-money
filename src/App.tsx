@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { Temporal } from "@js-temporal/polyfill";
-import Login from "./views/Login/Login";
-import Register from "./views/Register/Register.tsx";
+import Login from "./views/Auth/Login";
+import Register from "./views/Auth/Register.tsx";
 import Dashboard from "./views/Dashboard/Dashboard.tsx";
 import CategoryList from "./views/Category/CategoryList";
 import NewCategory from "./views/Category/NewCategory.tsx";
@@ -14,10 +14,6 @@ import Account from "./views/Account/Account.tsx";
 import Stats from "./views/Stats/Stats.tsx";
 import { useAuth } from "./hooks/useAuth.ts";
 import { UserType, CategoryType, TransactionType } from "./types.d";
-import {
-  getMonthlyTotalFromCategories,
-  getYearlyTotalFromCategories,
-} from "./util/functions.ts";
 
 function App() {
   const [user, setUser] = useState<UserType>({
@@ -30,17 +26,6 @@ function App() {
     loggedIn: false,
   });
 
-  console.log(
-    getMonthlyTotalFromCategories(
-      user.transactions,
-      user.categories,
-      "December"
-    )
-  );
-  console.log(
-    getYearlyTotalFromCategories(user.transactions, user.categories, 2024)
-  );
-
   const [selectedDay, setSelectedDay] = useState(
     Temporal.Now.plainDate("gregory")
   );
@@ -49,6 +34,8 @@ function App() {
   );
   const [selectedTransaction, setSelectedTransaction] =
     useState<TransactionType | null>(null);
+
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   useAuth(user, setUser);
 
@@ -87,6 +74,8 @@ function App() {
                 user={user}
                 selectedDay={selectedDay}
                 setSelectedDay={setSelectedDay}
+                isDropdownOpen={isDropdownOpen}
+                setIsDropdownOpen={setIsDropdownOpen}
               />
             ) : (
               <Navigate to="/login" />
@@ -95,7 +84,15 @@ function App() {
         />
         <Route
           path="/stats"
-          element={<Stats transactions={user.transactions} />}
+          element={
+            <Stats
+              user={user}
+              selectedDay={selectedDay}
+              setSelectedDay={setSelectedDay}
+              isDropdownOpen={isDropdownOpen}
+              setIsDropdownOpen={setIsDropdownOpen}
+            />
+          }
         />
         <Route
           path="/categories"
@@ -156,6 +153,7 @@ function App() {
               user={user}
               setUser={setUser}
               selectedDay={selectedDay}
+              setSelectedDay={setSelectedDay}
             />
           }
         />

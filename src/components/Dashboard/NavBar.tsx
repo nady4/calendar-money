@@ -16,6 +16,7 @@ interface NavBarProps {
   setSelectedDay: React.Dispatch<React.SetStateAction<Temporal.PlainDate>>;
   isDropdownOpen: boolean;
   setIsDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  isStatsView: boolean;
 }
 
 const NavBar = ({
@@ -24,20 +25,30 @@ const NavBar = ({
   setSelectedDay,
   isDropdownOpen,
   setIsDropdownOpen,
+  isStatsView,
 }: NavBarProps) => {
-  const [isNavBarOpen, setIsNavBarOpen] = useState(false);
+  const [isNavBarOpen, setIsNavBarOpen] = useState(isStatsView);
 
   const handleLeftArrowClick = () => {
-    setSelectedDay(selectedDay.subtract({ months: 1 }));
+    setSelectedDay(
+      isStatsView
+        ? selectedDay.subtract({ years: 1 })
+        : selectedDay.subtract({ months: 1 })
+    );
   };
 
   const handleRightArrowClick = () => {
-    setSelectedDay(selectedDay.add({ months: 1 }));
+    setSelectedDay(
+      isStatsView
+        ? selectedDay.add({ years: 1 })
+        : selectedDay.add({ months: 1 })
+    );
   };
 
   return (
     <div className="navbar">
       <div className="navbar-top">
+        <div className="gradient-border-top"></div>
         <div
           className="menu-button-container"
           onClick={() => {
@@ -57,13 +68,15 @@ const NavBar = ({
           </button>
           <div
             className="date-container"
-            onClick={() => setIsNavBarOpen(!isNavBarOpen)}
+            onClick={() => setIsNavBarOpen(isStatsView ? true : !isNavBarOpen)}
           >
             <p className="date">
-              {selectedDay.toLocaleString("en", {
-                month: "long",
-                year: "numeric",
-              })}
+              {isStatsView
+                ? selectedDay.toLocaleString("en", { year: "numeric" })
+                : selectedDay.toLocaleString("en", {
+                    month: "long",
+                    year: "numeric",
+                  })}
             </p>
           </div>
           <button className="arrow" onClick={handleRightArrowClick}>
@@ -99,7 +112,8 @@ const NavBar = ({
               <p
                 className={`month ${
                   window.innerWidth < 600
-                    ? getMonthTotal(user.transactions, month).balance >= 0
+                    ? getMonthTotal(user.transactions, month, selectedDay.year)
+                        .balance >= 0
                       ? "positive-month"
                       : "negative-month"
                     : ""
@@ -111,15 +125,24 @@ const NavBar = ({
             <div className="month-body">
               <p className="month-income">
                 +$
-                {getMonthTotal(user.transactions, month).income}
+                {
+                  getMonthTotal(user.transactions, month, selectedDay.year)
+                    .income
+                }
               </p>
               <p className="month-expenses">
                 -$
-                {getMonthTotal(user.transactions, month).expenses}
+                {
+                  getMonthTotal(user.transactions, month, selectedDay.year)
+                    .expenses
+                }
               </p>
               <p className="month-balance">
                 =$
-                {getMonthTotal(user.transactions, month).balance}
+                {
+                  getMonthTotal(user.transactions, month, selectedDay.year)
+                    .balance
+                }
               </p>
             </div>
           </div>

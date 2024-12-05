@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Temporal } from "@js-temporal/polyfill";
 import { UserType } from "../../types";
 import Dropdown from "../../components/Dashboard/Dropdown";
@@ -10,20 +9,31 @@ interface DashboardProps {
   user: UserType;
   selectedDay: Temporal.PlainDate;
   setSelectedDay: React.Dispatch<React.SetStateAction<Temporal.PlainDate>>;
+  isDropdownOpen: boolean;
+  setIsDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-function Dashboard({ user, selectedDay, setSelectedDay }: DashboardProps) {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
+function Dashboard({
+  user,
+  selectedDay,
+  setSelectedDay,
+  isDropdownOpen,
+  setIsDropdownOpen,
+}: DashboardProps) {
   return (
     <div className="app-main">
-      <Dropdown user={user} isDropdownOpen={isDropdownOpen} />
+      <Dropdown
+        user={user}
+        isDropdownOpen={isDropdownOpen}
+        setIsDropdownOpen={setIsDropdownOpen}
+      />
       <NavBar
         user={user}
         selectedDay={selectedDay}
         setSelectedDay={setSelectedDay}
         isDropdownOpen={isDropdownOpen}
         setIsDropdownOpen={setIsDropdownOpen}
+        isStatsView={false}
       />
       <Calendar
         user={user}

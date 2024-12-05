@@ -2,11 +2,9 @@
 @use "buttons" as *;
 
 .list {
-  position: fixed;
-  top: 0;
-  left: 0;
   width: 100%;
-  height: 100%;
+  height: 100vh;
+  overflow-y: hidden;
   background-color: #1b1b1b;
   color: white;
   z-index: 100;
@@ -17,6 +15,55 @@
 
   h2 {
     font-size: 2.1rem;
+  }
+
+  .type-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    label {
+      text-align: center;
+    }
+
+    .type-boxes {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-end;
+      justify-content: space-between;
+      height: 50px;
+
+      label {
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+      }
+
+      #income-box,
+      #expense-box {
+        width: 30px;
+        height: 30px;
+        &:hover {
+          cursor: pointer;
+        }
+      }
+      #income-box {
+        margin-left: 10px;
+        margin-right: auto;
+        &:checked {
+          filter: invert(0%) sepia(0%) saturate(100%) hue-rotate(270deg)
+            brightness(150%) contrast(100%);
+        }
+      }
+      #expense-box {
+        margin-right: 10px;
+        margin-left: auto;
+        &:checked {
+          filter: invert(0%) sepia(0%) saturate(100%) hue-rotate(140deg)
+            brightness(100%) contrast(100%);
+        }
+      }
+    }
   }
 
   .exit-button {
@@ -31,7 +78,6 @@
         align-items: center;
         justify-content: space-between;
         width: 100%;
-        margin-bottom: 20px;
       }
 
       .day-change-button {
@@ -61,7 +107,7 @@
 
   .items-container {
     width: 50%;
-    min-width: 400px;
+    min-width: 350px;
     height: 60%;
     margin: 20px 0;
     display: flex;
@@ -76,7 +122,7 @@
     }
   }
 
-  .link-button {
-    @extend %link-button;
+  .add-button {
+    @extend %add-button;
   }
 }

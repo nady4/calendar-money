@@ -33,7 +33,6 @@ function Calendar({ user, selectedDay, setSelectedDay }: CalendarProps) {
 
   return (
     <main className="calendar-main">
-      <div className="gradient-border-top"></div>
       <div className="calendar-container">
         <div className="weekday-list">
           {weekdays.map((weekday) => (

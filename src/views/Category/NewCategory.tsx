@@ -101,7 +101,7 @@ function NewCategory({ user, setUser }: NewCategoryProps) {
           onChange={onNameChange}
         />
 
-        <label htmlFor="color" className="label">
+        <label htmlFor="color" className="label" style={{ color: color }}>
           Color
         </label>
         <HuePicker color={color} onChangeComplete={onColorChange} />

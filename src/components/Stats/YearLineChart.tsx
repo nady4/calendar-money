@@ -29,7 +29,7 @@ const YearLineChart = ({
   transactions: TransactionType[];
 }) => {
   const monthlyTotals = months.map((month) =>
-    getMonthTotal(transactions, month)
+    getMonthTotal(transactions, month, 2024)
   );
 
   const chartData = {

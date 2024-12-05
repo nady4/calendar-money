@@ -6,19 +6,6 @@
   padding-bottom: 20px;
   z-index: -1;
 
-  .gradient-border-top {
-    position: relative;
-    z-index: 1;
-  }
-
-  .gradient-border-top:before {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 15px;
-    background-image: linear-gradient(0deg, transparent, rgba(0, 0, 0, 0.05));
-  }
-
   .calendar-container {
     display: flex;
     flex-flow: column;

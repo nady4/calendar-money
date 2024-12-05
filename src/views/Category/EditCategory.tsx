@@ -130,7 +130,7 @@ function EditCategory({ user, setUser, category }: EditCategoryProps) {
           onChange={onNameChange}
         />
 
-        <label htmlFor="color" className="label">
+        <label htmlFor="color" className="label" style={{ color: color }}>
           Color
         </label>
         <HuePicker color={color} onChangeComplete={onColorChange} />
@@ -165,8 +165,8 @@ function EditCategory({ user, setUser, category }: EditCategoryProps) {
           Submit
         </button>
       </form>
-      <div className="link-button" onClick={handleDeleteSubmit}>
-        <p className="link">Delete category</p>
+      <div className="delete-button" onClick={handleDeleteSubmit}>
+        <p className="delete">Delete category</p>
       </div>
     </div>
   );

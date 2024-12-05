@@ -128,8 +128,8 @@ const Account = ({ user, setUser }: AccountProps) => {
             Submit
           </button>
         </div>
-        <div className="link-button" onClick={handleDeleteSubmit}>
-          <p className="link">Delete User</p>
+        <div className="delete-button" onClick={handleDeleteSubmit}>
+          <p className="delete">Delete User</p>
         </div>
       </form>
     </div>

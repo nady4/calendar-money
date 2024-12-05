@@ -67,6 +67,16 @@ function TransactionList({
           </div>
         </div>
       </div>
+      <div className="add-button">
+        <button
+          className="add"
+          onClick={() => {
+            navigate("/new-transaction");
+          }}
+        >
+          New transaction
+        </button>
+      </div>
       <div className="items-container">
         {dayTransactions.map((transaction, index) => {
           return (
@@ -82,16 +92,6 @@ function TransactionList({
             </div>
           );
         })}
-      </div>
-      <div className="link-button">
-        <button
-          className="link"
-          onClick={() => {
-            navigate("/new-transaction");
-          }}
-        >
-          Add new transaction
-        </button>
       </div>
     </div>
   );
