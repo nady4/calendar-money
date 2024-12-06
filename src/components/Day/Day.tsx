@@ -78,7 +78,11 @@ function Day({ date, user, selectedDay, setSelectedDay }: DayProps) {
                 {transaction.category.type === "Income" ? "+" : "-"}$
                 {transaction.amount}
               </div>
-              <div className="item-description">{transaction.description}</div>
+              <div className="item-description">
+                {transaction.description == transaction.description.slice(0, 10)
+                  ? transaction.description
+                  : transaction.description.slice(0, 8) + "..."}
+              </div>
             </div>
           );
         })}

@@ -12,6 +12,7 @@
   flex-direction: column;
 
   h2 {
+    margin-top: 40px;
     font-size: 2rem;
   }
 
@@ -49,6 +50,29 @@
         outline: none;
         border-style: double;
         border: 2px solid rgb(233, 255, 234);
+      }
+    }
+
+    .repeat-container {
+      margin-top: 40px;
+      padding: 0;
+      height: 50px;
+      width: 250px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      label {
+        margin-top: 0;
+        margin-bottom: 0;
+        height: 40px;
+      }
+
+      input {
+        margin-top: 0;
+        margin-left: 10px;
+        height: 20px;
+        width: 20px;
       }
     }
 

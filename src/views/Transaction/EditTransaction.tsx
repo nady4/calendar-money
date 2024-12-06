@@ -21,6 +21,8 @@ function EditTransaction({ user, setUser, transaction }: EditTransactionProps) {
   const [date, setDate] = useState(
     Temporal.PlainDate.from(transaction.date.toString().slice(0, 10))
   );
+  const [repeats, setRepeats] = useState(false);
+  const repeatsBox = useRef<HTMLInputElement>(null);
   const [disableSubmitButton, setDisableSubmitButton] = useState(true);
 
   const categoriesDatalist = useRef<HTMLDataListElement>(null);
@@ -74,6 +76,10 @@ function EditTransaction({ user, setUser, transaction }: EditTransactionProps) {
     }
   };
 
+  const onRepeatsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRepeats(event.target.checked);
+  };
+
   const handleUpdateSubmit = async (event: React.FormEvent) => {
     event?.preventDefault();
 
@@ -83,6 +89,7 @@ function EditTransaction({ user, setUser, transaction }: EditTransactionProps) {
       amount,
       description,
       category,
+      repeats,
     };
 
     try {
@@ -182,6 +189,16 @@ function EditTransaction({ user, setUser, transaction }: EditTransactionProps) {
           onChange={onDateChange}
           value={date.toString().slice(0, 10)}
         />
+        <div className="repeat-container">
+          <label htmlFor="repeat">Repeat each Month</label>
+          <input
+            type="checkbox"
+            name="repeat"
+            id="repeat"
+            ref={repeatsBox}
+            onChange={onRepeatsChange}
+          />
+        </div>
 
         <button
           type="button"

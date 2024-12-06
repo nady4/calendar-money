@@ -27,6 +27,8 @@ function NewTransaction({
   const [disableSubmitButton, setDisableSubmitButton] = useState(true);
   const categoriesDatalist = useRef<HTMLDataListElement>(null);
   const categoryInput = useRef<HTMLInputElement>(null);
+  const [repeats, setRepeats] = useState(false);
+  const repeatsBox = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
   useCategoryOptions({ user, categoriesDatalist });
@@ -83,6 +85,10 @@ function NewTransaction({
     }
   };
 
+  const onRepeatsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRepeats(event.target.checked);
+  };
+
   const handleSubmit = async (event: React.FormEvent) => {
     event?.preventDefault();
 
@@ -91,6 +97,7 @@ function NewTransaction({
       amount,
       description,
       category: category ? category._id : null,
+      repeats,
     };
 
     try {
@@ -157,17 +164,23 @@ function NewTransaction({
         <datalist id="categories-datalist" ref={categoriesDatalist}></datalist>
 
         <label htmlFor="date">Date</label>
-        <div>
+        <input
+          type="date"
+          name="date"
+          id="date"
+          onChange={onDateChange}
+          value={selectedDay.toString().slice(0, 10)}
+        />
+        <div className="repeat-container">
+          <label htmlFor="repeat">Repeat each Month</label>
           <input
-            type="date"
-            name="date"
-            id="date"
-            onChange={onDateChange}
-            value={selectedDay.toString().slice(0, 10)}
+            type="checkbox"
+            name="repeat"
+            id="repeat"
+            ref={repeatsBox}
+            onChange={onRepeatsChange}
           />
         </div>
-        <label htmlFor="repeat">Repeat each Month</label>
-        <input type="checkbox" name="repeat" id="repeat" />
 
         <div className="submit-button-container">
           <button
