@@ -189,17 +189,20 @@ function EditTransaction({ user, setUser, transaction }: EditTransactionProps) {
           onChange={onDateChange}
           value={date.toString().slice(0, 10)}
         />
-        <div className="repeat-container">
-          <label htmlFor="repeat">Repeat each Month</label>
-          <input
-            type="checkbox"
-            name="repeat"
-            id="repeat"
-            ref={repeatsBox}
-            onChange={onRepeatsChange}
-          />
-        </div>
-
+        {transaction.group ? (
+          <div className="repeat-container">
+            <label htmlFor="repeat">Apply to all months</label>
+            <input
+              type="checkbox"
+              name="repeat"
+              id="repeat"
+              ref={repeatsBox}
+              onChange={onRepeatsChange}
+            />
+          </div>
+        ) : (
+          ""
+        )}
         <button
           type="button"
           className="submit-button"

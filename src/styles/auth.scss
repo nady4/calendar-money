@@ -44,10 +44,10 @@
         border-radius: 5px;
       }
     }
+  }
 
-    .submit-button {
-      @extend %submit-button;
-    }
+  .submit-button {
+    @extend %submit-button;
   }
 
   .add-button {

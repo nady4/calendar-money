@@ -28,6 +28,8 @@ function TransactionList({
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log(user.transactions, selectedDay);
+    console.log(getDayTransactions(user.transactions, selectedDay));
     setDayTransactions(getDayTransactions(user.transactions, selectedDay));
   }, [selectedDay, user.transactions]);
 

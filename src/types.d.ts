@@ -12,6 +12,7 @@ interface TransactionType {
   description: string;
   category: Category;
   date: Temporal.PlainDate;
+  group?: string;
 }
 
 interface UserType {
