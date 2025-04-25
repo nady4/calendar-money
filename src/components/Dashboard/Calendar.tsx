@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
 import { Temporal } from "@js-temporal/polyfill";
 import { UserType } from "../../types";
 import { weekdays } from "../../util/constants";
@@ -29,7 +29,7 @@ function Calendar({ user, selectedDay, setSelectedDay }: CalendarProps) {
     }
 
     setCalendarDays(days);
-  }, [selectedDay, setCalendarDays]);
+  }, [selectedDay]);
 
   return (
     <main className="calendar-main">
@@ -61,4 +61,4 @@ function Calendar({ user, selectedDay, setSelectedDay }: CalendarProps) {
   );
 }
 
-export default Calendar;
+export default memo(Calendar);

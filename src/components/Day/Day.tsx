@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Temporal } from "@js-temporal/polyfill";
 import { getDayTotal, getDayTransactions } from "../../util/functions";
@@ -67,9 +67,9 @@ function Day({ date, user, selectedDay, setSelectedDay }: DayProps) {
         </div>
       </div>
       <div className="transactions-container">
-        {transactions.map((transaction: TransactionType, index: number) => {
+        {transactions.map((transaction: TransactionType) => {
           return (
-            <div className="day-item" key={index}>
+            <div className="day-item" key={transaction._id}>
               <div
                 className="item-color"
                 style={{ backgroundColor: transaction.category.color }}
@@ -91,4 +91,4 @@ function Day({ date, user, selectedDay, setSelectedDay }: DayProps) {
   );
 }
 
-export default Day;
+export default memo(Day);

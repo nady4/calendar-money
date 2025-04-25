@@ -8,6 +8,7 @@ import CategoriesIcon from "../../assets/categoriesIcon.svg";
 import StatsIcon from "../../assets/statsIcon.svg";
 import LogoutIcon from "../../assets/logoutIcon.svg";
 import "../../styles/Dropdown.scss";
+import { memo } from "react";
 
 interface DropdownProps {
   user: UserType;
@@ -59,12 +60,12 @@ const Dropdown = ({
     }
   };
 
+  if (!isDropdownOpen) {
+    return null;
+  }
+
   return (
-    <div
-      className={`dropdown-container dropdown-${
-        isDropdownOpen ? "open" : "closed"
-      }`}
-    >
+    <div className={`dropdown-container dropdown-open`}>
       <div className="dropdown-header">
         <img className="dropdown-user-icon" src={CatUser} alt="user" />
         <h2 className="dropdown-username">{user.username}</h2>
@@ -124,4 +125,4 @@ const Dropdown = ({
   );
 };
 
-export default Dropdown;
+export default memo(Dropdown);

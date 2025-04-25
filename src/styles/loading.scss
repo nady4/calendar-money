@@ -1,0 +1,37 @@
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; // Full screen height
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #4a4a4a;
+  background-color: #fdfdfd;
+
+  animation: fadeIn 0.4s ease-in-out;
+
+  &::after {
+    content: "🌀";
+    display: inline-block;
+    margin-left: 0.5rem;
+    animation: spin 1.4s linear infinite;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

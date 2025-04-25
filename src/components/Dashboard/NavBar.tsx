@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useMediaQuery } from "@mui/material";
 import { Temporal } from "@js-temporal/polyfill";
 import { UserType } from "../../types";
 import { getMonthTotal } from "../../util/functions";
@@ -28,6 +29,24 @@ const NavBar = ({
   isStatsView,
 }: NavBarProps) => {
   const [isNavBarOpen, setIsNavBarOpen] = useState(isStatsView);
+  const isMobile = useMediaQuery("(max-width:600px)");
+
+  // 🌀 Preload icons
+  useEffect(() => {
+    [BlackMenuButton, WhiteMenuButton].forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
+
+  // ✅ Memoized totals for all months (stable unless selectedDay.year or user.transactions change)
+  const monthDataList = useMemo(
+    () =>
+      months.map((month) =>
+        getMonthTotal(user.transactions, month, selectedDay.year)
+      ),
+    [user.transactions, selectedDay.year]
+  );
 
   const handleLeftArrowClick = () => {
     setSelectedDay(
@@ -51,9 +70,7 @@ const NavBar = ({
         <div className="gradient-border-top"></div>
         <div
           className="menu-button-container"
-          onClick={() => {
-            setIsDropdownOpen(!isDropdownOpen);
-          }}
+          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
         >
           <img
             className="menu-button"
@@ -95,59 +112,40 @@ const NavBar = ({
           </button>
         </div>
       </div>
+
       <div
         className={`navbar-bottom navbar-${isNavBarOpen ? "open" : "closed"}`}
       >
-        {months.map((month, index) => (
-          <div
-            className={`month-container ${
-              selectedDay.month === index + 1 ? "active-month" : ""
-            }`}
-            key={index}
-            onClick={() => {
-              setSelectedDay(selectedDay.with({ month: index + 1 }));
-            }}
-          >
-            <div className="month-header">
-              <p
-                className={`month ${
-                  window.innerWidth < 600
-                    ? getMonthTotal(user.transactions, month, selectedDay.year)
-                        .balance >= 0
-                      ? "positive-month"
-                      : "negative-month"
-                    : ""
-                }`}
-              >
-                {window.innerWidth > 600 ? month : month.slice(0, 1)}
-              </p>
+        {months.map((month, index) => {
+          const data = monthDataList[index];
+          const isActive = selectedDay.month === index + 1;
+          const mobileClass =
+            isMobile &&
+            (data.balance >= 0 ? "positive-month" : "negative-month");
+
+          return (
+            <div
+              key={index}
+              className={`month-container ${isActive ? "active-month" : ""}`}
+              onClick={() =>
+                setSelectedDay(selectedDay.with({ month: index + 1 }))
+              }
+            >
+              <div className="month-header">
+                <p className={`month ${mobileClass || ""}`}>
+                  {isMobile ? month.slice(0, 1) : month}
+                </p>
+              </div>
+              <div className="month-body">
+                <p className="month-income">+${data.income}</p>
+                <p className="month-expenses">-${data.expenses}</p>
+                <p className="month-balance">=${data.balance}</p>
+              </div>
             </div>
-            <div className="month-body">
-              <p className="month-income">
-                +$
-                {
-                  getMonthTotal(user.transactions, month, selectedDay.year)
-                    .income
-                }
-              </p>
-              <p className="month-expenses">
-                -$
-                {
-                  getMonthTotal(user.transactions, month, selectedDay.year)
-                    .expenses
-                }
-              </p>
-              <p className="month-balance">
-                =$
-                {
-                  getMonthTotal(user.transactions, month, selectedDay.year)
-                    .balance
-                }
-              </p>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
+
       <div
         className={`gradient-border-bottom gradient-${
           isNavBarOpen ? "open" : "closed"

@@ -1,4 +1,5 @@
 import { Temporal } from "@js-temporal/polyfill";
+import { monthNameToNumber } from "./constants";
 import { TransactionType, CategoryType, TotalType } from "../types";
 
 const toPlainDate = (date: string | Temporal.PlainDate): Temporal.PlainDate => {
@@ -12,15 +13,23 @@ const getDayTransactions = (
   transactions: TransactionType[],
   day: Temporal.PlainDate
 ): TransactionType[] => {
-  return transactions
+  const processedTransactions = transactions.map((transaction) => ({
+    ...transaction,
+    date: toPlainDate(transaction.date) as Temporal.PlainDate,
+  }));
+
+  return processedTransactions
     .filter(
       (transaction) =>
-        Temporal.PlainDate.compare(toPlainDate(transaction.date), day) === 0
+        Temporal.PlainDate.compare(
+          transaction.date as Temporal.PlainDate,
+          day
+        ) === 0
     )
     .sort((a, b) => {
       return Temporal.PlainDate.compare(
-        toPlainDate(a.date),
-        toPlainDate(b.date)
+        a.date as Temporal.PlainDate,
+        b.date as Temporal.PlainDate
       );
     });
 };
@@ -30,9 +39,13 @@ const getDaysWithTransactionsTotal = (
 ): {
   [date: string]: TotalType;
 } => {
-  transactions.sort((a, b) => {
-    return toPlainDate(a.date.toString()).since(toPlainDate(b.date.toString()))
-      .sign;
+  const processedTransactions = transactions.map((transaction) => ({
+    ...transaction,
+    date: toPlainDate(transaction.date) as Temporal.PlainDate,
+  }));
+
+  processedTransactions.sort((a, b) => {
+    return Temporal.PlainDate.compare(a.date, b.date);
   });
 
   const total: {
@@ -41,21 +54,19 @@ const getDaysWithTransactionsTotal = (
 
   let income = 0;
   let expenses = 0;
-  let balance = 0;
 
-  transactions.forEach((transaction) => {
+  processedTransactions.forEach((transaction) => {
     if (transaction.category.type === "Income") {
       income += transaction.amount;
     } else {
       expenses += transaction.amount;
     }
-    balance = income - expenses;
 
-    const date = transaction.date.toString();
-    total[date] = {
+    const dateKey = transaction.date.toString();
+    total[dateKey] = {
       income,
       expenses,
-      balance,
+      balance: income - expenses,
     };
   });
 
@@ -67,11 +78,21 @@ const getDailyMonthTotals = (
   month: string,
   year: number
 ): TotalType[] => {
-  const daysInMonth = new Date(
-    new Date().getFullYear(),
-    new Date().getMonth() + 1,
-    0
-  ).getDate();
+  const monthNumber = monthNameToNumber[month];
+  if (!monthNumber) {
+    return [];
+  }
+
+  let daysInMonth;
+  try {
+    daysInMonth = Temporal.PlainYearMonth.from({
+      year,
+      month: monthNumber,
+    }).daysInMonth;
+  } catch (e) {
+    console.error("Error getting days in month:", e);
+    return [];
+  }
 
   const dailyTotals: TotalType[] = Array(daysInMonth)
     .fill(null)
@@ -81,30 +102,30 @@ const getDailyMonthTotals = (
       balance: 0,
     }));
 
-  transactions.forEach((transaction) => {
-    const transactionDate = toPlainDate(transaction.date);
-    const transactionMonth = transactionDate.toLocaleString("en-US", {
-      month: "long",
-    });
+  const processedTransactions = transactions.map((transaction) => ({
+    ...transaction,
+    date: toPlainDate(transaction.date) as Temporal.PlainDate,
+  }));
 
-    if (transactionMonth === month && transactionDate.year === year) {
-      const dayIndex = transactionDate.day - 1;
+  processedTransactions.forEach((transaction) => {
+    if (
+      transaction.date.year === year &&
+      transaction.date.month === monthNumber
+    ) {
+      const dayIndex = transaction.date.day - 1;
 
       if (transaction.category.type === "Income") {
         dailyTotals[dayIndex].income += transaction.amount;
       } else {
         dailyTotals[dayIndex].expenses += transaction.amount;
       }
-
-      dailyTotals[dayIndex].balance =
-        dailyTotals[dayIndex].income - dailyTotals[dayIndex].expenses;
     }
   });
 
   let income = 0;
   let expenses = 0;
 
-  return dailyTotals.map((daily) => {
+  const dailyRunningTotals = dailyTotals.map((daily) => {
     income += daily.income;
     expenses += daily.expenses;
 
@@ -114,6 +135,8 @@ const getDailyMonthTotals = (
       balance: income - expenses,
     };
   });
+
+  return dailyRunningTotals;
 };
 
 const getDayTotal = (
@@ -124,7 +147,10 @@ const getDayTotal = (
   const dates = Object.keys(daysWithTransactionsTotal);
 
   dates.sort((a, b) =>
-    Temporal.PlainDate.compare(toPlainDate(a), toPlainDate(b))
+    Temporal.PlainDate.compare(
+      Temporal.PlainDate.from(a),
+      Temporal.PlainDate.from(b)
+    )
   );
 
   let total: TotalType = {
@@ -133,14 +159,25 @@ const getDayTotal = (
     balance: 0,
   };
 
-  for (const date of dates) {
-    const parsedDate = toPlainDate(date);
+  let low = 0;
+  let high = dates.length - 1;
+  let foundDateKey: string | null = null;
 
-    if (Temporal.PlainDate.compare(parsedDate, day) <= 0) {
-      total = daysWithTransactionsTotal[date];
+  while (low <= high) {
+    const midIndex = Math.floor((low + high) / 2);
+    const midDate = Temporal.PlainDate.from(dates[midIndex]);
+    const comparison = Temporal.PlainDate.compare(midDate, day);
+
+    if (comparison <= 0) {
+      foundDateKey = dates[midIndex];
+      low = midIndex + 1;
     } else {
-      break;
+      high = midIndex - 1;
     }
+  }
+
+  if (foundDateKey !== null) {
+    total = daysWithTransactionsTotal[foundDateKey];
   }
 
   return total;
@@ -151,30 +188,36 @@ const getMonthTotal = (
   month: string,
   year: number
 ): TotalType => {
+  const monthNumber = monthNameToNumber[month];
+  if (!monthNumber) {
+    return { income: 0, expenses: 0, balance: 0 };
+  }
+
   const total: TotalType = {
     income: 0,
     expenses: 0,
     balance: 0,
   };
 
-  for (const transaction of transactions) {
-    const transactionDate = Temporal.PlainDate.from(
-      transaction.date.toString().replace("Z", "")
-    );
-    const transactionMonth = transactionDate.toLocaleString("en-US", {
-      month: "long",
-    });
+  const processedTransactions = transactions.map((transaction) => ({
+    ...transaction,
+    date: toPlainDate(transaction.date) as Temporal.PlainDate,
+  }));
 
-    if (transactionMonth == month && transactionDate.year == year) {
-      if (transaction.category.type === "Income") {
-        total.income += transaction.amount;
-      } else {
-        total.expenses += transaction.amount;
-      }
+  const relevantTransactions = processedTransactions.filter(
+    (transaction) =>
+      transaction.date.year === year && transaction.date.month === monthNumber
+  );
 
-      total.balance = total.income - total.expenses;
+  for (const transaction of relevantTransactions) {
+    if (transaction.category.type === "Income") {
+      total.income += transaction.amount;
+    } else {
+      total.expenses += transaction.amount;
     }
   }
+
+  total.balance = total.income - total.expenses;
 
   return total;
 };
@@ -185,25 +228,39 @@ const getMonthlyTotalFromCategories = (
   month: string,
   year: number
 ): { [Category: string]: number } => {
-  const total: { [Category: string]: number } = {};
-  for (const category of categories) {
-    total[category.name] = 0;
+  const categoryMap: { [name: string]: CategoryType } = {};
+  categories.forEach((category) => {
+    categoryMap[category.name] = category;
+  });
+
+  const monthNumber = monthNameToNumber[month];
+  if (!monthNumber) {
+    const initialTotal: { [Category: string]: number } = {};
+    categories.forEach((category) => {
+      initialTotal[category.name] = 0;
+    });
+    return initialTotal;
   }
 
-  for (const transaction of transactions) {
-    const transactionDate = Temporal.PlainDate.from(
-      transaction.date.toString().replace("Z", "")
-    );
-    const transactionMonth = transactionDate.toLocaleString("en-US", {
-      month: "long",
-    });
+  const total: { [Category: string]: number } = {};
+  categories.forEach((category) => {
+    total[category.name] = 0;
+  });
 
-    if (transactionMonth == month && transactionDate.year == year) {
-      for (const category of categories) {
-        if (category.name === transaction.category.name) {
-          total[category.name] += transaction.amount;
-        }
-      }
+  const processedTransactions = transactions.map((transaction) => ({
+    ...transaction,
+    date: toPlainDate(transaction.date) as Temporal.PlainDate,
+  }));
+
+  const relevantTransactions = processedTransactions.filter(
+    (transaction) =>
+      transaction.date.year === year && transaction.date.month === monthNumber
+  );
+
+  for (const transaction of relevantTransactions) {
+    const categoryName = transaction.category.name;
+    if (Object.prototype.hasOwnProperty.call(total, categoryName)) {
+      total[categoryName] += transaction.amount;
     }
   }
   return total;
@@ -214,23 +271,29 @@ const getYearlyTotalFromCategories = (
   categories: CategoryType[],
   year: number
 ): { [Category: string]: number } => {
+  const categoryMap: { [name: string]: CategoryType } = {};
+  categories.forEach((category) => {
+    categoryMap[category.name] = category;
+  });
+
   const total: { [Category: string]: number } = {};
-  for (const category of categories) {
+  categories.forEach((category) => {
     total[category.name] = 0;
-  }
+  });
 
-  for (const transaction of transactions) {
-    const transactionDate = Temporal.PlainDate.from(
-      transaction.date.toString().replace("Z", "")
-    );
-    const transactionYear = transactionDate.year;
+  const processedTransactions = transactions.map((transaction) => ({
+    ...transaction,
+    date: toPlainDate(transaction.date) as Temporal.PlainDate,
+  }));
 
-    if (transactionYear == year) {
-      for (const category of categories) {
-        if (category.name === transaction.category.name) {
-          total[category.name] += transaction.amount;
-        }
-      }
+  const relevantTransactions = processedTransactions.filter(
+    (transaction) => transaction.date.year === year
+  );
+
+  for (const transaction of relevantTransactions) {
+    const categoryName = transaction.category.name;
+    if (Object.prototype.hasOwnProperty.call(total, categoryName)) {
+      total[categoryName] += transaction.amount;
     }
   }
   return total;

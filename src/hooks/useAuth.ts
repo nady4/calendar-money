@@ -16,7 +16,6 @@ const refreshUserData = async (
     });
 
     const data = await response.json();
-    console.log("User data refreshed:", data);
 
     if (!response.ok) {
       console.error("Error refreshing user data:", data.error);
@@ -39,17 +38,28 @@ const refreshUserData = async (
 
 export function useAuth(
   user: UserType,
-  setUser: React.Dispatch<React.SetStateAction<UserType>>
+  setUser: React.Dispatch<React.SetStateAction<UserType>>,
+  setAuthLoading: React.Dispatch<React.SetStateAction<boolean>>
 ) {
   useEffect(() => {
-    if (user.id) {
-      refreshUserData(user.id, setUser);
-    } else {
-      const storedUser = localStorage.getItem("user");
-      if (storedUser) {
-        const userData = JSON.parse(storedUser);
-        refreshUserData(userData._id, setUser);
+    const refresh = async () => {
+      setAuthLoading(true); // 🕒 auth in progress
+
+      try {
+        if (user.id) {
+          await refreshUserData(user.id, setUser);
+        } else {
+          const storedUser = localStorage.getItem("user");
+          if (storedUser) {
+            const userData = JSON.parse(storedUser);
+            await refreshUserData(userData._id, setUser);
+          }
+        }
+      } finally {
+        setAuthLoading(false); // ✅ done
       }
-    }
-  }, [user.id, setUser]);
+    };
+
+    refresh();
+  }, [user.id, setUser, setAuthLoading]);
 }

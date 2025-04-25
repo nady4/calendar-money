@@ -14,8 +14,10 @@ import Account from "./views/Account/Account.tsx";
 import Stats from "./views/Stats/Stats.tsx";
 import { useAuth } from "./hooks/useAuth.ts";
 import { UserType, CategoryType, TransactionType } from "./types.d";
+import "./styles/loading.scss";
 
 function App() {
+  const [authLoading, setAuthLoading] = useState(true);
   const [user, setUser] = useState<UserType>(() => {
     const storedUser = localStorage.getItem("user");
     return storedUser
@@ -42,129 +44,133 @@ function App() {
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  useAuth(user, setUser);
+  useAuth(user, setUser, setAuthLoading);
 
   return (
     <main className="routes-main">
-      <Routes>
-        <Route
-          path="/"
-          element={
-            user.loggedIn ? (
-              <Navigate to="/dashboard" />
-            ) : (
-              <Navigate to="/login" />
-            )
-          }
-        />
-        <Route
-          path="/register"
-          element={user.loggedIn ? <Navigate to="/" /> : <Register />}
-        />
-        <Route
-          path="/login"
-          element={
-            user.loggedIn ? <Navigate to="/" /> : <Login setUser={setUser} />
-          }
-        />
+      {authLoading ? (
+        <div className="loading">Loading...</div>
+      ) : (
+        <Routes>
+          <Route
+            path="/"
+            element={
+              user.loggedIn ? (
+                <Navigate to="/dashboard" />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+          <Route
+            path="/register"
+            element={user.loggedIn ? <Navigate to="/" /> : <Register />}
+          />
+          <Route
+            path="/login"
+            element={
+              user.loggedIn ? <Navigate to="/" /> : <Login setUser={setUser} />
+            }
+          />
 
-        <Route
-          path="/account"
-          element={<Account user={user} setUser={setUser} />}
-        />
-        <Route
-          path="/dashboard"
-          element={
-            user.loggedIn ? (
-              <Dashboard
+          <Route
+            path="/account"
+            element={<Account user={user} setUser={setUser} />}
+          />
+          <Route
+            path="/dashboard"
+            element={
+              user.loggedIn ? (
+                <Dashboard
+                  user={user}
+                  setUser={setUser}
+                  selectedDay={selectedDay}
+                  setSelectedDay={setSelectedDay}
+                  isDropdownOpen={isDropdownOpen}
+                  setIsDropdownOpen={setIsDropdownOpen}
+                />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+          <Route
+            path="/stats"
+            element={
+              <Stats
                 user={user}
-                setUser={setUser}
                 selectedDay={selectedDay}
                 setSelectedDay={setSelectedDay}
                 isDropdownOpen={isDropdownOpen}
                 setIsDropdownOpen={setIsDropdownOpen}
               />
-            ) : (
-              <Navigate to="/login" />
-            )
-          }
-        />
-        <Route
-          path="/stats"
-          element={
-            <Stats
-              user={user}
-              selectedDay={selectedDay}
-              setSelectedDay={setSelectedDay}
-              isDropdownOpen={isDropdownOpen}
-              setIsDropdownOpen={setIsDropdownOpen}
-            />
-          }
-        />
-        <Route
-          path="/categories"
-          element={
-            <CategoryList
-              user={user}
-              setSelectedCategory={setSelectedCategory}
-            />
-          }
-        />
-        <Route
-          path="/edit-category"
-          element={
-            selectedCategory ? (
-              <EditCategory
+            }
+          />
+          <Route
+            path="/categories"
+            element={
+              <CategoryList
+                user={user}
+                setSelectedCategory={setSelectedCategory}
+              />
+            }
+          />
+          <Route
+            path="/edit-category"
+            element={
+              selectedCategory ? (
+                <EditCategory
+                  user={user}
+                  setUser={setUser}
+                  category={selectedCategory}
+                />
+              ) : (
+                <Navigate to="/dashboard" />
+              )
+            }
+          />
+          <Route
+            path="/new-category"
+            element={<NewCategory user={user} setUser={setUser} />}
+          />
+          <Route
+            path="/transactions"
+            element={
+              <TransactionList
+                user={user}
+                selectedDay={selectedDay}
+                setSelectedDay={setSelectedDay}
+                setSelectedTransaction={setSelectedTransaction}
+              />
+            }
+          />
+          <Route
+            path="/edit-transaction"
+            element={
+              selectedTransaction ? (
+                <EditTransaction
+                  user={user}
+                  setUser={setUser}
+                  transaction={selectedTransaction}
+                />
+              ) : (
+                <Navigate to="/dashboard" />
+              )
+            }
+          />
+          <Route
+            path="/new-transaction"
+            element={
+              <NewTransaction
                 user={user}
                 setUser={setUser}
-                category={selectedCategory}
+                selectedDay={selectedDay}
+                setSelectedDay={setSelectedDay}
               />
-            ) : (
-              <Navigate to="/dashboard" />
-            )
-          }
-        />
-        <Route
-          path="/new-category"
-          element={<NewCategory user={user} setUser={setUser} />}
-        />
-        <Route
-          path="/transactions"
-          element={
-            <TransactionList
-              user={user}
-              selectedDay={selectedDay}
-              setSelectedDay={setSelectedDay}
-              setSelectedTransaction={setSelectedTransaction}
-            />
-          }
-        />
-        <Route
-          path="/edit-transaction"
-          element={
-            selectedTransaction ? (
-              <EditTransaction
-                user={user}
-                setUser={setUser}
-                transaction={selectedTransaction}
-              />
-            ) : (
-              <Navigate to="/dashboard" />
-            )
-          }
-        />
-        <Route
-          path="/new-transaction"
-          element={
-            <NewTransaction
-              user={user}
-              setUser={setUser}
-              selectedDay={selectedDay}
-              setSelectedDay={setSelectedDay}
-            />
-          }
-        />
-      </Routes>
+            }
+          />
+        </Routes>
+      )}
     </main>
   );
 }
