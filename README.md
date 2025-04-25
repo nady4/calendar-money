@@ -58,6 +58,8 @@ npm install
 npm run dev
 ```
 
+<br>
+
 ## 🚀 Tech Stack
 
 | Technology       | Version |
