@@ -10,6 +10,7 @@ import "../../styles/Stats.scss";
 
 interface StatsProps {
   user: UserType;
+  setUser: React.Dispatch<React.SetStateAction<UserType>>;
   selectedDay: Temporal.PlainDate;
   setSelectedDay: React.Dispatch<React.SetStateAction<Temporal.PlainDate>>;
   isDropdownOpen: boolean;
@@ -18,6 +19,7 @@ interface StatsProps {
 
 const Stats = ({
   user,
+  setUser,
   selectedDay,
   setSelectedDay,
   isDropdownOpen,
@@ -27,6 +29,7 @@ const Stats = ({
     <div className="stats-view">
       <Dropdown
         user={user}
+        setUser={setUser}
         isDropdownOpen={isDropdownOpen}
         setIsDropdownOpen={setIsDropdownOpen}
       />

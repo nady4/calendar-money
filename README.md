@@ -19,8 +19,67 @@
 
 ## 💾 Installation & Setup
 
+### Backend
+
 ```sh
-# Clone the repository
+# 📥 Clone the repository
+git clone https://github.com/nady4/calendar-money-api
+
+# 📂 Move to the project folder
+cd calendar-money-api
+
+# 📦 Install dependencies
+npm install
+
+# 🛠️ Create .env file
+cat <<EOF > .env
+PORT=3000
+MONGODB_URL=mongodb://localhost:27017/calendar-money
+JWT_SECRET=yoursecret
+EOF
+
+# 🚀 Run the app
+npm run dev
+```
+
+### Frontend
+
+```sh
+# 📥 Clone the repository
 git clone https://github.com/nady4/calendar-money
 
+# 📂 Move to the project folder
+cd calendar-money
+
+# 📦 Install dependencies
+npm install
+
+# 🚀 Run the app (you will need a backend first)
+npm run dev
 ```
+
+## 🚀 Tech Stack
+
+| Technology       | Version |
+| ---------------- | ------- |
+| Vite             | ^6.1.0  |
+| React            | ^18.3.1 |
+| TypeScript       | ~5.6.2  |
+| Chart.js         | ^4.4.6  |
+| React Chart.js 2 | ^5.2.0  |
+| React Toastify   | ^10.0.6 |
+| Sass             | ^1.80.7 |
+
+<br>
+
+## 🎮 Demo
+
+🚧 _Coming soon... Stay tuned!_ 🚧
+
+<br>
+
+## 📬 Contact
+
+- 💌 Email: **nadyajerochim@gmail.com**
+- 💼 LinkedIn: [/nady4](https://www.linkedin.com/in/nady4)
+- 👩🏻‍💻 GitHub: [@nady4](https://github.com/nady4)

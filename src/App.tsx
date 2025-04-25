@@ -99,6 +99,7 @@ function App() {
             element={
               <Stats
                 user={user}
+                setUser={setUser}
                 selectedDay={selectedDay}
                 setSelectedDay={setSelectedDay}
                 isDropdownOpen={isDropdownOpen}
