@@ -26,7 +26,6 @@ const Dropdown = ({
 
   const handleLogout = async (e: React.MouseEvent) => {
     e.preventDefault();
-    console.log("Logging out..."); // 👀
 
     try {
       const response = await fetch(`${API_URL}/logout`, {
@@ -44,9 +43,6 @@ const Dropdown = ({
     } finally {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
-
-      console.log("user removed:", !localStorage.getItem("user"));
-      console.log("token removed:", !localStorage.getItem("token"));
 
       setUser({
         id: "",
@@ -113,14 +109,7 @@ const Dropdown = ({
           />
           <p className="dropdown-item-text">CATEGORIES</p>
         </div>
-        <div
-          className="dropdown-item"
-          onClick={(e) => {
-            e.preventDefault(); // ⛔ just in case something is triggering navigation
-            e.stopPropagation(); // 🛑 block bubbling
-            handleLogout(e); // 👈 call the logout function
-          }}
-        >
+        <div className="dropdown-item" onClick={handleLogout}>
           <img className="dropdown-item-icon" src={StatsIcon} alt="stats" />
           <p className="dropdown-item-text">STATS</p>
         </div>
