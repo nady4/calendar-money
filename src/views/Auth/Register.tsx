@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
+import { API_URL } from "../../util/api";
 import useValidateUser from "../../hooks/useValidateUser";
 import Footer from "../../components/Dashboard/Footer";
-import API_URL from "../../util/api";
 import "react-toastify/dist/ReactToastify.css";
 import "../../styles/auth.scss";
 

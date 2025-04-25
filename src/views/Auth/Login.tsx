@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-import Footer from "../../components/Dashboard/Footer";
+import { API_URL } from "../../util/api";
 import { UserType } from "../../types.d";
-import API_URL from "../../util/api";
+import Footer from "../../components/Dashboard/Footer";
 import "react-toastify/dist/ReactToastify.css";
 import "../../styles/auth.scss";
 
@@ -52,42 +52,28 @@ function Login({
         }),
       });
 
-      switch (response.status) {
-        case 200:
-          toast.success("Login successful", toastConfig);
-          break;
-
-        case 400:
-          toast.error("Username not found", toastConfig);
-          break;
-
-        case 401:
-          toast.error("Password incorrect", toastConfig);
-          break;
-
-        default:
-          toast.error(`Error: ${response.status}`, toastConfig);
-      }
-
       const data = await response.json();
 
-      setTimeout(() => {
-        if (data.user) {
-          setUser({
-            id: data.user._id,
-            username: data.user.username,
-            email: data.user.email,
-            password: data.user.password,
-            transactions: data.user.transactions,
-            categories: data.user.categories,
-            loggedIn: true,
-          });
-          localStorage.setItem("user", JSON.stringify(data.user));
-        }
-        if (data.token) {
-          localStorage.setItem("token", data.token);
-        }
-      }, 1000);
+      if (!response.ok || !data.token || !data.user) {
+        const msg = data?.message || "Unexpected login error";
+        toast.error(msg, toastConfig);
+        return;
+      }
+
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      setUser({
+        id: data.user._id,
+        username: data.user.username,
+        email: data.user.email,
+        password: data.user.password,
+        transactions: data.user.transactions,
+        categories: data.user.categories,
+        loggedIn: true,
+      });
+
+      toast.success("Login successful", toastConfig);
     } catch (error) {
       console.error("Error during fetch:", error);
       toast.error("Network error or server is unreachable", toastConfig);

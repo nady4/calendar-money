@@ -1,4 +1,4 @@
-import API_URL from "../util/api";
+import { API_URL } from "../util/api";
 import { useEffect } from "react";
 import { UserType } from "../types.d";
 
@@ -16,6 +16,7 @@ const refreshUserData = async (
     });
 
     const data = await response.json();
+    console.log("User data refreshed:", data);
 
     if (!response.ok) {
       console.error("Error refreshing user data:", data.error);

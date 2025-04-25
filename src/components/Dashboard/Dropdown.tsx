@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { UserType } from "../../types";
+import { API_URL } from "../../util/api";
 import CatUser from "../../assets/catUser.svg";
 import UserIcon from "../../assets/userIcon.svg";
 import CalendarIcon from "../../assets/calendarIcon.svg";
@@ -10,16 +11,57 @@ import "../../styles/Dropdown.scss";
 
 interface DropdownProps {
   user: UserType;
+  setUser: React.Dispatch<React.SetStateAction<UserType>>;
   isDropdownOpen: boolean;
   setIsDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const Dropdown = ({
   user,
+  setUser,
   isDropdownOpen,
   setIsDropdownOpen,
 }: DropdownProps) => {
   const navigate = useNavigate();
+
+  const handleLogout = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    console.log("Logging out..."); // 👀
+
+    try {
+      const response = await fetch(`${API_URL}/logout`, {
+        method: "POST",
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        console.error("Backend logout failed with status:", response.status);
+      } else {
+        console.log("Backend logout successful");
+      }
+    } catch (error) {
+      console.error("Error during backend logout fetch:", error);
+    } finally {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+
+      console.log("user removed:", !localStorage.getItem("user"));
+      console.log("token removed:", !localStorage.getItem("token"));
+
+      setUser({
+        id: "",
+        username: "",
+        email: "",
+        password: "",
+        transactions: [],
+        categories: [],
+        loggedIn: false,
+      });
+
+      navigate("/login");
+      setIsDropdownOpen(false);
+    }
+  };
 
   return (
     <div
@@ -73,9 +115,10 @@ const Dropdown = ({
         </div>
         <div
           className="dropdown-item"
-          onClick={() => {
-            setIsDropdownOpen(false);
-            navigate("/stats");
+          onClick={(e) => {
+            e.preventDefault(); // ⛔ just in case something is triggering navigation
+            e.stopPropagation(); // 🛑 block bubbling
+            handleLogout(e); // 👈 call the logout function
           }}
         >
           <img className="dropdown-item-icon" src={StatsIcon} alt="stats" />
@@ -83,13 +126,7 @@ const Dropdown = ({
         </div>
       </div>
       <div className="dropdown-footer">
-        <div
-          className="dropdown-item"
-          onClick={() => {
-            localStorage.removeItem("token");
-            window.location.reload();
-          }}
-        >
+        <div className="dropdown-item" onClick={handleLogout}>
           <img className="dropdown-item-icon" src={LogoutIcon} alt="logout" />
           <p className="dropdown-item-text">LOGOUT</p>
         </div>

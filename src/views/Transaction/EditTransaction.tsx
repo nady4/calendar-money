@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Temporal } from "@js-temporal/polyfill";
-import API_URL from "../../util/api";
+import { API_URL } from "../../util/api";
 import useCategoryOptions from "../../hooks/useCategoryOptions";
 import useValidateTransaction from "../../hooks/useValidateTransaction";
 import { UserType, TransactionType } from "../../types";

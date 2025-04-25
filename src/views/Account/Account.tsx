@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../../util/api";
 import { UserType } from "../../types.d";
 import useValidateUser from "../../hooks/useValidateUser";
-import API_URL from "../../util/api";
 import exitButton from "../../assets/whiteExitButton.svg";
 import "../../styles/form.scss";
 

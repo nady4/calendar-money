@@ -16,14 +16,19 @@ import { useAuth } from "./hooks/useAuth.ts";
 import { UserType, CategoryType, TransactionType } from "./types.d";
 
 function App() {
-  const [user, setUser] = useState<UserType>({
-    id: "",
-    username: "",
-    email: "",
-    password: "",
-    transactions: [],
-    categories: [],
-    loggedIn: false,
+  const [user, setUser] = useState<UserType>(() => {
+    const storedUser = localStorage.getItem("user");
+    return storedUser
+      ? JSON.parse(storedUser)
+      : {
+          id: "",
+          username: "",
+          email: "",
+          password: "",
+          transactions: [],
+          categories: [],
+          loggedIn: false,
+        };
   });
 
   const [selectedDay, setSelectedDay] = useState(
@@ -62,6 +67,7 @@ function App() {
             user.loggedIn ? <Navigate to="/" /> : <Login setUser={setUser} />
           }
         />
+
         <Route
           path="/account"
           element={<Account user={user} setUser={setUser} />}
@@ -72,6 +78,7 @@ function App() {
             user.loggedIn ? (
               <Dashboard
                 user={user}
+                setUser={setUser}
                 selectedDay={selectedDay}
                 setSelectedDay={setSelectedDay}
                 isDropdownOpen={isDropdownOpen}

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { HuePicker } from "react-color";
 import { useNavigate } from "react-router-dom";
 import { UserType } from "../../types.d";
-import API_URL from "../../util/api";
+import { API_URL } from "../../util/api";
 import exitButton from "../../assets/whiteExitButton.svg";
 import "../../styles/form.scss";
 

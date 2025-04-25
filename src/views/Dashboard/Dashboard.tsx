@@ -7,6 +7,7 @@ import Footer from "../../components/Dashboard/Footer";
 
 interface DashboardProps {
   user: UserType;
+  setUser: React.Dispatch<React.SetStateAction<UserType>>;
   selectedDay: Temporal.PlainDate;
   setSelectedDay: React.Dispatch<React.SetStateAction<Temporal.PlainDate>>;
   isDropdownOpen: boolean;
@@ -15,6 +16,7 @@ interface DashboardProps {
 
 function Dashboard({
   user,
+  setUser,
   selectedDay,
   setSelectedDay,
   isDropdownOpen,
@@ -24,6 +26,7 @@ function Dashboard({
     <div className="app-main">
       <Dropdown
         user={user}
+        setUser={setUser}
         isDropdownOpen={isDropdownOpen}
         setIsDropdownOpen={setIsDropdownOpen}
       />
