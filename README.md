@@ -72,11 +72,6 @@ npm run dev
 | React Toastify   | ^10.0.6 |
 | Sass             | ^1.80.7 |
 
-<br>
-
-## 🎮 Demo
-
-🚧 _Coming soon... Stay tuned!_ 🚧
 
 <br>
 
