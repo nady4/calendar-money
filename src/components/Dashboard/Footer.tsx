@@ -4,7 +4,7 @@ import "../../styles/Footer.scss";
 function Footer() {
   return (
     <footer className="footer">
-      <p className="footer-copyright">© Copyright 2024 - Nadya Jerochim</p>
+      <p className="footer-copyright">@nady4</p>
       <p className="footer-dev-bsas">
         Full Stack Developer - Buenos Aires, Argentina
       </p>
