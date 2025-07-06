@@ -74,6 +74,6 @@ npm run dev
 
 ## 📬 Contact
 
-- 💌 Email: **nadyajerochim@gmail.com**
+- 💌 Email: **dev@nady4.com**
 - 💼 LinkedIn: [/nady4](https://www.linkedin.com/in/nady4)
 - 👩🏻‍💻 GitHub: [@nady4](https://github.com/nady4)
