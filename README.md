@@ -1,6 +1,3 @@
-<p align="center">
-    <img src="./src/assets/calendarIcon.svg" height="50px">
-</p>
 <h1 align="center"> Calendar Money </h1>
 
 <p align="center">
