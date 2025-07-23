@@ -39,7 +39,7 @@ const YearCategoryBarChart: React.FC<YearCategoryBarChartProps> = ({
   );
 
   const filteredTotals = Object.entries(yearlyTotals)
-    .filter(([categoryName, total]) => total !== 0) // eslint-disable-line @typescript-eslint/no-unused-vars
+    .filter(([, total]) => total !== 0)
     .map(([categoryName, total]) => {
       const category = categories.find((cat) => cat.name === categoryName);
       return {
