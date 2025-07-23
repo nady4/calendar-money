@@ -8,8 +8,12 @@ function Footer() {
       <p className="footer-dev-bsas">
         Full Stack Developer - Buenos Aires, Argentina
       </p>
-      <p className="footer-mail">nadyajerochim@gmail.com</p>
-      <a href="https://www.github.com/nady4" rel="noreferrer" target="_blank">
+      <p className="footer-mail">dev@nady4.com</p>
+      <a
+        href="https://github.com/nady4/calendar-money"
+        rel="noreferrer"
+        target="_blank"
+      >
         <img src={github} alt="github" className="footer-repo-logo" />
       </a>
     </footer>
