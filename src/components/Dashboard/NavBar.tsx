@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { useMediaQuery } from "@mui/material";
 import { Temporal } from "@js-temporal/polyfill";
 import { UserType } from "../../types";
@@ -6,7 +6,6 @@ import { getMonthTotal } from "../../util/functions";
 import { months } from "../../util/constants";
 import LeftIcon from "@mui/icons-material/ChevronLeft";
 import RightIcon from "@mui/icons-material/ChevronRight";
-import BlackMenuButton from "../../assets/blackMenuButton.svg";
 import WhiteMenuButton from "../../assets/whiteMenuButton.svg";
 import ExitButton from "../../assets/blackExitButton.svg";
 import "../../styles/NavBar.scss";
@@ -31,15 +30,6 @@ const NavBar = ({
   const [isNavBarOpen, setIsNavBarOpen] = useState(isStatsView);
   const isMobile = useMediaQuery("(max-width:600px)");
 
-  // 🌀 Preload icons
-  useEffect(() => {
-    [BlackMenuButton, WhiteMenuButton].forEach((src) => {
-      const img = new Image();
-      img.src = src;
-    });
-  }, []);
-
-  // ✅ Memoized totals for all months (stable unless selectedDay.year or user.transactions change)
   const monthDataList = useMemo(
     () =>
       months.map((month) =>
@@ -74,15 +64,17 @@ const NavBar = ({
         >
           <img
             className="menu-button"
-            src={isDropdownOpen ? WhiteMenuButton : BlackMenuButton}
-            alt="logo"
+            src={WhiteMenuButton}
+            alt="menu"
             height={"40px"}
           />
         </div>
+
         <div className="date-change-container">
           <button className="arrow" onClick={handleLeftArrowClick}>
             <LeftIcon fontSize="medium" />
           </button>
+
           <div
             className="date-container"
             onClick={() => setIsNavBarOpen(isStatsView ? true : !isNavBarOpen)}
@@ -96,10 +88,12 @@ const NavBar = ({
                   })}
             </p>
           </div>
+
           <button className="arrow" onClick={handleRightArrowClick}>
             <RightIcon fontSize="medium" />
           </button>
         </div>
+
         <div className="logout-container">
           <button
             className="logout-button-container"
@@ -119,6 +113,7 @@ const NavBar = ({
         {months.map((month, index) => {
           const data = monthDataList[index];
           const isActive = selectedDay.month === index + 1;
+
           const mobileClass =
             isMobile &&
             (data.balance >= 0 ? "positive-month" : "negative-month");
@@ -136,6 +131,7 @@ const NavBar = ({
                   {isMobile ? month.slice(0, 1) : month}
                 </p>
               </div>
+
               <div className="month-body">
                 <p className="month-income">+${data.income}</p>
                 <p className="month-expenses">-${data.expenses}</p>

@@ -7,6 +7,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  background: linear-gradient(180deg, #0f0f0f, #090909);
 
   .fieldset {
     border: none;
@@ -20,6 +21,8 @@
       font-weight: bold;
       margin-bottom: 2rem;
       text-align: center;
+      color: #f2f2f2;
+      text-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
     }
 
     .input-container {
@@ -32,6 +35,7 @@
         font-weight: bold;
         text-align: center;
         margin-bottom: 0.5rem;
+        color: #e4e4e4;
       }
 
       .input {
@@ -40,17 +44,37 @@
         text-align: center;
         width: 70%;
         padding: 0.5rem;
-        border: 2px solid #333;
-        border-radius: 5px;
+        border: 2px solid #2f2f2f;
+        border-radius: 6px;
+        background-color: #1b1b1b;
+        color: #f8f8f8;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+        &:focus {
+          border-color: vars.$primary-color;
+          box-shadow: 0 0 8px rgba(vars.$primary-color, 0.6);
+          outline: none;
+        }
       }
     }
   }
 
   .submit-button {
     @extend %submit-button;
+    margin-top: 2rem;
+    box-shadow: 0 0 12px rgba(vars.$primary-color, 0.5);
+
+    &:hover {
+      box-shadow: 0 0 16px rgba(vars.$secondary-color, 0.7);
+    }
   }
 
   .add-button {
     @extend %add-button;
+    margin-top: 1rem;
+
+    &:hover {
+      scale: 1.05;
+    }
   }
 }

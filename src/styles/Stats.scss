@@ -1,22 +1,38 @@
 .stats-view {
   display: flex;
   flex-direction: column;
+  width: 100%;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #0e0e0e, #050505);
+  color: #f2f2f2;
 
   .stats-container {
-    padding-top: 80px;
+    padding-top: 180px;
+    width: 100%;
     display: flex;
     flex-flow: row wrap;
-    align-items: center;
     justify-content: center;
-    position: absolute;
-    top: 180px;
-    width: 100%;
+    gap: 40px;
+    position: relative;
 
     .stat {
-      padding: 10px;
-      flex-flow: row wrap;
-      height: 500px;
-      width: 45%;
+      width: 42%;
+      min-width: 360px;
+      height: 480px;
+      padding: 20px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 0 18px rgba(0, 0, 0, 0.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+
+      &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 0 22px rgba(0, 0, 0, 0.7);
+      }
     }
   }
 }
@@ -24,9 +40,12 @@
 @media (max-width: 600px) {
   .stats-view {
     .stats-container {
-      padding-top: 0;
+      padding-top: 90px;
+      gap: 26px;
+
       .stat {
-        width: 100%;
+        width: 92%;
+        height: 420px;
       }
     }
   }

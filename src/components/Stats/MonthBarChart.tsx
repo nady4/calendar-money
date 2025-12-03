@@ -85,7 +85,7 @@ const MonthlyCategoryBarChart: React.FC<MonthlyCategoryBarChartProps> = ({
       title: {
         display: true,
         text: `${months[selectedDay.month - 1]} Categories`,
-        color: "#1F2937",
+        color: "#ffffff",
         font: {
           family: "Nunito Sans, sans-serif",
           size: 18,
@@ -114,7 +114,7 @@ const MonthlyCategoryBarChart: React.FC<MonthlyCategoryBarChartProps> = ({
           },
         },
         ticks: {
-          color: "#4B5563",
+          color: "#ffffff",
         },
       },
       y: {
@@ -129,7 +129,7 @@ const MonthlyCategoryBarChart: React.FC<MonthlyCategoryBarChartProps> = ({
           },
         },
         ticks: {
-          color: "#4B5563",
+          color: "#ffffff",
         },
       },
     },

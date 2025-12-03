@@ -7,7 +7,11 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background-color: rgb(243, 243, 243);
+
+  /* 🌙 Dark mode */
+  background-color: #1b1b1b;
+  color: #eaeaea;
+  border-bottom: 1px solid #2c2c2c;
 
   .navbar-top {
     position: relative;
@@ -24,18 +28,18 @@
       justify-content: center;
     }
 
+    /* 🔽 Glass fade */
     .gradient-border-top {
       width: 100%;
       height: 15px;
       position: absolute;
       top: 70px;
       z-index: 2;
-      background-image: linear-gradient(0deg, transparent, rgba(0, 0, 0, 0.1));
+      background-image: linear-gradient(0deg, transparent, rgba(0, 0, 0, 0.35));
     }
 
     .menu-button-container {
       width: 5%;
-      background-color: transparent;
       cursor: pointer;
       transition: 0.2s ease-in-out;
       z-index: 3;
@@ -64,20 +68,22 @@
 
         .date {
           cursor: pointer;
-          font-size: 1.2rem;
+          font-size: 1.25rem;
+          color: #f8f8f8;
+          transition: 0.2s ease;
         }
       }
 
       .arrow {
         background-color: transparent;
         border: none;
-        color: #333;
+        color: #f0f0f0;
         cursor: pointer;
         transition: 0.2s ease-in-out;
 
         &:hover {
           transform: scale(1.2);
-          color: black;
+          color: #ffffff;
         }
 
         &:active {
@@ -90,14 +96,15 @@
       width: 5%;
 
       .logout-button-container {
-        border: none;
         background: none;
         cursor: pointer;
         transition: 0.2s ease-in-out;
+        border: none;
 
         .logout-button {
           height: 35px;
           width: 35px;
+          filter: invert(90%);
         }
 
         &:hover {
@@ -110,12 +117,14 @@
     }
   }
 
+  /* ▼ MONTH ROW (navbar-bottom) */
   .navbar-bottom {
     position: absolute;
     top: 70px;
     width: 100%;
     height: 150px;
-    background-color: rgb(243, 243, 243);
+    background-color: #1b1b1b;
+    border-bottom: 1px solid #2c2c2c;
     display: flex;
     opacity: 1;
     justify-content: space-between;
@@ -129,14 +138,15 @@
       align-items: center;
       justify-content: space-between;
       cursor: pointer;
-      transition: all 0.3s ease-in-out;
+      transition: all 0.25s ease;
 
       &:hover {
-        font-size: 1.2rem;
+        transform: translateY(-3px);
+        text-shadow: 0 0 6px rgba(255, 255, 255, 0.15);
       }
 
       &:active {
-        font-size: 0.9rem;
+        transform: scale(0.95);
       }
 
       .month-header {
@@ -146,14 +156,15 @@
 
         .month {
           font-size: 1.1rem;
+          color: #f0f0f0;
         }
 
         .positive-month {
-          color: rgb(45, 160, 45);
+          color: rgb(60, 205, 60);
         }
 
         .negative-month {
-          color: rgb(170, 47, 47);
+          color: rgb(230, 70, 70);
         }
       }
 
@@ -172,11 +183,11 @@
         }
 
         .month-income {
-          color: rgb(45, 160, 45);
+          color: rgb(60, 205, 60);
         }
 
         .month-expenses {
-          color: rgb(170, 47, 47);
+          color: rgb(230, 70, 70);
         }
       }
     }
@@ -184,20 +195,21 @@
     .active-month {
       color: white;
       background-color: vars.$primary-color;
+      box-shadow: 0 0 12px rgba(vars.$primary-color, 0.6);
 
       .month-header {
         .positive-month {
-          color: rgb(66, 235, 66);
+          color: rgb(85, 255, 85);
         }
       }
 
       .month-body {
         .month-income {
-          color: rgb(66, 235, 66);
+          color: rgb(85, 255, 85);
         }
 
         .month-expenses {
-          color: rgb(226, 72, 72);
+          color: rgb(255, 100, 100);
         }
       }
     }
@@ -210,7 +222,7 @@
     top: 220px;
     z-index: 1;
     transition: all 0.2s ease-in-out;
-    background-image: linear-gradient(0deg, transparent, rgba(0, 0, 0, 0.1));
+    background-image: linear-gradient(0deg, transparent, rgba(0, 0, 0, 0.28));
   }
 
   .gradient-closed {
@@ -223,6 +235,7 @@
   }
 }
 
+/* 📱 Mobile */
 @media (max-width: 600px) {
   .navbar {
     height: 90px;

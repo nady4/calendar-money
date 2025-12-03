@@ -1,10 +1,11 @@
+@use "./variables" as vars;
 @use "./buttons" as *;
 
 .form {
   width: 100%;
   height: 100%;
   min-height: 100vh;
-  background-color: #1b1b1b;
+  background: linear-gradient(180deg, #0e0e0e, #050505);
   color: #fff;
   display: flex;
   align-items: center;
@@ -14,6 +15,7 @@
   h2 {
     margin-top: 40px;
     font-size: 2rem;
+    text-shadow: 0 0 6px rgba(0, 0, 0, 0.6);
   }
 
   .exit-button {
@@ -32,6 +34,8 @@
       font-size: 1.3rem;
       margin-top: 40px;
       margin-bottom: 5px;
+      color: #e6e6e6;
+      text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
     }
 
     input {
@@ -39,17 +43,18 @@
       padding: 12px 20px;
       margin: 8px 0;
       box-sizing: border-box;
-      border: 2px solid white;
-      border-radius: 5px;
-      background-color: transparent;
+      border: 2px solid #2c2c2c;
+      border-radius: 6px;
+      background-color: #1b1b1b;
       color: #fff;
       font-size: 1.1rem;
       text-align: center;
+      transition: all 0.2s ease;
 
       &:focus {
         outline: none;
-        border-style: double;
-        border: 2px solid rgb(233, 255, 234);
+        border-color: vars.$primary-color;
+        box-shadow: 0 0 8px rgba(vars.$primary-color, 0.6);
       }
     }
 
@@ -66,6 +71,7 @@
         margin-top: 0;
         margin-bottom: 0;
         height: 40px;
+        color: #e6e6e6;
       }
 
       input {
@@ -73,6 +79,7 @@
         margin-left: 10px;
         height: 20px;
         width: 20px;
+        accent-color: vars.$primary-color;
       }
     }
 
@@ -103,30 +110,35 @@
 
         label {
           margin-bottom: 10px;
+          color: #e6e6e6;
         }
 
         #income-box,
         #expense-box {
           width: 30px;
           height: 30px;
+          filter: brightness(0.9);
+          transition: 0.2s ease;
+
           &:hover {
             cursor: pointer;
+            filter: brightness(1.2);
           }
         }
+
         #income-box {
           margin-left: 10px;
           margin-right: auto;
           &:checked {
-            filter: invert(0%) sepia(0%) saturate(100%) hue-rotate(270deg)
-              brightness(150%) contrast(100%);
+            filter: drop-shadow(0 0 6px vars.$primary-color);
           }
         }
+
         #expense-box {
           margin-right: 10px;
           margin-left: auto;
           &:checked {
-            filter: invert(0%) sepia(0%) saturate(100%) hue-rotate(140deg)
-              brightness(100%) contrast(100%);
+            filter: drop-shadow(0 0 6px vars.$secondary-color);
           }
         }
       }
@@ -135,14 +147,23 @@
 
   .submit-button {
     @extend %submit-button;
+    margin-top: 20px;
+    box-shadow: 0 0 12px rgba(vars.$primary-color, 0.5);
+
+    &:hover {
+      box-shadow: 0 0 16px rgba(vars.$secondary-color, 0.7);
+    }
   }
 
   .add-button {
     @extend %add-button;
+    margin-top: 10px;
+    box-shadow: 0 0 12px rgba(vars.$primary-color, 0.4);
   }
 
   .delete-button {
     @extend %delete-button;
+    margin-top: 10px;
   }
 }
 

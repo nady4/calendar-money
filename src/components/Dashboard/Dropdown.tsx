@@ -60,12 +60,12 @@ const Dropdown = ({
     }
   };
 
-  if (!isDropdownOpen) {
-    return null;
-  }
-
   return (
-    <div className={`dropdown-container dropdown-open`}>
+    <div
+      className={`dropdown-container ${
+        isDropdownOpen ? "dropdown-open" : "dropdown-closed"
+      }`}
+    >
       <div className="dropdown-header">
         <img className="dropdown-user-icon" src={CatUser} alt="user" />
         <h2 className="dropdown-username">{user.username}</h2>
@@ -110,7 +110,13 @@ const Dropdown = ({
           />
           <p className="dropdown-item-text">CATEGORIES</p>
         </div>
-        <div className="dropdown-item" onClick={handleLogout}>
+        <div
+          className="dropdown-item"
+          onClick={() => {
+            setIsDropdownOpen(false);
+            navigate("/stats");
+          }}
+        >
           <img className="dropdown-item-icon" src={StatsIcon} alt="stats" />
           <p className="dropdown-item-text">STATS</p>
         </div>

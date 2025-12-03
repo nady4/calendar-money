@@ -72,7 +72,7 @@ const YearLineChart = ({
       legend: {
         position: "top" as const,
         labels: {
-          color: "#4B5563", // Subtle gray
+          color: "#ffffff", // Subtle gray
           font: {
             family: "Nunito Sans, sans-serif",
             size: 14,
@@ -83,7 +83,7 @@ const YearLineChart = ({
       title: {
         display: true,
         text: `${selectedDay.year}`,
-        color: "#1F2937",
+        color: "#ffffff",
         font: {
           family: "Nunito Sans, sans-serif",
           size: 18,
@@ -106,13 +106,13 @@ const YearLineChart = ({
         },
         title: {
           display: true,
-          color: "#374151",
+          color: "#ffffff",
           font: {
             size: 14,
           },
         },
         ticks: {
-          color: "#4B5563",
+          color: "#ffffff",
         },
       },
       x: {
@@ -127,7 +127,7 @@ const YearLineChart = ({
           },
         },
         ticks: {
-          color: "#4B5563",
+          color: "#ffffff",
         },
       },
     },

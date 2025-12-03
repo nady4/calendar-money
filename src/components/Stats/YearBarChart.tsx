@@ -81,7 +81,7 @@ const YearCategoryBarChart: React.FC<YearCategoryBarChartProps> = ({
       title: {
         display: true,
         text: `${selectedYear} Categories`,
-        color: "#1F2937",
+        color: "#ffffff",
         font: {
           family: "Nunito Sans, sans-serif",
           size: 18,
@@ -110,7 +110,7 @@ const YearCategoryBarChart: React.FC<YearCategoryBarChartProps> = ({
           },
         },
         ticks: {
-          color: "#4B5563",
+          color: "#ffffff",
         },
       },
       y: {
@@ -125,7 +125,7 @@ const YearCategoryBarChart: React.FC<YearCategoryBarChartProps> = ({
           },
         },
         ticks: {
-          color: "#4B5563",
+          color: "#ffffff",
         },
       },
     },

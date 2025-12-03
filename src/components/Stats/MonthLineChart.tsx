@@ -80,7 +80,7 @@ const MonthLineChart = ({ transactions, selectedDay }: MonthLineChartProps) => {
       legend: {
         position: "top" as const,
         labels: {
-          color: "#4B5563",
+          color: "#ffffff",
           font: {
             family: "Nunito Sans, sans-serif",
             size: 14,
@@ -91,7 +91,7 @@ const MonthLineChart = ({ transactions, selectedDay }: MonthLineChartProps) => {
       title: {
         display: true,
         text: `${months[selectedDay.month - 1]}`,
-        color: "#1F2937",
+        color: "#ffffff",
         font: {
           family: "Nunito Sans, sans-serif",
           size: 18,
@@ -114,13 +114,13 @@ const MonthLineChart = ({ transactions, selectedDay }: MonthLineChartProps) => {
         },
         title: {
           display: true,
-          color: "#374151",
+          color: "#ffffff",
           font: {
             size: 14,
           },
         },
         ticks: {
-          color: "#4B5563",
+          color: "#ffffff",
         },
       },
       x: {
@@ -129,13 +129,13 @@ const MonthLineChart = ({ transactions, selectedDay }: MonthLineChartProps) => {
         },
         title: {
           display: true,
-          color: "#374151",
+          color: "#ffffff",
           font: {
             size: 14,
           },
         },
         ticks: {
-          color: "#4B5563",
+          color: "#ffffff",
         },
       },
     },
