@@ -186,10 +186,16 @@
 /* 🔵 Día seleccionado */
 .active-day {
   border-color: vars.$secondary-color;
+  border: 1px solid vars.$secondary-color;
+  box-shadow: 0 0 8px rgba(vars.$secondary-color, 0.6);
 
   .day-header {
     background-color: vars.$secondary-color;
     color: white;
+    .day-date {
+      font-weight: 700;
+      color: white;
+    }
 
     .day-balance-container .day-balance {
       color: white;
@@ -198,17 +204,6 @@
 
   .transactions-container {
     background-color: #0d0d0d;
-  }
-}
-
-/* 🎯 Día actual (highlight suave tipo calendario moderno) */
-.today {
-  border: 1px solid vars.$secondary-color;
-  box-shadow: 0 0 8px rgba(vars.$secondary-color, 0.6);
-
-  .day-date {
-    font-weight: 700;
-    color: vars.$secondary-color !important;
   }
 }
 
@@ -253,6 +248,15 @@
 
     .add-transaction-button-container button {
       display: none;
+    }
+  }
+
+  .active-day {
+    border: 1px solid vars.$secondary-color;
+    box-shadow: 0 0 8px rgba(vars.$secondary-color, 0.6);
+
+    .day-header {
+      background-color: vars.$secondary-color;
     }
   }
 }
