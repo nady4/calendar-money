@@ -5,11 +5,12 @@
 </p>
 
 <p align="center">
-    <img src="./public/assets/docs/desktop_home2.png" width="100%">
-    <img src="./public/assets/docs/mobile_home.png" width="49%">
-    <img src="./public/assets/docs/mobile_login.png" width="49%">
-    <img src="./public/assets/docs/mobile_account.png" width="49%">
-    <img src="./public/assets/docs/mobile_editcat.png" width="49%">
+    <img src="./public/assets/docs/1.png" width="100%">
+    <img src="./public/assets/docs/2.png" width="49%">
+    <img src="./public/assets/docs/3.png" width="49%">
+    <img src="./public/assets/docs/4.png" width="100%">
+    <img src="./public/assets/docs/5.png" width="49%">
+    <img src="./public/assets/docs/6.png" width="49%">
 </p>
 
 <br>
