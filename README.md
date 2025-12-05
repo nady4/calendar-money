@@ -1,7 +1,7 @@
 <h1 align="center"> Calendar Money </h1>
 
 <p align="center">
-💸 Cash-flow management web app built with TypeScript, React, Node.js, Express, and MongoDB.
+💸 Full-stack cash-flow management web application built using TypeScript, Vite, Node.js, Express and MongoDB.
 </p>
 
 <p align="center">
