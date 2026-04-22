@@ -20,7 +20,7 @@ function Day({ date, user, selectedDay, setSelectedDay }: DayProps) {
   }>({
     income: 0,
     expenses: 0,
-    balance: 0,
+    balance: 0
   });
   const [transactions, setTransactions] = useState<TransactionType[]>([]);
   const isActiveMonth = selectedDay.month === date.month;
@@ -46,8 +46,8 @@ function Day({ date, user, selectedDay, setSelectedDay }: DayProps) {
     <div
       className={`${isActiveDay ? "active-day" : "inactive-day"}
         ${isActiveMonth ? "active-month" : "inactive-month"} ${
-        total.balance < 0 ? "negative" : "positive"
-      } calendar-day`}
+          total.balance < 0 ? "negative" : "positive"
+        } calendar-day`}
       onClick={openTransactions}
     >
       <div className="day-header">
@@ -72,7 +72,13 @@ function Day({ date, user, selectedDay, setSelectedDay }: DayProps) {
             <div className="day-item" key={transaction._id}>
               <div
                 className="item-color"
-                style={{ backgroundColor: transaction.category.color }}
+                //red if spending, green if income
+                style={{
+                  backgroundColor:
+                    transaction.category.type === "Income"
+                      ? "#4caf50"
+                      : "#f44336"
+                }}
               ></div>
               <div className="item-amount">
                 {transaction.category.type === "Income" ? "+" : "-"}$

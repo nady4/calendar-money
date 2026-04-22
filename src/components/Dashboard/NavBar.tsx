@@ -81,11 +81,13 @@ const NavBar = ({
           >
             <p className="date">
               {isStatsView
-                ? selectedDay.toLocaleString("en", { year: "numeric" })
-                : selectedDay.toLocaleString("en", {
-                    month: "long",
-                    year: "numeric",
-                  })}
+                ? <span className="date-year">{selectedDay.toLocaleString("en", { year: "numeric" })}</span>
+                : (
+                    <>
+                      <span className="date-month">{selectedDay.toLocaleString("en", { month: "long" })}</span>
+                      <span className="date-year"> {selectedDay.toLocaleString("en", { year: "numeric" })}</span>
+                    </>
+                  )}
             </p>
           </div>
 

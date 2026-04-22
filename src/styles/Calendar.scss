@@ -4,12 +4,11 @@
   display: flex;
   flex-direction: column;
   z-index: -1;
-  background-color: #1b1b1b;
+  background-color: vars.$background-color;
 
   .calendar-container {
     display: flex;
     flex-flow: column;
-    background-color: #232323;
 
     .weekday-list {
       display: flex;

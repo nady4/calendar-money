@@ -1,6 +1,5 @@
 @use "./variables" as vars;
 
-/* 🌙 Modo oscuro moderno + glass hover + highlights */
 .calendar-day {
   overflow: hidden;
   height: vars.$day-height;
@@ -9,19 +8,23 @@
   margin-left: vars.$day-margin;
   margin-bottom: 20px;
   transition: all 0.25s ease-out;
-
+  background-color: vars.$card-primary-color;
   border: 1px solid #2e2e2e;
   border-radius: 6px;
-  background-color: #111;
 
-  /* 🧊 Glass hover suave */
   &:hover {
     transform: translateY(-2px);
-    background-color: #181818;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+
+    .day-header {
+      background-color: vars.$card-secondary-color;
+    }
 
     .day-header .add-transaction-button-container {
       opacity: 1;
+    }
+
+    .day-header ~ .transactions-container {
+      background-color: vars.$card-secondary-color;
     }
   }
 
@@ -31,9 +34,9 @@
     display: flex;
     align-items: center;
     justify-content: space-around;
-    background-color: #f2f2f2;
+    background-color: vars.$card-primary-color;
+    transition: background-color 0.25s ease;
     color: #222;
-    border-bottom: 1px solid #ddd;
 
     .day-date-container,
     .day-balance-container,
@@ -85,10 +88,12 @@
         border: none;
         font-size: 1.2rem;
         cursor: pointer;
-        transition: transform 0.15s ease, background-color 0.2s;
+        transition:
+          transform 0.15s ease,
+          background-color 0.2s;
 
         &:hover {
-          background-color: vars.$secondary-color;
+          background-color: vars.$card-secondary-color;
           transform: scale(1.25);
         }
 
@@ -100,14 +105,13 @@
     }
   }
 
-  /* BODY */
   .transactions-container {
     height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    background-color: #111;
+    background-color: vars.$card-primary-color;
     transition: background 0.25s ease;
   }
 
@@ -149,7 +153,6 @@
 /* 🔘 Días fuera del mes */
 .inactive-day {
   .day-header {
-    background-color: #3b3b3b;
     color: #aaa;
 
     .day-balance-container .day-balance {
@@ -160,38 +163,25 @@
   background-color: #171717;
 }
 
-/* 👻 Opacidad bajada pero no apagado */
 .inactive-month {
   opacity: 0.3;
 }
 
 /* 🔻 Balance negativo */
 .negative {
-  border-color: #803838;
-
-  .day-header {
-    background-color: #3a1f1f;
-    color: #ff6b6b;
-
-    .day-balance-container .day-balance {
-      color: #ff6b6b;
-    }
-  }
-
-  .transactions-container {
-    background-color: #2a1616;
-  }
+  border-radius: 6px;
+  border-color: vars.$disabled-primary-color;
+  border: 2px solid vars.$disabled-primary-color;
+  box-shadow: 0 0 8px rgba(vars.$disabled-primary-color, 0.6);
 }
 
 /* 🔵 Día seleccionado */
 .active-day {
   border-color: vars.$secondary-color;
-  border: 1px solid vars.$secondary-color;
+  border: 2px solid vars.$secondary-color;
   box-shadow: 0 0 8px rgba(vars.$secondary-color, 0.6);
 
   .day-header {
-    background-color: vars.$secondary-color;
-    color: white;
     .day-date {
       font-weight: 700;
       color: white;
@@ -200,10 +190,6 @@
     .day-balance-container .day-balance {
       color: white;
     }
-  }
-
-  .transactions-container {
-    background-color: #0d0d0d;
   }
 }
 
@@ -224,7 +210,6 @@
     .day-header {
       height: 100%;
       flex-direction: column;
-      background-color: #f2f2f2;
       border-bottom: none;
 
       .day-date-container .day-date {
