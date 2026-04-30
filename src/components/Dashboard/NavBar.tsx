@@ -1,13 +1,26 @@
 import { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { useMediaQuery } from "@mui/material";
 import { Temporal } from "@js-temporal/polyfill";
 import { UserType } from "../../types";
-import { getMonthTotal } from "../../util/functions";
+import {
+  getDayTotal,
+  getMonthTotal,
+  getMonthExpenses,
+  getMonthIncome,
+  formatCurrency
+} from "../../util/functions";
 import { months } from "../../util/constants";
 import LeftIcon from "@mui/icons-material/ChevronLeft";
 import RightIcon from "@mui/icons-material/ChevronRight";
 import WhiteMenuButton from "../../assets/whiteMenuButton.svg";
 import ExitButton from "../../assets/blackExitButton.svg";
+import balanceIcon from "../../assets/balance.svg";
+import incomeIcon from "../../assets/income.svg";
+import expensesIcon from "../../assets/expenses.svg";
+import statsIcon from "../../assets/statsIcon.svg";
+import categoriesIcon from "../../assets/categoriesIcon.svg";
+import userIcon from "../../assets/userIcon.svg";
 import "../../styles/NavBar.scss";
 
 interface NavBarProps {
@@ -25,8 +38,9 @@ const NavBar = ({
   setSelectedDay,
   isDropdownOpen,
   setIsDropdownOpen,
-  isStatsView,
+  isStatsView
 }: NavBarProps) => {
+  const navigate = useNavigate();
   const [isNavBarOpen, setIsNavBarOpen] = useState(isStatsView);
   const isMobile = useMediaQuery("(max-width:600px)");
 
@@ -36,6 +50,31 @@ const NavBar = ({
         getMonthTotal(user.transactions, month, selectedDay.year)
       ),
     [user.transactions, selectedDay.year]
+  );
+
+  const total = useMemo(
+    () => getDayTotal(user.transactions, Temporal.Now.plainDateISO()),
+    [user.transactions]
+  );
+
+  const income = useMemo(
+    () =>
+      getMonthIncome(
+        user.transactions,
+        months[selectedDay.month - 1],
+        selectedDay.year
+      ),
+    [user.transactions, selectedDay.month, selectedDay.year]
+  );
+
+  const expenses = useMemo(
+    () =>
+      getMonthExpenses(
+        user.transactions,
+        months[selectedDay.month - 1],
+        selectedDay.year
+      ),
+    [user.transactions, selectedDay.month, selectedDay.year]
   );
 
   const handleLeftArrowClick = () => {
@@ -70,6 +109,34 @@ const NavBar = ({
           />
         </div>
 
+        <div className="money-container">
+          <div
+            className="money-item balance-container"
+            onClick={() => navigate("/dashboard")}
+          >
+            <img src={balanceIcon} alt="balance" />
+            <p
+              className={`money balance ${total.balance >= 0 ? "positive" : "negative"}`}
+            >
+              ${formatCurrency(total.balance)}
+            </p>
+          </div>
+          <div
+            className="money-item income-container"
+            onClick={() => navigate("/stats")}
+          >
+            <img src={incomeIcon} alt="income" />
+            <p className="money income">+${formatCurrency(income)}</p>
+          </div>
+          <div
+            className="money-item expenses-container"
+            onClick={() => navigate("/stats")}
+          >
+            <img src={expensesIcon} alt="expenses" />
+            <p className="money expenses">-${formatCurrency(expenses)}</p>
+          </div>
+        </div>
+
         <div className="date-change-container">
           <button className="arrow" onClick={handleLeftArrowClick}>
             <LeftIcon fontSize="medium" />
@@ -80,20 +147,51 @@ const NavBar = ({
             onClick={() => setIsNavBarOpen(isStatsView ? true : !isNavBarOpen)}
           >
             <p className="date">
-              {isStatsView
-                ? <span className="date-year">{selectedDay.toLocaleString("en", { year: "numeric" })}</span>
-                : (
-                    <>
-                      <span className="date-month">{selectedDay.toLocaleString("en", { month: "long" })}</span>
-                      <span className="date-year"> {selectedDay.toLocaleString("en", { year: "numeric" })}</span>
-                    </>
-                  )}
+              {isStatsView ? (
+                <span className="date-year">
+                  {selectedDay.toLocaleString("en", { year: "numeric" })}
+                </span>
+              ) : (
+                <>
+                  <span className="date-month">
+                    {selectedDay.toLocaleString("en", { month: "long" })}
+                  </span>
+                  <span className="date-year">
+                    {" "}
+                    {selectedDay.toLocaleString("en", { year: "numeric" })}
+                  </span>
+                </>
+              )}
             </p>
           </div>
 
           <button className="arrow" onClick={handleRightArrowClick}>
             <RightIcon fontSize="medium" />
           </button>
+        </div>
+
+        <div className="nav-icons-container">
+          <img
+            src={statsIcon}
+            alt="stats"
+            className="nav-icon"
+            width={25}
+            onClick={() => navigate("/stats")}
+          />
+          <img
+            src={categoriesIcon}
+            alt="categories"
+            className="nav-icon"
+            width={35}
+            onClick={() => navigate("/categories")}
+          />
+          <img
+            src={userIcon}
+            alt="user"
+            className="nav-icon"
+            width={25}
+            onClick={() => navigate("/user")}
+          />
         </div>
 
         <div className="logout-container">
@@ -135,9 +233,13 @@ const NavBar = ({
               </div>
 
               <div className="month-body">
-                <p className="month-income">+${data.income}</p>
-                <p className="month-expenses">-${data.expenses}</p>
-                <p className="month-balance">=${data.balance}</p>
+                <p className="month-income">+${formatCurrency(data.income)}</p>
+                <p className="month-expenses">
+                  -${formatCurrency(data.expenses)}
+                </p>
+                <p className="month-balance">
+                  =${formatCurrency(data.balance)}
+                </p>
               </div>
             </div>
           );

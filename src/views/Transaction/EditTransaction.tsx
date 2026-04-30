@@ -21,8 +21,10 @@ function EditTransaction({ user, setUser, transaction }: EditTransactionProps) {
   const [date, setDate] = useState(
     Temporal.PlainDate.from(transaction.date.toString().slice(0, 10))
   );
-  const [repeats, setRepeats] = useState(false);
-  const repeatsBox = useRef<HTMLInputElement>(null);
+  const [repeats, setRepeats] = useState<"weekly" | "monthly" | null>(
+    transaction.repeat || null
+  );
+  const repeatsBox = useRef<HTMLSelectElement>(null);
   const [disableSubmitButton, setDisableSubmitButton] = useState(true);
 
   const categoriesDatalist = useRef<HTMLDataListElement>(null);
@@ -76,8 +78,9 @@ function EditTransaction({ user, setUser, transaction }: EditTransactionProps) {
     }
   };
 
-  const onRepeatsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRepeats(event.target.checked);
+  const onRepeatsChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = event.target.value;
+    setRepeats(value === "none" ? null : value as "weekly" | "monthly");
   };
 
   const handleUpdateSubmit = async (event: React.FormEvent) => {
@@ -189,16 +192,20 @@ function EditTransaction({ user, setUser, transaction }: EditTransactionProps) {
           onChange={onDateChange}
           value={date.toString().slice(0, 10)}
         />
-        {transaction.group ? (
+        {transaction.repeat ? (
           <div className="repeat-container">
-            <label htmlFor="repeat">Apply to all months</label>
-            <input
-              type="checkbox"
+            <label htmlFor="repeat">Repeat</label>
+            <select
               name="repeat"
               id="repeat"
               ref={repeatsBox}
               onChange={onRepeatsChange}
-            />
+              defaultValue={transaction.repeat || ""}
+            >
+              <option value="none">None</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
+            </select>
           </div>
         ) : (
           ""

@@ -13,6 +13,7 @@ interface TransactionType {
   category: Category;
   date: Temporal.PlainDate;
   group?: string;
+  repeat?: "weekly" | "monthly";
 }
 
 interface UserType {

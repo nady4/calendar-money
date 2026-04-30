@@ -9,29 +9,58 @@ const toPlainDate = (date: string | Temporal.PlainDate): Temporal.PlainDate => {
   return date;
 };
 
+const formatCurrency = (amount: number): string => {
+  return amount.toLocaleString("en-US", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2
+  });
+};
+
 const getDayTransactions = (
   transactions: TransactionType[],
   day: Temporal.PlainDate
 ): TransactionType[] => {
   const processedTransactions = transactions.map((transaction) => ({
     ...transaction,
-    date: toPlainDate(transaction.date) as Temporal.PlainDate,
+    date: toPlainDate(transaction.date) as Temporal.PlainDate
   }));
 
-  return processedTransactions
-    .filter(
-      (transaction) =>
-        Temporal.PlainDate.compare(
-          transaction.date as Temporal.PlainDate,
-          day
-        ) === 0
-    )
-    .sort((a, b) => {
+  const exactDateMatches = processedTransactions.filter(
+    (transaction) =>
+      Temporal.PlainDate.compare(
+        transaction.date as Temporal.PlainDate,
+        day
+      ) === 0
+  );
+
+  const weeklyRepeats = processedTransactions.filter((transaction) => {
+    if (transaction.repeat === "weekly") {
+      if (day.dayOfWeek !== transaction.date.dayOfWeek) return false;
+      const txWeek = transaction.date.year * 52 + transaction.date.dayOfWeek;
+      const dayWeek = day.year * 52 + day.dayOfWeek;
+      return dayWeek >= txWeek;
+    }
+    return false;
+  });
+
+  const monthlyRepeats = processedTransactions.filter((transaction) => {
+    if (transaction.repeat === "monthly") {
+      if (day.day !== transaction.date.day) return false;
+      const txKey = transaction.date.year * 12 + transaction.date.month;
+      const dayKey = day.year * 12 + day.month;
+      return dayKey >= txKey;
+    }
+    return false;
+  });
+
+  return [...exactDateMatches, ...weeklyRepeats, ...monthlyRepeats].sort(
+    (a, b) => {
       return Temporal.PlainDate.compare(
         a.date as Temporal.PlainDate,
         b.date as Temporal.PlainDate
       );
-    });
+    }
+  );
 };
 
 const getDaysWithTransactionsTotal = (
@@ -41,7 +70,7 @@ const getDaysWithTransactionsTotal = (
 } => {
   const processedTransactions = transactions.map((transaction) => ({
     ...transaction,
-    date: toPlainDate(transaction.date) as Temporal.PlainDate,
+    date: toPlainDate(transaction.date) as Temporal.PlainDate
   }));
 
   processedTransactions.sort((a, b) => {
@@ -66,7 +95,7 @@ const getDaysWithTransactionsTotal = (
     total[dateKey] = {
       income,
       expenses,
-      balance: income - expenses,
+      balance: income - expenses
     };
   });
 
@@ -87,7 +116,7 @@ const getDailyMonthTotals = (
   try {
     daysInMonth = Temporal.PlainYearMonth.from({
       year,
-      month: monthNumber,
+      month: monthNumber
     }).daysInMonth;
   } catch (e) {
     console.error("Error getting days in month:", e);
@@ -99,12 +128,12 @@ const getDailyMonthTotals = (
     .map(() => ({
       income: 0,
       expenses: 0,
-      balance: 0,
+      balance: 0
     }));
 
   const processedTransactions = transactions.map((transaction) => ({
     ...transaction,
-    date: toPlainDate(transaction.date) as Temporal.PlainDate,
+    date: toPlainDate(transaction.date) as Temporal.PlainDate
   }));
 
   processedTransactions.forEach((transaction) => {
@@ -132,7 +161,7 @@ const getDailyMonthTotals = (
     return {
       income,
       expenses,
-      balance: income - expenses,
+      balance: income - expenses
     };
   });
 
@@ -156,7 +185,7 @@ const getDayTotal = (
   let total: TotalType = {
     income: 0,
     expenses: 0,
-    balance: 0,
+    balance: 0
   };
 
   let low = 0;
@@ -196,12 +225,12 @@ const getMonthTotal = (
   const total: TotalType = {
     income: 0,
     expenses: 0,
-    balance: 0,
+    balance: 0
   };
 
   const processedTransactions = transactions.map((transaction) => ({
     ...transaction,
-    date: toPlainDate(transaction.date) as Temporal.PlainDate,
+    date: toPlainDate(transaction.date) as Temporal.PlainDate
   }));
 
   const relevantTransactions = processedTransactions.filter(
@@ -249,7 +278,7 @@ const getMonthlyTotalFromCategories = (
 
   const processedTransactions = transactions.map((transaction) => ({
     ...transaction,
-    date: toPlainDate(transaction.date) as Temporal.PlainDate,
+    date: toPlainDate(transaction.date) as Temporal.PlainDate
   }));
 
   const relevantTransactions = processedTransactions.filter(
@@ -283,7 +312,7 @@ const getYearlyTotalFromCategories = (
 
   const processedTransactions = transactions.map((transaction) => ({
     ...transaction,
-    date: toPlainDate(transaction.date) as Temporal.PlainDate,
+    date: toPlainDate(transaction.date) as Temporal.PlainDate
   }));
 
   const relevantTransactions = processedTransactions.filter(
@@ -299,6 +328,68 @@ const getYearlyTotalFromCategories = (
   return total;
 };
 
+const getMonthIncome = (
+  transactions: TransactionType[],
+  month: string,
+  year: number
+): number => {
+  const monthNumber = monthNameToNumber[month];
+  if (!monthNumber) {
+    return 0;
+  }
+
+  let income = 0;
+
+  const processedTransactions = transactions.map((transaction) => ({
+    ...transaction,
+    date: toPlainDate(transaction.date) as Temporal.PlainDate
+  }));
+
+  const relevantTransactions = processedTransactions.filter(
+    (transaction) =>
+      transaction.date.year === year && transaction.date.month === monthNumber
+  );
+
+  for (const transaction of relevantTransactions) {
+    if (transaction.category.type === "Income") {
+      income += transaction.amount;
+    }
+  }
+
+  return income;
+};
+
+const getMonthExpenses = (
+  transactions: TransactionType[],
+  month: string,
+  year: number
+): number => {
+  const monthNumber = monthNameToNumber[month];
+  if (!monthNumber) {
+    return 0;
+  }
+
+  let expenses = 0;
+
+  const processedTransactions = transactions.map((transaction) => ({
+    ...transaction,
+    date: toPlainDate(transaction.date) as Temporal.PlainDate
+  }));
+
+  const relevantTransactions = processedTransactions.filter(
+    (transaction) =>
+      transaction.date.year === year && transaction.date.month === monthNumber
+  );
+
+  for (const transaction of relevantTransactions) {
+    if (transaction.category.type === "Expense") {
+      expenses += transaction.amount;
+    }
+  }
+
+  return expenses;
+};
+
 export {
   getDayTransactions,
   getDayTotal,
@@ -306,4 +397,7 @@ export {
   getDailyMonthTotals,
   getMonthlyTotalFromCategories,
   getYearlyTotalFromCategories,
+  formatCurrency,
+  getMonthIncome,
+  getMonthExpenses
 };

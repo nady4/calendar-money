@@ -1,7 +1,11 @@
 import { useState, useEffect, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Temporal } from "@js-temporal/polyfill";
-import { getDayTotal, getDayTransactions } from "../../util/functions";
+import {
+  getDayTotal,
+  getDayTransactions,
+  formatCurrency
+} from "../../util/functions";
 import { UserType, TransactionType } from "../../types.d";
 import "../../styles/Day.scss";
 
@@ -36,11 +40,6 @@ function Day({ date, user, selectedDay, setSelectedDay }: DayProps) {
     setSelectedDay(date);
     navigate("/transactions");
   };
-  const openNewTransaction = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setSelectedDay(date);
-    navigate("/new-transaction");
-  };
 
   return (
     <div
@@ -52,18 +51,10 @@ function Day({ date, user, selectedDay, setSelectedDay }: DayProps) {
     >
       <div className="day-header">
         <div className="day-balance-container">
-          <p className="day-balance">${total.balance}</p>
+          <p className="day-balance">${formatCurrency(total.balance)}</p>
         </div>
         <div className="day-date-container">
           <p className="day-date">{date.day}</p>
-        </div>
-        <div className="add-transaction-button-container">
-          <button
-            className="add-transaction-button"
-            onClick={openNewTransaction}
-          >
-            +
-          </button>
         </div>
       </div>
       <div className="transactions-container">
@@ -72,7 +63,6 @@ function Day({ date, user, selectedDay, setSelectedDay }: DayProps) {
             <div className="day-item" key={transaction._id}>
               <div
                 className="item-color"
-                //red if spending, green if income
                 style={{
                   backgroundColor:
                     transaction.category.type === "Income"
@@ -82,7 +72,7 @@ function Day({ date, user, selectedDay, setSelectedDay }: DayProps) {
               ></div>
               <div className="item-amount">
                 {transaction.category.type === "Income" ? "+" : "-"}$
-                {transaction.amount}
+                {formatCurrency(transaction.amount)}
               </div>
               <div className="item-description">
                 {transaction.description == transaction.description.slice(0, 10)

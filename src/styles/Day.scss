@@ -33,14 +33,13 @@
     height: 45px;
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-between;
     background-color: vars.$card-primary-color;
     transition: background-color 0.25s ease;
     color: #222;
 
     .day-date-container,
-    .day-balance-container,
-    .add-transaction-button-container {
+    .day-balance-container {
       height: 100%;
       width: 33.33%;
     }
@@ -53,8 +52,10 @@
       .day-balance {
         padding-left: 20px;
         font-weight: 300;
+        font-size: 0.9rem;
         color: #444;
         transition: 0.2s ease-in-out;
+        font-family: "JetBrains Mono", monospace;
       }
     }
 
@@ -71,38 +72,6 @@
         color: #dadada;
       }
     }
-
-    .add-transaction-button-container {
-      opacity: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: opacity 0.2s ease-in-out;
-
-      .add-transaction-button {
-        background-color: vars.$primary-color;
-        color: #fff;
-        border-radius: 50%;
-        height: 30px;
-        width: 30px;
-        border: none;
-        font-size: 1.2rem;
-        cursor: pointer;
-        transition:
-          transform 0.15s ease,
-          background-color 0.2s;
-
-        &:hover {
-          background-color: vars.$card-secondary-color;
-          transform: scale(1.25);
-        }
-
-        &:focus {
-          background-color: vars.$tertiary-color;
-          transform: scale(1);
-        }
-      }
-    }
   }
 
   .transactions-container {
@@ -116,12 +85,15 @@
   }
 
   .day-item {
-    width: 100%;
+    width: 90%;
     margin-top: 5px;
-    height: 25px;
+    height: 30px;
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    background-color: #1d1d1d;
+    border-radius: 40px;
+    overflow-x: hidden;
 
     div {
       font-size: 0.9rem;
@@ -129,7 +101,7 @@
     }
 
     .item-color {
-      margin-left: 20px;
+      margin-left: 10px;
       height: 6px;
       width: 6px;
       border-radius: 50%;
@@ -139,8 +111,10 @@
       margin-left: 5px;
       text-align: center;
       width: 50%;
+      font-size: 0.8rem;
       font-weight: 700;
       color: #fff;
+      font-family: "JetBrains Mono", monospace;
     }
 
     .item-description {
@@ -150,7 +124,6 @@
   }
 }
 
-/* 🔘 Días fuera del mes */
 .inactive-day {
   .day-header {
     color: #aaa;
@@ -167,7 +140,6 @@
   opacity: 0.3;
 }
 
-/* 🔻 Balance negativo */
 .negative {
   border-radius: 6px;
   border-color: vars.$disabled-primary-color;
@@ -175,7 +147,6 @@
   box-shadow: 0 0 8px rgba(vars.$disabled-primary-color, 0.6);
 }
 
-/* 🔵 Día seleccionado */
 .active-day {
   border-color: vars.$secondary-color;
   border: 2px solid vars.$secondary-color;
@@ -193,7 +164,6 @@
   }
 }
 
-/* 📱 Mobile */
 @media (max-width: 600px) {
   .calendar-day {
     height: vars.$day-height * 0.4;

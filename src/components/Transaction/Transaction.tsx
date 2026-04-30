@@ -1,4 +1,5 @@
 import { TransactionType } from "../../types.d";
+import { formatCurrency } from "../../util/functions";
 import "../../styles/list-item.scss";
 
 function Transaction({ transaction }: { transaction: TransactionType }) {
@@ -6,7 +7,7 @@ function Transaction({ transaction }: { transaction: TransactionType }) {
     <div className="item" style={{ background: transaction.category.color }}>
       <div className="transaction-amount">
         {transaction.category.type === "Income" ? "+" : "-"}$
-        {transaction.amount}
+        {formatCurrency(transaction.amount)}
       </div>
       <div className="transaction-description">{transaction.description}</div>
     </div>
