@@ -81,7 +81,7 @@ function Login({
   };
 
   return (
-    <main>
+    <main className="auth-main">
       <ToastContainer />
       <div className="container">
         <fieldset id="log_up" className="fieldset">

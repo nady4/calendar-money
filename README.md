@@ -13,29 +13,31 @@
     <td colspan="2" align="center"><em>Dashboard (month view)</em></td>
   </tr>
   <tr>
-    <td colspan="2" align="center"><img src="./public/assets/docs/1.png" alt="Dashboard month view" /></td>
+    <td colspan="2" align="center"><img src="./public/assets/docs/dashboard.png" alt="Dashboard month view" /></td>
   </tr>
   <tr>
-    <td width="50%" align="center"><em>Drag &amp; drop a transaction</em></td>
-    <td width="50%" align="center"><em>Statistics — KPIs + cash flow</em></td>
-  </tr>
-  <tr>
-    <td><img src="./public/assets/docs/2.png" alt="Drag and drop" /></td>
-    <td><img src="./public/assets/docs/3.png" alt="Stats" /></td>
-  </tr>
-  <tr>
+    <td align="center"><em>Statistics — KPIs + cash flow</em></td>
     <td align="center"><em>Category breakdown &amp; net worth</em></td>
+  </tr>
+  <tr>
+    <td><img src="./public/assets/docs/stats1.png" alt="Stats" /></td>
+    <td><img src="./public/assets/docs/stats2.png" alt="Stats breakdown" /></td>
+  </tr>
+  <tr>
+    <td align="center"><em>New transaction</em></td>
     <td align="center"><em>Budgets</em></td>
   </tr>
   <tr>
-    <td><img src="./public/assets/docs/4.png" alt="Stats breakdown" /></td>
-    <td><img src="./public/assets/docs/5.png" alt="Budgets" /></td>
+    <td><img src="./public/assets/docs/new-transaction.png" alt="New transaction" /></td>
+    <td><img src="./public/assets/docs/budgets.png" alt="Budgets" /></td>
   </tr>
   <tr>
-    <td colspan="2" align="center"><em>Account — backup, theme, preferences</em></td>
+    <td align="center"><em>Categories</em></td>
+    <td align="center"><em>New category</em></td>
   </tr>
   <tr>
-    <td colspan="2" align="center"><img src="./public/assets/docs/6.png" alt="Account" /></td>
+    <td><img src="./public/assets/docs/categories.png" alt="Categories" /></td>
+    <td><img src="./public/assets/docs/new-category.png" alt="New category" /></td>
   </tr>
 </table>
 
@@ -113,20 +115,20 @@
 
 ## 🛠️ Tech stack
 
-| Area                | Technology                                                  |
-| ------------------- | ----------------------------------------------------------- |
-| Frontend framework  | React 18 + Vite 6                                           |
-| Routing             | React Router 7 (`BrowserRouter`)                            |
-| Language            | TypeScript                                                   |
-| Charts              | Chart.js 4 + react-chartjs-2                                |
-| Date handling       | `@js-temporal/polyfill`                                      |
-| UI components       | Material UI icons + custom SCSS                              |
-| Forms / pickers     | react-color, react-toastify                                   |
-| Styles              | Sass (SCSS) with a design-token system                       |
-| Linting             | ESLint                                                        |
-| Backend (separate)  | Node.js + Express + Mongoose (see `calendar-money-api`)      |
-| Auth (backend)      | JWT (`jsonwebtoken`) + bcrypt                                |
-| Database (backend)  | MongoDB (Mongoose)                                            |
+| Area               | Technology                                              |
+| ------------------ | ------------------------------------------------------- |
+| Frontend framework | React 18 + Vite 6                                       |
+| Routing            | React Router 7 (`BrowserRouter`)                        |
+| Language           | TypeScript                                              |
+| Charts             | Chart.js 4 + react-chartjs-2                            |
+| Date handling      | `@js-temporal/polyfill`                                 |
+| UI components      | Material UI icons + custom SCSS                         |
+| Forms / pickers    | react-color, react-toastify                             |
+| Styles             | Sass (SCSS) with a design-token system                  |
+| Linting            | ESLint                                                  |
+| Backend (separate) | Node.js + Express + Mongoose (see `calendar-money-api`) |
+| Auth (backend)     | JWT (`jsonwebtoken`) + bcrypt                           |
+| Database (backend) | MongoDB (Mongoose)                                      |
 
 <br>
 
@@ -223,12 +225,12 @@ npm run preview
 
 ## 📜 Scripts
 
-| Command            | Description                 |
-| ------------------ | --------------------------- |
-| `npm run dev`      | Start the dev server        |
-| `npm run build`    | Build for production        |
-| `npm run lint`     | Run ESLint                  |
-| `npm run preview`  | Preview the production build |
+| Command           | Description                  |
+| ----------------- | ---------------------------- |
+| `npm run dev`     | Start the dev server         |
+| `npm run build`   | Build for production         |
+| `npm run lint`    | Run ESLint                   |
+| `npm run preview` | Preview the production build |
 
 <br>
 

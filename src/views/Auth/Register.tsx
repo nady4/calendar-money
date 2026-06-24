@@ -88,7 +88,7 @@ function Register() {
   };
 
   return (
-    <main>
+    <main className="auth-main">
       <ToastContainer />
       <div className="container">
         <fieldset id="sign_up" className="fieldset">
