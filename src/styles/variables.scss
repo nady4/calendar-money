@@ -3,12 +3,112 @@ $day-height: 20vh;
 $day-min-height: 130px;
 $day-margin: 1.6%;
 
-$background-color: #0b0c12;
-$card-primary-color: #151515;
-$card-secondary-color: #1b1b1b;
 $primary-color: #007aff;
 $secondary-color: #3a99ff;
 $tertiary-color: #0266d1;
 $disabled-primary-color: #ff4136;
 $disabled-secondary-color: #ff6b6b;
 $disabled-tertiary-color: #940606;
+
+$radius-card: 16px;
+$radius-sm: 10px;
+$radius-pill: 999px;
+
+$font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+:root,
+:root[data-theme="dark"] {
+  --bg-app: #0a0b10;
+  --bg-card: #12141c;
+  --bg-card-elevated: #181b26;
+  --bg-card-hover: #1d2130;
+  --border-subtle: #232735;
+  --border-strong: #2e3344;
+
+  --text-primary: #f4f6fb;
+  --text-secondary: #a8afbf;
+  --text-muted: #6b7280;
+
+  --accent: var(--cm-accent, #5b8cff);
+  --accent-soft: var(--cm-accent-soft, rgba(91, 140, 255, 0.14));
+  --accent-strong: var(--cm-accent-strong, rgba(91, 140, 255, 0.4));
+
+  --positive: #22c55e;
+  --negative: #ef4444;
+  --positive-soft: rgba(34, 197, 94, 0.12);
+  --negative-soft: rgba(239, 68, 68, 0.12);
+
+  --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.03) inset,
+    0 12px 32px rgba(0, 0, 0, 0.45);
+  --shadow-pop: 0 18px 48px rgba(0, 0, 0, 0.55);
+
+  --scrim: rgba(0, 0, 0, 0.7);
+  --bg-card-secondary: #1b1b1b;
+  --bg-input: #1b1b1b;
+  --border-input: #2c2c2c;
+
+  --icon-filter: brightness(0) invert(0.7);
+  --icon-filter-hover: brightness(0) invert(1)
+    drop-shadow(0 0 4px rgba(239, 68, 68, 0.6));
+}
+
+:root[data-theme="light"] {
+  --bg-app: #f5f6fa;
+  --bg-card: #ffffff;
+  --bg-card-elevated: #f0f2f7;
+  --bg-card-hover: #e7eaf2;
+  --border-subtle: #e3e6ee;
+  --border-strong: #cdd2de;
+
+  --text-primary: #0e1117;
+  --text-secondary: #4b5263;
+  --text-muted: #6b7280;
+
+  --accent: var(--cm-accent, #3b6ee6);
+  --accent-soft: var(--cm-accent-soft, rgba(59, 110, 230, 0.14));
+  --accent-strong: var(--cm-accent-strong, rgba(59, 110, 230, 0.4));
+
+  --positive: #15803d;
+  --negative: #b91c1c;
+  --positive-soft: rgba(21, 128, 61, 0.12);
+  --negative-soft: rgba(185, 28, 28, 0.1);
+
+  --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 8px 24px rgba(20, 24, 38, 0.08);
+  --shadow-pop: 0 12px 36px rgba(20, 24, 38, 0.12);
+
+  --scrim: rgba(15, 18, 28, 0.45);
+  --bg-card-secondary: #f5f6fa;
+  --bg-input: #ffffff;
+  --border-input: #d4d7e0;
+
+  --icon-filter: brightness(0) invert(0.15);
+  --icon-filter-hover: brightness(0) invert(0.15)
+    drop-shadow(0 0 4px rgba(185, 28, 28, 0.5));
+}
+
+$background-color: var(--bg-app);
+$card-primary-color: var(--bg-card);
+$card-secondary-color: var(--bg-card-secondary);
+
+$bg-app: var(--bg-app);
+$bg-card: var(--bg-card);
+$bg-card-elevated: var(--bg-card-elevated);
+$bg-card-hover: var(--bg-card-hover);
+$border-subtle: var(--border-subtle);
+$border-strong: var(--border-strong);
+
+$text-primary: var(--text-primary);
+$text-secondary: var(--text-secondary);
+$text-muted: var(--text-muted);
+
+$accent: var(--accent);
+$accent-soft: var(--accent-soft);
+
+$positive: var(--positive);
+$negative: var(--negative);
+$positive-soft: var(--positive-soft);
+$negative-soft: var(--negative-soft);
+
+$shadow-card: var(--shadow-card);
+$shadow-pop: var(--shadow-pop);

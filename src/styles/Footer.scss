@@ -1,27 +1,48 @@
+@use "./variables" as vars;
+
 .footer {
-  background-color: rgb(25, 25, 25);
+  background-color: vars.$bg-card;
+  border-top: 1px solid vars.$border-subtle;
   display: flex;
   align-items: center;
   justify-content: space-around;
-  height: 10vh;
+  min-height: 64px;
+  padding: 14px 20px;
+  font-family: "Nunito Sans", sans-serif;
 
   .footer-copyright,
   .footer-mail,
   .footer-dev-bsas,
-  .footer-repo-label,
+  .footer-repo-label {
+    color: vars.$text-secondary;
+    font-size: 0.95rem;
+  }
+
   .footer-mail {
-    margin-top: 2vh;
-    color: white;
-    font-size: 1.2rem;
+    color: vars.$accent;
+    font-weight: 600;
   }
 
   .footer-dev-bsas {
-    font-family: "JetBrains Mono", monospace;
+    font-family: vars.$font-mono;
+    font-size: 0.85rem;
+    color: vars.$text-muted;
   }
 
   a {
+    display: inline-flex;
+    align-items: center;
+    transition: transform 0.18s ease;
+
     .footer-repo-logo {
-      height: 50px;
+      height: 32px;
+      width: 32px;
+      filter: var(--icon-filter, brightness(0) invert(0.75));
+      transition: filter 0.18s ease;
+    }
+
+    &:hover {
+      transform: scale(1.08);
     }
   }
 }
@@ -30,23 +51,20 @@
   .footer {
     flex-direction: column;
     height: auto;
-    padding-top: 3vh;
-    padding-bottom: 3vh;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    gap: 8px;
 
     .footer-copyright,
     .footer-mail,
     .footer-dev-bsas,
-    .footer-repo-label,
-    .footer-mail {
-      margin-top: 2vh;
+    .footer-repo-label {
       text-align: center;
-      font-size: 1rem;
+      font-size: 0.9rem;
     }
 
-    a {
-      .footer-repo-logo {
-        margin-top: 2.5vh;
-      }
+    a .footer-repo-logo {
+      margin-top: 6px;
     }
   }
 }

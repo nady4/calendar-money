@@ -109,13 +109,16 @@ function EditCategory({ user, setUser, category }: EditCategoryProps) {
 
   return (
     <div className="form">
-      <img
-        src={exitButton}
+      <button
+        type="button"
+        aria-label="Close"
         className="exit-button"
         onClick={() => {
           navigate("/dashboard");
         }}
-      />
+      >
+        <img src={exitButton} alt="" />
+      </button>
       <h2>Edit Category</h2>
       <form id="edit-category-form" onSubmit={handleUpdateSubmit}>
         <label htmlFor="name" className="label">

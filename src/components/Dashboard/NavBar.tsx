@@ -2,7 +2,8 @@ import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMediaQuery } from "@mui/material";
 import { Temporal } from "@js-temporal/polyfill";
-import { UserType } from "../../types";
+import SearchIcon from "@mui/icons-material/Search";
+import { UserType, TransactionType } from "../../types";
 import {
   getDayTotal,
   getMonthTotal,
@@ -11,6 +12,7 @@ import {
   formatCurrency
 } from "../../util/functions";
 import { months } from "../../util/constants";
+import { justDropped } from "../../util/dragState";
 import LeftIcon from "@mui/icons-material/ChevronLeft";
 import RightIcon from "@mui/icons-material/ChevronRight";
 import WhiteMenuButton from "../../assets/whiteMenuButton.svg";
@@ -18,9 +20,6 @@ import ExitButton from "../../assets/blackExitButton.svg";
 import balanceIcon from "../../assets/balance.svg";
 import incomeIcon from "../../assets/income.svg";
 import expensesIcon from "../../assets/expenses.svg";
-import statsIcon from "../../assets/statsIcon.svg";
-import categoriesIcon from "../../assets/categoriesIcon.svg";
-import userIcon from "../../assets/userIcon.svg";
 import "../../styles/NavBar.scss";
 
 interface NavBarProps {
@@ -30,6 +29,9 @@ interface NavBarProps {
   isDropdownOpen: boolean;
   setIsDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
   isStatsView: boolean;
+  setSelectedTransaction: React.Dispatch<
+    React.SetStateAction<TransactionType | null>
+  >;
 }
 
 const NavBar = ({
@@ -38,11 +40,40 @@ const NavBar = ({
   setSelectedDay,
   isDropdownOpen,
   setIsDropdownOpen,
-  isStatsView
+  isStatsView,
+  setSelectedTransaction
 }: NavBarProps) => {
   const navigate = useNavigate();
-  const [isNavBarOpen, setIsNavBarOpen] = useState(isStatsView);
+  const [isNavBarOpen, setIsNavBarOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
   const isMobile = useMediaQuery("(max-width:600px)");
+
+  const searchResults = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    if (!query) return [];
+    return user.transactions
+      .filter(
+        (t) =>
+          t.description?.toLowerCase().includes(query) ||
+          t.category?.name?.toLowerCase().includes(query)
+      )
+      .map((t) => {
+        const date =
+          typeof t.date === "string"
+            ? Temporal.PlainDate.from(t.date.split("T")[0])
+            : (t.date as Temporal.PlainDate);
+        return { ...t, date };
+      })
+      .slice(0, 8);
+  }, [searchQuery, user.transactions]);
+
+  const handleSelectResult = (transaction: TransactionType) => {
+    setSelectedTransaction(transaction);
+    setSearchQuery("");
+    setIsSearchFocused(false);
+    navigate("/edit-transaction");
+  };
 
   const monthDataList = useMemo(
     () =>
@@ -98,7 +129,9 @@ const NavBar = ({
       <div className="navbar-top">
         <div className="gradient-border-top"></div>
         <div
-          className="menu-button-container"
+          className={`menu-button-container ${
+            isDropdownOpen ? "is-hidden" : ""
+          }`}
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
         >
           <img
@@ -137,67 +170,88 @@ const NavBar = ({
           </div>
         </div>
 
-        <div className="date-change-container">
-          <button className="arrow" onClick={handleLeftArrowClick}>
-            <LeftIcon fontSize="medium" />
-          </button>
+        {!isStatsView && (
+          <div className="date-change-container">
+            <button className="arrow" onClick={handleLeftArrowClick}>
+              <LeftIcon fontSize="medium" />
+            </button>
 
-          <div
-            className="date-container"
-            onClick={() => setIsNavBarOpen(isStatsView ? true : !isNavBarOpen)}
-          >
-            <p className="date">
-              {isStatsView ? (
+            <div
+              className="date-container"
+              onClick={() => setIsNavBarOpen(!isNavBarOpen)}
+            >
+              <p className="date">
+                <span className="date-month">
+                  {selectedDay.toLocaleString("en", { month: "long" })}
+                </span>
                 <span className="date-year">
+                  {" "}
                   {selectedDay.toLocaleString("en", { year: "numeric" })}
                 </span>
-              ) : (
-                <>
-                  <span className="date-month">
-                    {selectedDay.toLocaleString("en", { month: "long" })}
-                  </span>
-                  <span className="date-year">
-                    {" "}
-                    {selectedDay.toLocaleString("en", { year: "numeric" })}
-                  </span>
-                </>
-              )}
-            </p>
+              </p>
+            </div>
+
+            <button className="arrow" onClick={handleRightArrowClick}>
+              <RightIcon fontSize="medium" />
+            </button>
+          </div>
+        )}
+
+        <div className="search-container">
+          <div className="search-bar">
+            <SearchIcon className="search-icon" fontSize="small" />
+            <input
+              type="text"
+              className="search-input"
+              placeholder="Search transactions..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onFocus={() => setIsSearchFocused(true)}
+              onBlur={() => setTimeout(() => setIsSearchFocused(false), 150)}
+            />
           </div>
 
-          <button className="arrow" onClick={handleRightArrowClick}>
-            <RightIcon fontSize="medium" />
-          </button>
-        </div>
-
-        <div className="nav-icons-container">
-          <img
-            src={statsIcon}
-            alt="stats"
-            className="nav-icon"
-            width={25}
-            onClick={() => navigate("/stats")}
-          />
-          <img
-            src={categoriesIcon}
-            alt="categories"
-            className="nav-icon"
-            width={35}
-            onClick={() => navigate("/categories")}
-          />
-          <img
-            src={userIcon}
-            alt="user"
-            className="nav-icon"
-            width={25}
-            onClick={() => navigate("/user")}
-          />
+          {isSearchFocused && searchResults.length > 0 && (
+            <div className="search-results">
+              {searchResults.map((t) => {
+                const isIncome = t.category?.type === "Income";
+                return (
+                  <div
+                    key={t._id}
+                    className="search-result-item"
+                    onMouseDown={() => handleSelectResult(t)}
+                  >
+                    <div className="search-result-info">
+                      <p className="search-result-description">
+                        {t.description}
+                      </p>
+                      <p className="search-result-meta">
+                        {t.category?.name} ·{" "}
+                        {`${String(t.date.day).padStart(2, "0")}/${String(
+                          t.date.month
+                        ).padStart(2, "0")}/${t.date.year}`}
+                      </p>
+                    </div>
+                    <p
+                      className={`search-result-amount ${
+                        isIncome ? "positive" : "negative"
+                      }`}
+                    >
+                      {isIncome ? "+" : "-"}$
+                      {formatCurrency(Math.abs(t.amount))}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         <div className="logout-container">
           <button
             className="logout-button-container"
             onClick={() => {
+              if (justDropped.isRecent()) return;
               localStorage.removeItem("token");
               window.location.reload();
             }}
@@ -207,50 +261,56 @@ const NavBar = ({
         </div>
       </div>
 
-      <div
-        className={`navbar-bottom navbar-${isNavBarOpen ? "open" : "closed"}`}
-      >
-        {months.map((month, index) => {
-          const data = monthDataList[index];
-          const isActive = selectedDay.month === index + 1;
+      {!isStatsView && (
+        <div
+          className={`navbar-bottom navbar-${isNavBarOpen ? "open" : "closed"}`}
+        >
+          {months.map((month, index) => {
+            const data = monthDataList[index];
+            const isActive = selectedDay.month === index + 1;
 
-          const mobileClass =
-            isMobile &&
-            (data.balance >= 0 ? "positive-month" : "negative-month");
+            const mobileClass =
+              isMobile &&
+              (data.balance >= 0 ? "positive-month" : "negative-month");
 
-          return (
-            <div
-              key={index}
-              className={`month-container ${isActive ? "active-month" : ""}`}
-              onClick={() =>
-                setSelectedDay(selectedDay.with({ month: index + 1 }))
-              }
-            >
-              <div className="month-header">
-                <p className={`month ${mobileClass || ""}`}>
-                  {isMobile ? month.slice(0, 1) : month}
-                </p>
+            return (
+              <div
+                key={index}
+                className={`month-container ${isActive ? "active-month" : ""}`}
+                onClick={() =>
+                  setSelectedDay(selectedDay.with({ month: index + 1 }))
+                }
+              >
+                <div className="month-header">
+                  <p className={`month ${mobileClass || ""}`}>
+                    {isMobile ? month.slice(0, 1) : month}
+                  </p>
+                </div>
+
+                <div className="month-body">
+                  <p className="month-income">
+                    +${formatCurrency(data.income)}
+                  </p>
+                  <p className="month-expenses">
+                    -${formatCurrency(data.expenses)}
+                  </p>
+                  <p className="month-balance">
+                    =${formatCurrency(data.balance)}
+                  </p>
+                </div>
               </div>
+            );
+          })}
+        </div>
+      )}
 
-              <div className="month-body">
-                <p className="month-income">+${formatCurrency(data.income)}</p>
-                <p className="month-expenses">
-                  -${formatCurrency(data.expenses)}
-                </p>
-                <p className="month-balance">
-                  =${formatCurrency(data.balance)}
-                </p>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      <div
-        className={`gradient-border-bottom gradient-${
-          isNavBarOpen ? "open" : "closed"
-        }`}
-      ></div>
+      {!isStatsView && (
+        <div
+          className={`gradient-border-bottom gradient-${
+            isNavBarOpen ? "open" : "closed"
+          }`}
+        ></div>
+      )}
     </div>
   );
 };

@@ -3,19 +3,23 @@
 
 .form {
   width: 100%;
-  height: 100%;
   min-height: 100vh;
-  background: linear-gradient(180deg, #0e0e0e, #050505);
-  color: #fff;
+  background: vars.$bg-app;
+  color: vars.$text-primary;
+  font-family: "Nunito Sans", sans-serif;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  padding: 40px 20px;
+  box-sizing: border-box;
+  position: relative;
 
   h2 {
-    margin-top: 40px;
-    font-size: 2rem;
-    text-shadow: 0 0 6px rgba(0, 0, 0, 0.6);
+    margin: 0 0 8px;
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: vars.$text-primary;
   }
 
   .exit-button {
@@ -24,78 +28,166 @@
 
   form {
     width: 100%;
+    max-width: 420px;
+    background: vars.$bg-card;
+    border: 1px solid vars.$border-subtle;
+    border-radius: vars.$radius-card;
+    box-shadow: vars.$shadow-card;
+    padding: 32px;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-bottom: 10px;
+    margin: 16px 0 24px;
 
     label {
-      font-size: 1.3rem;
-      margin-top: 40px;
-      margin-bottom: 5px;
-      color: #e6e6e6;
-      text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+      font-size: 1rem;
+      font-weight: 600;
+      align-self: flex-start;
+      margin: 18px 0 6px;
+      color: vars.$text-secondary;
+      width: 100%;
     }
 
     input {
-      width: 200px;
-      padding: 12px 20px;
-      margin: 8px 0;
+      width: 100%;
+      padding: 11px 14px;
+      margin: 0;
       box-sizing: border-box;
-      border: 2px solid #2c2c2c;
-      border-radius: 6px;
-      background-color: #1b1b1b;
-      color: #fff;
-      font-size: 1.1rem;
-      text-align: center;
-      transition: all 0.2s ease;
+      border: 1px solid vars.$border-subtle;
+      border-radius: vars.$radius-sm;
+      background-color: vars.$bg-card-elevated;
+      color: vars.$text-primary;
+      font-family: "Nunito Sans", sans-serif;
+      font-size: 1rem;
+      text-align: left;
+      transition: all 0.18s ease;
+
+      &::placeholder {
+        color: vars.$text-muted;
+      }
 
       &:focus {
         outline: none;
-        border-color: vars.$primary-color;
-        box-shadow: 0 0 8px rgba(vars.$primary-color, 0.6);
+        border-color: vars.$accent;
+        box-shadow: 0 0 0 3px vars.$accent-soft;
       }
     }
 
     .repeat-container {
-      margin-top: 40px;
+      margin-top: 20px;
       padding: 0;
-      height: 50px;
-      width: 250px;
+      width: 100%;
       display: flex;
       align-items: center;
-      justify-content: center;
+      gap: 10px;
+    }
 
-      label {
-        margin-top: 0;
-        margin-bottom: 0;
-        height: 40px;
-        color: #e6e6e6;
-      }
+    .repeat-label {
+      color: vars.$text-secondary;
+      font-weight: 600;
+    }
+
+    .repeat-options {
+      display: inline-flex;
+      gap: 6px;
+    }
+
+    .repeat-option {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 12px;
+      background: vars.$bg-card-elevated;
+      color: vars.$text-secondary;
+      border: 1px solid vars.$border-subtle;
+      border-radius: vars.$radius-pill;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: transform 0.18s ease;
 
       input {
-        margin-top: 0;
-        margin-left: 10px;
-        height: 20px;
-        width: 20px;
-        accent-color: vars.$primary-color;
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+        width: 0;
+        height: 0;
+      }
+
+      &:hover {
+        transform: scale(1.04);
+      }
+
+      &.is-active {
+        background: vars.$accent-soft;
+        border-color: rgba(vars.$accent, 0.6);
+        color: vars.$accent;
       }
     }
 
-    .category-input {
-      width: 250px;
+    .category-input,
+    .email-input {
+      width: 100%;
     }
 
-    .email-input {
-      width: 300px;
+    .category-field {
+      width: 100%;
+      position: relative;
+    }
+
+    .category-type-badge {
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px 4px 8px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-radius: vars.$radius-pill;
+      pointer-events: none;
+
+      .category-type-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+      }
+
+      &.is-income {
+        background: vars.$positive-soft;
+        color: vars.$positive;
+        border: 1px solid rgba(vars.$positive, 0.45);
+
+        .category-type-dot {
+          background: vars.$positive;
+          box-shadow: 0 0 6px vars.$positive;
+        }
+      }
+
+      &.is-expense {
+        background: vars.$negative-soft;
+        color: vars.$negative;
+        border: 1px solid rgba(vars.$negative, 0.45);
+
+        .category-type-dot {
+          background: vars.$negative;
+          box-shadow: 0 0 6px vars.$negative;
+        }
+      }
     }
 
     .type-container {
+      width: 100%;
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
+      gap: 8px;
+      margin-top: 8px;
 
       label {
         text-align: center;
@@ -104,73 +196,355 @@
       .type-boxes {
         display: flex;
         flex-direction: row;
-        align-items: flex-end;
-        justify-content: space-between;
-        height: 50px;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        flex-wrap: wrap;
 
-        label {
-          margin-bottom: 10px;
-          color: #e6e6e6;
-        }
+        .type-option {
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+          margin: 0;
+          padding: 10px 18px;
+          background: vars.$bg-card-elevated;
+          border: 1px solid vars.$border-subtle;
+          border-radius: vars.$radius-pill;
+          color: vars.$text-secondary;
+          font-weight: 700;
+          cursor: pointer;
+          transition: all 0.18s ease;
 
-        #income-box,
-        #expense-box {
-          width: 30px;
-          height: 30px;
-          filter: brightness(0.9);
-          transition: 0.2s ease;
+          span {
+            color: inherit;
+            line-height: 1;
+          }
+
+          input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin: 0;
+            cursor: pointer;
+          }
+
+          &.is-income {
+            &:has(input:checked) {
+              background: vars.$positive-soft;
+              border-color: rgba(vars.$positive, 0.6);
+              color: vars.$positive;
+              box-shadow: 0 0 10px rgba(vars.$positive, 0.3);
+            }
+
+            input {
+              accent-color: vars.$positive;
+            }
+          }
+
+          &.is-expense {
+            &:has(input:checked) {
+              background: vars.$negative-soft;
+              border-color: rgba(vars.$negative, 0.6);
+              color: vars.$negative;
+              box-shadow: 0 0 10px rgba(vars.$negative, 0.3);
+            }
+
+            input {
+              accent-color: vars.$negative;
+            }
+          }
 
           &:hover {
-            cursor: pointer;
-            filter: brightness(1.2);
-          }
-        }
-
-        #income-box {
-          margin-left: 10px;
-          margin-right: auto;
-          &:checked {
-            filter: drop-shadow(0 0 6px vars.$primary-color);
-          }
-        }
-
-        #expense-box {
-          margin-right: 10px;
-          margin-left: auto;
-          &:checked {
-            filter: drop-shadow(0 0 6px vars.$secondary-color);
+            transform: scale(1.04);
           }
         }
       }
     }
   }
 
-  .submit-button {
-    @extend %submit-button;
-    margin-top: 20px;
-    box-shadow: 0 0 12px rgba(vars.$primary-color, 0.5);
-
-    &:hover {
-      box-shadow: 0 0 16px rgba(vars.$secondary-color, 0.7);
-    }
+  .submit-button-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
   }
 
-  .add-button {
-    @extend %add-button;
-    margin-top: 10px;
-    box-shadow: 0 0 12px rgba(vars.$primary-color, 0.4);
+  .submit-button {
+    @extend %submit-button;
+    margin-top: 24px;
+  }
+
+  .delete-button-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
   }
 
   .delete-button {
     @extend %delete-button;
-    margin-top: 10px;
+    margin-top: 8px;
+  }
+
+  .add-button {
+    @extend %add-button;
+    margin-top: 8px;
+  }
+
+  .preferences-section {
+    width: 100%;
+    margin-top: 24px;
+    padding: 18px 20px;
+    background: vars.$bg-card-elevated;
+    border: 1px solid vars.$border-subtle;
+    border-radius: vars.$radius-sm;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .preference-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 0;
+    padding: 6px 4px;
+    cursor: pointer;
+    color: vars.$text-primary;
+    font-weight: 600;
+    font-size: 0.95rem;
+    user-select: none;
+  }
+
+  .preference-label {
+    flex: 0 0 auto;
+  }
+
+  .preference-checkbox {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    width: 0;
+    height: 0;
+  }
+
+  .preference-toggle {
+    position: relative;
+    flex: 0 0 auto;
+    width: 40px;
+    height: 22px;
+    background: vars.$bg-card;
+    border: 1px solid vars.$border-subtle;
+    border-radius: vars.$radius-pill;
+    transition:
+      background-color 0.18s ease,
+      border-color 0.18s ease;
+  }
+
+  .preference-toggle::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    background: vars.$text-secondary;
+    border-radius: 50%;
+    transition:
+      transform 0.18s ease,
+      background-color 0.18s ease;
+  }
+
+  .preference-row:has(.preference-checkbox:checked) .preference-toggle {
+    background: vars.$accent-soft;
+    border-color: rgba(vars.$accent, 0.6);
+  }
+
+  .preference-row:has(.preference-checkbox:checked) .preference-toggle::after {
+    transform: translateX(18px);
+    background: vars.$accent;
+  }
+
+  .preference-row:has(.preference-checkbox:focus-visible) .preference-toggle {
+    outline: 2px solid vars.$accent;
+    outline-offset: 2px;
+  }
+
+  .theme-options {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .theme-option {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 15px;
+    background: vars.$bg-card;
+    color: vars.$text-secondary;
+    border: 1px solid vars.$border-subtle;
+    border-radius: vars.$radius-pill;
+    font-weight: 600;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: transform 0.18s ease;
+
+    input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+      width: 0;
+      height: 0;
+    }
+
+    &:hover {
+      transform: scale(1.04);
+    }
+
+    &.is-active {
+      background: vars.$accent-soft;
+      border-color: rgba(vars.$accent, 0.6);
+      color: vars.$accent;
+    }
+  }
+
+  .accent-swatches {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .accent-swatch {
+    display: inline-flex;
+    cursor: pointer;
+    position: relative;
+
+    input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+      width: 0;
+      height: 0;
+    }
+
+    .accent-dot {
+      display: block;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      transition:
+        transform 0.18s ease,
+        border-color 0.18s ease,
+        box-shadow 0.18s ease;
+    }
+
+    &:hover .accent-dot {
+      transform: scale(1.1);
+    }
+
+    &.is-active .accent-dot {
+      border-color: vars.$text-primary;
+      box-shadow:
+        0 0 0 2px vars.$bg-card-elevated,
+        0 0 6px rgba(0, 0, 0, 0.3);
+      transform: scale(1.05);
+    }
+  }
+
+  .csv-section {
+    width: 100%;
+    margin-top: 28px;
+    padding: 18px 20px;
+    background: vars.$bg-card-elevated;
+    border: 1px solid vars.$border-subtle;
+    border-radius: vars.$radius-sm;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .csv-title {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: vars.$text-primary;
+    text-align: center;
+    text-shadow: none;
+  }
+
+  .csv-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+
+  .csv-button {
+    flex: 1 1 0;
+    min-width: 120px;
+    padding: 10px 18px;
+    background: vars.$bg-card;
+    color: vars.$text-primary;
+    border: 1px solid vars.$border-subtle;
+    border-radius: vars.$radius-sm;
+    font-family: "Nunito Sans", sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: transform 0.18s ease;
+    margin: 0;
+
+    &:hover:not(:disabled) {
+      transform: scale(1.03);
+    }
+
+    &:active:not(:disabled) {
+      transform: scale(0.97);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    &.csv-button-primary {
+      background: vars.$accent-soft;
+      color: vars.$accent;
+      border-color: rgba(vars.$accent, 0.5);
+    }
+  }
+
+  .csv-status {
+    margin: 0;
+    font-size: 0.8rem;
+    text-align: center;
+    font-family: vars.$font-mono;
+
+    &.csv-status-success {
+      color: vars.$positive;
+    }
+
+    &.csv-status-error {
+      color: vars.$negative;
+    }
+
+    &.csv-status-loading {
+      color: vars.$text-secondary;
+    }
   }
 }
 
 @media (max-width: 600px) {
   .form {
+    padding: 70px 16px 24px;
+
     h2 {
       font-size: 1.5rem;
+    }
+
+    form {
+      padding: 24px 20px;
     }
   }
 }

@@ -24,7 +24,6 @@ function EditTransaction({ user, setUser, transaction }: EditTransactionProps) {
   const [repeats, setRepeats] = useState<"weekly" | "monthly" | null>(
     transaction.repeat || null
   );
-  const repeatsBox = useRef<HTMLSelectElement>(null);
   const [disableSubmitButton, setDisableSubmitButton] = useState(true);
 
   const categoriesDatalist = useRef<HTMLDataListElement>(null);
@@ -76,11 +75,6 @@ function EditTransaction({ user, setUser, transaction }: EditTransactionProps) {
         console.error("Invalid date format:", error);
       }
     }
-  };
-
-  const onRepeatsChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = event.target.value;
-    setRepeats(value === "none" ? null : value as "weekly" | "monthly");
   };
 
   const handleUpdateSubmit = async (event: React.FormEvent) => {
@@ -149,13 +143,16 @@ function EditTransaction({ user, setUser, transaction }: EditTransactionProps) {
   return (
     <div className="form">
       <h2>Edit Transaction</h2>
-      <img
-        src={exitButton}
+      <button
+        type="button"
+        aria-label="Close"
         className="exit-button"
         onClick={() => {
           navigate("/dashboard");
         }}
-      />
+      >
+        <img src={exitButton} alt="" />
+      </button>
       <form id="edit-transaction-form">
         <label htmlFor="amount">Amount</label>
         <input
@@ -174,14 +171,27 @@ function EditTransaction({ user, setUser, transaction }: EditTransactionProps) {
         />
 
         <label htmlFor="category">Category</label>
-        <input
-          className="category-input"
-          ref={categoryInput}
-          name="category"
-          list="categories"
-          onChange={onCategoryChange}
-          placeholder={category?.name || ""}
-        />
+        <div className="category-field">
+          <input
+            className="category-input"
+            ref={categoryInput}
+            name="category"
+            list="categories"
+            onChange={onCategoryChange}
+            placeholder={category?.name || ""}
+          />
+          {category && (
+            <span
+              className={`category-type-badge ${
+                category.type === "Income" ? "is-income" : "is-expense"
+              }`}
+              title={`This is an ${category.type.toLowerCase()} category`}
+            >
+              <span className="category-type-dot" />
+              {category.type === "Income" ? "Income" : "Expense"}
+            </span>
+          )}
+        </div>
         <datalist id="categories" ref={categoriesDatalist}></datalist>
 
         <label htmlFor="date">Date</label>
@@ -192,24 +202,34 @@ function EditTransaction({ user, setUser, transaction }: EditTransactionProps) {
           onChange={onDateChange}
           value={date.toString().slice(0, 10)}
         />
-        {transaction.repeat ? (
-          <div className="repeat-container">
-            <label htmlFor="repeat">Repeat</label>
-            <select
-              name="repeat"
-              id="repeat"
-              ref={repeatsBox}
-              onChange={onRepeatsChange}
-              defaultValue={transaction.repeat || ""}
-            >
-              <option value="none">None</option>
-              <option value="weekly">Weekly</option>
-              <option value="monthly">Monthly</option>
-            </select>
+        <div className="repeat-container">
+          <label className="repeat-label">Repeat</label>
+          <div className="repeat-options" role="radiogroup" aria-label="Repeat">
+            {(
+              [
+                { value: null, label: "None" },
+                { value: "weekly" as const, label: "Weekly" },
+                { value: "monthly" as const, label: "Monthly" }
+              ]
+            ).map((opt) => (
+              <label
+                key={opt.label}
+                className={`repeat-option ${
+                  repeats === opt.value ? "is-active" : ""
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="repeat"
+                  value={opt.label}
+                  checked={repeats === opt.value}
+                  onChange={() => setRepeats(opt.value)}
+                />
+                <span>{opt.label}</span>
+              </label>
+            ))}
           </div>
-        ) : (
-          ""
-        )}
+        </div>
         <button
           type="button"
           className="submit-button"

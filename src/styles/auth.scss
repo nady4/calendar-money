@@ -2,79 +2,94 @@
 @use "./buttons" as *;
 
 .container {
-  height: 90vh;
+  min-height: 90vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(180deg, #0f0f0f, #090909);
+  background: vars.$bg-app;
+  font-family: "Nunito Sans", sans-serif;
+  padding: 40px 20px;
 
   .fieldset {
+    width: 100%;
+    max-width: 420px;
     border: none;
     margin: 0;
-    padding: 0;
+    padding: 32px;
+    background: vars.$bg-card;
+    border: 1px solid vars.$border-subtle;
+    border-radius: vars.$radius-card;
+    box-shadow: vars.$shadow-card;
     display: flex;
     flex-direction: column;
+    gap: 8px;
+    box-sizing: border-box;
 
     .legend {
-      font-size: 2rem;
-      font-weight: bold;
-      margin-bottom: 2rem;
+      font-size: 1.6rem;
+      font-weight: 800;
+      margin: 0 0 1.2rem;
       text-align: center;
-      color: #f2f2f2;
-      text-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
+      color: vars.$text-primary;
     }
 
     .input-container {
       display: flex;
       flex-direction: column;
-      margin-top: 1.2rem;
+      margin-top: 1rem;
 
       .label {
-        font-size: 1.3rem;
-        font-weight: bold;
-        text-align: center;
+        font-size: 1rem;
+        font-weight: 600;
+        text-align: left;
         margin-bottom: 0.5rem;
-        color: #e4e4e4;
+        color: vars.$text-secondary;
       }
 
       .input {
-        margin: 0 auto;
-        font-size: 1.3rem;
-        text-align: center;
-        width: 70%;
-        padding: 0.5rem;
-        border: 2px solid #2f2f2f;
-        border-radius: 6px;
-        background-color: #1b1b1b;
-        color: #f8f8f8;
-        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        margin: 0;
+        font-size: 1.05rem;
+        text-align: left;
+        width: 100%;
+        padding: 12px 14px;
+        box-sizing: border-box;
+        border: 1px solid vars.$border-subtle;
+        border-radius: vars.$radius-sm;
+        background-color: vars.$bg-card-elevated;
+        color: vars.$text-primary;
+        font-family: "Nunito Sans", sans-serif;
+        transition:
+          border-color 0.18s ease,
+          box-shadow 0.18s ease;
+
+        &::placeholder {
+          color: vars.$text-muted;
+        }
 
         &:focus {
-          border-color: vars.$primary-color;
-          box-shadow: 0 0 8px rgba(vars.$primary-color, 0.6);
+          border-color: vars.$accent;
+          box-shadow: 0 0 0 3px vars.$accent-soft;
           outline: none;
         }
       }
     }
   }
 
+  .submit-container {
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    justify-content: center;
+  }
+
   .submit-button {
     @extend %submit-button;
-    margin-top: 2rem;
-    box-shadow: 0 0 12px rgba(vars.$primary-color, 0.5);
-
-    &:hover {
-      box-shadow: 0 0 16px rgba(vars.$secondary-color, 0.7);
-    }
+    margin-top: 1.5rem;
   }
 
   .add-button {
     @extend %add-button;
-    margin-top: 1rem;
-
-    &:hover {
-      scale: 1.05;
-    }
+    margin-top: 1.5rem;
   }
 }

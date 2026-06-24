@@ -1,91 +1,115 @@
 @use "./variables" as vars;
 
 %exit-button {
-  height: 50px;
-  width: 50px;
+  height: 48px;
+  width: 48px;
   position: absolute;
-  top: 30px;
+  top: 20px;
   right: 5%;
   background-color: transparent;
   border: none;
-  color: #fff;
-  font-size: 2rem;
+  border-radius: 12px;
+  color: vars.$text-secondary;
   cursor: pointer;
-  transition: 0.1s ease-out;
+  transition: transform 0.18s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  z-index: 5;
 
-  &:hover {
-    color: #ff4136;
+  img,
+  svg {
+    width: 22px;
+    height: 22px;
+    display: block;
+    filter: var(--icon-filter, brightness(0) invert(0.7));
+    transition: transform 0.18s ease, filter 0.18s ease;
+  }
+
+  &:hover img,
+  &:hover svg {
     transform: scale(1.1);
   }
 
-  &:focus {
-    color: rgb(142, 32, 32);
-    transform: scale(0.9);
+  &:active img,
+  &:active svg {
+    transform: scale(0.92);
+  }
+
+  &:focus-visible {
+    outline: 2px solid vars.$accent;
+    outline-offset: 2px;
   }
 }
 
 @media (max-width: 600px) {
   %exit-button {
-    height: 40px;
-    width: 40px;
-    top: 20px;
+    height: 44px;
+    width: 44px;
+    top: 14px;
+    right: 4%;
+
+    img,
+    svg {
+      width: 20px;
+      height: 20px;
+    }
   }
 }
 
 %submit-button {
-  height: 50px;
-  width: 120px;
-  margin-top: 50px;
-  background-color: vars.$primary-color;
-  color: white;
-  border: 2px solid #333;
-  border-radius: 10px;
-  font-size: 1.3rem;
+  height: 46px;
+  width: 140px;
+  margin-top: 40px;
+  background-color: vars.$accent;
+  color: #fff;
+  border: 1px solid vars.$accent;
+  border-radius: vars.$radius-sm;
+  font-size: 1.1rem;
+  font-weight: 700;
   cursor: pointer;
-  transition: 0.2s ease-in-out;
+  transition: transform 0.18s ease;
 
   &:disabled {
-    background-color: vars.$disabled-primary-color;
-    color: white;
-    border: none;
-    opacity: 0.5;
+    background-color: vars.$bg-card-elevated;
+    color: vars.$text-muted;
+    border-color: vars.$border-subtle;
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
 
+  &:not(:disabled) {
     &:hover {
-      cursor: not-allowed;
+      transform: scale(1.04);
     }
-  }
 
-  &:hover {
-    cursor: pointer;
-    background-color: vars.$secondary-color;
-    scale: 1.05;
-  }
-
-  &:focus {
-    background-color: vars.$tertiary-color;
-    scale: 0.95;
+    &:active {
+      transform: scale(0.97);
+    }
   }
 }
 
 %link-button {
-  margin-top: 30px;
-  margin-bottom: 20px;
+  margin-top: 24px;
+  margin-bottom: 16px;
 
   .add,
   .delete {
-    font-size: 1.3rem;
-    font-weight: bold;
+    font-size: 1.1rem;
+    font-weight: 700;
     text-decoration: none;
     border: none;
     background: none;
     cursor: pointer;
+    transition: transform 0.18s ease;
 
     &:hover {
-      scale: 1.05;
+      transform: scale(1.05);
     }
 
     &:active {
-      scale: 0.95;
+      transform: scale(0.96);
     }
   }
 }
@@ -94,15 +118,7 @@
   @extend %link-button;
 
   .add {
-    color: vars.$primary-color;
-
-    &:hover {
-      color: vars.$secondary-color;
-    }
-
-    &:active {
-      color: vars.$tertiary-color;
-    }
+    color: vars.$accent;
   }
 }
 
@@ -110,14 +126,6 @@
   @extend %link-button;
 
   .delete {
-    color: vars.$disabled-primary-color;
-
-    &:hover {
-      color: vars.$disabled-secondary-color;
-    }
-
-    &:active {
-      color: vars.$disabled-tertiary-color;
-    }
+    color: vars.$negative;
   }
 }

@@ -390,6 +390,219 @@ const getMonthExpenses = (
   return expenses;
 };
 
+interface CategoryBreakdownItem {
+  name: string;
+  total: number;
+  color: string;
+  type: string;
+}
+
+const getPeriodCategoryBreakdown = (
+  transactions: TransactionType[],
+  categories: CategoryType[],
+  matches: (date: Temporal.PlainDate) => boolean
+): { income: CategoryBreakdownItem[]; expenses: CategoryBreakdownItem[] } => {
+  const processed = transactions.map((t) => ({
+    ...t,
+    date: toPlainDate(t.date) as Temporal.PlainDate
+  }));
+
+  const byName: { [name: string]: { total: number; type: string } } = {};
+  categories.forEach((c) => {
+    byName[c.name] = { total: 0, type: c.type };
+  });
+
+  processed.forEach((t) => {
+    if (!matches(t.date)) return;
+    if (!byName[t.category.name]) {
+      byName[t.category.name] = { total: 0, type: t.category.type };
+    }
+    byName[t.category.name].total += t.amount;
+  });
+
+  const buildList = (type: string): CategoryBreakdownItem[] =>
+    Object.entries(byName)
+      .filter(([, v]) => v.type === type && v.total > 0)
+      .map(([name, v]) => ({
+        name,
+        total: v.total,
+        type: v.type,
+        color:
+          categories.find((c) => c.name === name)?.color || "rgb(91, 140, 255)"
+      }))
+      .sort((a, b) => b.total - a.total);
+
+  return { income: buildList("Income"), expenses: buildList("Expense") };
+};
+
+const getMonthCategoryBreakdown = (
+  transactions: TransactionType[],
+  categories: CategoryType[],
+  month: string,
+  year: number
+) => {
+  const monthNumber = monthNameToNumber[month];
+  if (!monthNumber) {
+    return { income: [], expenses: [] } as ReturnType<
+      typeof getPeriodCategoryBreakdown
+    >;
+  }
+  return getPeriodCategoryBreakdown(transactions, categories, (d) =>
+    d.year === year && d.month === monthNumber ? true : false
+  );
+};
+
+const getYearCategoryBreakdown = (
+  transactions: TransactionType[],
+  categories: CategoryType[],
+  year: number
+) => {
+  return getPeriodCategoryBreakdown(transactions, categories, (d) =>
+    d.year === year ? true : false
+  );
+};
+
+const getPeriodTotals = (
+  transactions: TransactionType[],
+  matches: (date: Temporal.PlainDate) => boolean
+): TotalType => {
+  const processed = transactions.map((t) => ({
+    ...t,
+    date: toPlainDate(t.date) as Temporal.PlainDate
+  }));
+
+  let income = 0;
+  let expenses = 0;
+  processed.forEach((t) => {
+    if (!matches(t.date)) return;
+    if (t.category.type === "Income") income += t.amount;
+    else expenses += t.amount;
+  });
+  return { income, expenses, balance: income - expenses };
+};
+
+const getMonthTotals = (
+  transactions: TransactionType[],
+  month: string,
+  year: number
+): TotalType => {
+  const monthNumber = monthNameToNumber[month];
+  if (!monthNumber) return { income: 0, expenses: 0, balance: 0 };
+  return getPeriodTotals(transactions, (d) =>
+    d.year === year && d.month === monthNumber ? true : false
+  );
+};
+
+const getYearTotals = (
+  transactions: TransactionType[],
+  year: number
+): TotalType => {
+  return getPeriodTotals(transactions, (d) => (d.year === year ? true : false));
+};
+
+interface TopTransaction {
+  transaction: TransactionType;
+  amount: number;
+}
+
+const getTopTransactions = (
+  transactions: TransactionType[],
+  type: "Income" | "Expense",
+  matches: (date: Temporal.PlainDate) => boolean,
+  limit = 5
+): TopTransaction[] => {
+  const processed = transactions.map((t) => ({
+    ...t,
+    date: toPlainDate(t.date) as Temporal.PlainDate
+  }));
+
+  return processed
+    .filter((t) => matches(t.date) && t.category.type === type)
+    .sort((a, b) => b.amount - a.amount)
+    .slice(0, limit)
+    .map((t) => ({ transaction: t, amount: t.amount }));
+};
+
+const getMonthTopTransactions = (
+  transactions: TransactionType[],
+  type: "Income" | "Expense",
+  month: string,
+  year: number,
+  limit = 5
+): TopTransaction[] => {
+  const monthNumber = monthNameToNumber[month];
+  if (!monthNumber) return [];
+  return getTopTransactions(
+    transactions,
+    type,
+    (d) => (d.year === year && d.month === monthNumber ? true : false),
+    limit
+  );
+};
+
+const getYearTopTransactions = (
+  transactions: TransactionType[],
+  type: "Income" | "Expense",
+  year: number,
+  limit = 5
+): TopTransaction[] => {
+  return getTopTransactions(
+    transactions,
+    type,
+    (d) => (d.year === year ? true : false),
+    limit
+  );
+};
+
+interface NetWorthPoint {
+  date: Temporal.PlainDate;
+  balance: number;
+}
+
+const getAllTimeNetWorth = (
+  transactions: TransactionType[]
+): NetWorthPoint[] => {
+  const processed = transactions
+    .map((t) => ({
+      ...t,
+      date: toPlainDate(t.date) as Temporal.PlainDate
+    }))
+    .sort((a, b) => Temporal.PlainDate.compare(a.date, b.date));
+
+  let balance = 0;
+  const points: NetWorthPoint[] = [];
+
+  let lastDate: Temporal.PlainDate | null = null;
+  processed.forEach((t) => {
+    balance += t.category.type === "Income" ? t.amount : -t.amount;
+    if (!lastDate || Temporal.PlainDate.compare(lastDate, t.date) !== 0) {
+      points.push({ date: t.date, balance });
+      lastDate = t.date;
+    } else {
+      points[points.length - 1].balance = balance;
+    }
+  });
+
+  return points;
+};
+
+const formatCurrencySigned = (amount: number): string => {
+  const formatted = amount.toLocaleString("en-US", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2
+  });
+  return `${amount >= 0 ? "+" : "-"}$${formatted.replace("-", "")}`;
+};
+
+const formatCompactCurrency = (amount: number): string => {
+  const abs = Math.abs(amount);
+  const sign = amount < 0 ? "-" : "";
+  if (abs >= 1000) {
+    return `${sign}$${(abs / 1000).toFixed(abs >= 10000 ? 0 : 1)}k`;
+  }
+  return `${sign}$${abs.toFixed(0)}`;
+};
+
 export {
   getDayTransactions,
   getDayTotal,
@@ -399,5 +612,19 @@ export {
   getYearlyTotalFromCategories,
   formatCurrency,
   getMonthIncome,
-  getMonthExpenses
+  getMonthExpenses,
+  getMonthCategoryBreakdown,
+  getYearCategoryBreakdown,
+  getMonthTotals,
+  getYearTotals,
+  getMonthTopTransactions,
+  getYearTopTransactions,
+  getAllTimeNetWorth,
+  formatCurrencySigned,
+  formatCompactCurrency
+};
+export type {
+  CategoryBreakdownItem,
+  TopTransaction,
+  NetWorthPoint
 };

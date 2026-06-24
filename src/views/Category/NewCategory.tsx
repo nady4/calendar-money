@@ -81,13 +81,16 @@ function NewCategory({ user, setUser }: NewCategoryProps) {
   return (
     <div className="form">
       <h2>New Category</h2>
-      <img
-        src={exitButton}
+      <button
+        type="button"
+        aria-label="Close"
         className="exit-button"
         onClick={() => {
           navigate("/dashboard");
         }}
-      />
+      >
+        <img src={exitButton} alt="" />
+      </button>
       <form id="new-category-form" onSubmit={handleSubmit}>
         <label htmlFor="name" className="label">
           Name
@@ -110,20 +113,24 @@ function NewCategory({ user, setUser }: NewCategoryProps) {
             Type
           </label>
           <div className="type-boxes">
-            <label htmlFor="income-box">Income</label>
-            <input
-              type="checkbox"
-              onChange={onTypeChange}
-              id="income-box"
-              ref={incomeBox}
-            />
-            <input
-              type="checkbox"
-              onChange={onTypeChange}
-              id="expense-box"
-              ref={expenseBox}
-            />
-            <label htmlFor="expense-box">Expense</label>
+            <label htmlFor="income-box" className="type-option is-income">
+              <input
+                type="checkbox"
+                onChange={onTypeChange}
+                id="income-box"
+                ref={incomeBox}
+              />
+              <span>Income</span>
+            </label>
+            <label htmlFor="expense-box" className="type-option is-expense">
+              <input
+                type="checkbox"
+                onChange={onTypeChange}
+                id="expense-box"
+                ref={expenseBox}
+              />
+              <span>Expense</span>
+            </label>
           </div>
         </div>
         <div className="submit-button-container">

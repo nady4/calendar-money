@@ -57,14 +57,17 @@ function CategoryList({ user, setSelectedCategory }: CategoryListProps) {
           <label htmlFor="expense-box">Expense</label>
         </div>
       </div>
-      <img
-        src={exitButton}
+      <button
+        type="button"
+        aria-label="Close"
         className="exit-button"
         onClick={() => {
           setSelectedCategory(null);
           navigate("/dashboard");
         }}
-      />
+      >
+        <img src={exitButton} alt="" />
+      </button>
       <div className="add-button">
         <button
           className="add"

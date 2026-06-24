@@ -1,0 +1,340 @@
+@use "./variables" as vars;
+
+.budgets-view {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100vh;
+  background: vars.$bg-app;
+  color: vars.$text-primary;
+  font-family: "Nunito Sans", sans-serif;
+
+  .budgets-container {
+    padding: 80px 24px 48px;
+    width: 100%;
+    max-width: 960px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  .budgets-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+
+    .budgets-title {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 800;
+    }
+
+    .budgets-sub {
+      margin: 4px 0 0;
+      font-size: 13px;
+      color: vars.$text-secondary;
+      text-transform: capitalize;
+    }
+  }
+
+  .period-nav {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+
+    .period-arrow {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      background: vars.$bg-card;
+      border: 1px solid vars.$border-subtle;
+      border-radius: 50%;
+      color: vars.$text-secondary;
+      cursor: pointer;
+      transition: transform 0.18s ease;
+
+      &:hover {
+        transform: scale(1.08);
+      }
+
+      &:active {
+        transform: scale(0.92);
+      }
+    }
+
+    .period-label {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      min-width: 140px;
+      padding: 6px 18px;
+      background: vars.$bg-card;
+      border: 1px solid vars.$border-subtle;
+      border-radius: vars.$radius-pill;
+      cursor: pointer;
+      transition: transform 0.18s ease;
+
+      &:hover {
+        transform: scale(1.03);
+      }
+
+      .period-label-main {
+        font-size: 16px;
+        font-weight: 700;
+        color: vars.$text-primary;
+      }
+
+      .period-today-pill {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        color: vars.$accent;
+        text-transform: uppercase;
+      }
+    }
+  }
+
+  .card {
+    background: vars.$bg-card;
+    border: 1px solid vars.$border-subtle;
+    border-radius: vars.$radius-card;
+    box-shadow: vars.$shadow-card;
+  }
+
+  .card-title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: vars.$text-primary;
+  }
+
+  .segmented {
+    display: inline-flex;
+    background: vars.$bg-card;
+    border: 1px solid vars.$border-subtle;
+    border-radius: vars.$radius-pill;
+    padding: 4px;
+
+    .seg {
+      background: transparent;
+      border: none;
+      color: vars.$text-secondary;
+      padding: 8px 20px;
+      border-radius: vars.$radius-pill;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.18s ease;
+
+      &.seg-active {
+        background: vars.$accent;
+        color: #fff;
+        box-shadow: 0 0 14px rgba(vars.$accent, 0.45);
+      }
+    }
+  }
+
+  .budgets-empty {
+    color: vars.$text-muted;
+    font-size: 14px;
+  }
+
+  /* ---- Add form ---- */
+  .budget-form {
+    padding: 18px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+
+    .budget-form-row {
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .budget-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+      min-width: 160px;
+    }
+
+    .budget-label {
+      font-size: 12px;
+      color: vars.$text-secondary;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .budget-select,
+    .budget-input {
+      background: vars.$bg-card-elevated;
+      border: 1px solid vars.$border-subtle;
+      border-radius: vars.$radius-sm;
+      color: vars.$text-primary;
+      padding: 10px 12px;
+      font-family: "Nunito Sans", sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.18s ease;
+
+      &:focus {
+        border-color: vars.$accent;
+      }
+    }
+
+    .budget-add-btn {
+      background: vars.$accent;
+      color: #fff;
+      border: none;
+      border-radius: vars.$radius-sm;
+      padding: 10px 22px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.18s ease;
+
+      &:hover:not(:disabled) {
+        transform: scale(1.04);
+      }
+
+      &:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  /* ---- Budget list ---- */
+  .budget-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .budget-item {
+    padding: 18px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    .budget-item-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .budget-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 4px;
+    }
+
+    .budget-item-name {
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    .budget-limit {
+      margin-left: auto;
+      font-family: vars.$font-mono;
+      font-size: 13px;
+      color: vars.$text-secondary;
+    }
+
+    .budget-progress {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .budget-progress-track {
+      height: 10px;
+      background: vars.$bg-card-elevated;
+      border-radius: vars.$radius-pill;
+      overflow: hidden;
+      border: 1px solid vars.$border-subtle;
+    }
+
+    .budget-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, vars.$accent, vars.$secondary-color);
+      border-radius: vars.$radius-pill;
+      transition: width 0.3s ease;
+
+      &.over {
+        background: linear-gradient(90deg, vars.$negative, vars.$disabled-secondary-color);
+      }
+    }
+
+    .budget-progress-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-family: vars.$font-mono;
+
+      .ok {
+        color: vars.$positive;
+      }
+
+      .over {
+        color: vars.$negative;
+        font-weight: 700;
+      }
+    }
+
+    .budget-actions,
+    .budget-edit {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .budget-edit .budget-input {
+      width: 120px;
+    }
+
+    .budget-btn {
+      background: vars.$bg-card-elevated;
+      color: vars.$text-primary;
+      border: 1px solid vars.$border-subtle;
+      border-radius: vars.$radius-sm;
+      padding: 7px 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.18s ease;
+
+      &.save {
+        background: vars.$accent;
+        color: #fff;
+        border-color: vars.$accent;
+      }
+
+      &.danger {
+        color: vars.$negative;
+        border-color: rgba(vars.$negative, 0.4);
+      }
+
+      &:hover {
+        transform: scale(1.04);
+      }
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .budgets-view .budgets-container {
+    padding: 70px 16px 32px;
+  }
+
+  .budgets-view .budgets-header {
+    flex-direction: column;
+  }
+}

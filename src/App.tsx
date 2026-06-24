@@ -12,6 +12,9 @@ import NewTransaction from "./views/Transaction/NewTransaction.tsx";
 import EditTransaction from "./views/Transaction/EditTransaction.tsx";
 import Account from "./views/Account/Account.tsx";
 import Stats from "./views/Stats/Stats.tsx";
+import Budgets from "./views/Budgets/Budgets.tsx";
+import Landing from "./views/Landing/Landing.tsx";
+import { ThemeProvider } from "./components/ThemeProvider";
 import { useAuth } from "./hooks/useAuth.ts";
 import { UserType, CategoryType, TransactionType } from "./types.d";
 import "./styles/loading.scss";
@@ -47,29 +50,40 @@ function App() {
   useAuth(user, setUser, setAuthLoading);
 
   return (
-    <main className="routes-main">
+    <ThemeProvider>
+      <main className="routes-main">
       {authLoading ? (
-        <div className="loading">Loading...</div>
+        <div className="loading" role="status" aria-live="polite">
+          <div className="loading-card">
+            <img src="/favicon.svg" alt="" className="loading-icon" />
+            <p className="loading-label">Loading your money</p>
+            <div className="loading-bar" aria-hidden>
+              <span />
+            </div>
+          </div>
+        </div>
       ) : (
         <Routes>
           <Route
             path="/"
             element={
-              user.loggedIn ? (
-                <Navigate to="/dashboard" />
-              ) : (
-                <Navigate to="/login" />
-              )
+              user.loggedIn ? <Navigate to="/dashboard" /> : <Landing />
             }
           />
           <Route
             path="/register"
-            element={user.loggedIn ? <Navigate to="/" /> : <Register />}
+            element={
+              user.loggedIn ? <Navigate to="/dashboard" /> : <Register />
+            }
           />
           <Route
             path="/login"
             element={
-              user.loggedIn ? <Navigate to="/" /> : <Login setUser={setUser} />
+              user.loggedIn ? (
+                <Navigate to="/dashboard" />
+              ) : (
+                <Login setUser={setUser} />
+              )
             }
           />
 
@@ -88,6 +102,7 @@ function App() {
                   setSelectedDay={setSelectedDay}
                   isDropdownOpen={isDropdownOpen}
                   setIsDropdownOpen={setIsDropdownOpen}
+                  setSelectedTransaction={setSelectedTransaction}
                 />
               ) : (
                 <Navigate to="/login" />
@@ -98,6 +113,20 @@ function App() {
             path="/stats"
             element={
               <Stats
+                user={user}
+                setUser={setUser}
+                selectedDay={selectedDay}
+                setSelectedDay={setSelectedDay}
+                isDropdownOpen={isDropdownOpen}
+                setIsDropdownOpen={setIsDropdownOpen}
+                setSelectedTransaction={setSelectedTransaction}
+              />
+            }
+          />
+          <Route
+            path="/budgets"
+            element={
+              <Budgets
                 user={user}
                 setUser={setUser}
                 selectedDay={selectedDay}
@@ -172,7 +201,8 @@ function App() {
           />
         </Routes>
       )}
-    </main>
+      </main>
+    </ThemeProvider>
   );
 }
 

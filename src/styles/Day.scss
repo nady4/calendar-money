@@ -6,37 +6,27 @@
   min-height: 140px;
   width: vars.$day-width;
   margin-left: vars.$day-margin;
-  margin-bottom: 20px;
-  transition: all 0.25s ease-out;
-  background-color: vars.$card-primary-color;
-  border: 1px solid #2e2e2e;
-  border-radius: 6px;
+  margin-bottom: 18px;
+  transition: all 0.2s ease-out;
+  background-color: vars.$bg-card;
+  border: 1px solid vars.$border-subtle;
+  border-radius: vars.$radius-sm;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.28);
 
   &:hover {
-    transform: translateY(-2px);
-
-    .day-header {
-      background-color: vars.$card-secondary-color;
-    }
-
-    .day-header .add-transaction-button-container {
-      opacity: 1;
-    }
-
-    .day-header ~ .transactions-container {
-      background-color: vars.$card-secondary-color;
-    }
+    transform: scale(1.02);
   }
 
   /* HEADER */
   .day-header {
-    height: 45px;
+    height: 42px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: vars.$card-primary-color;
-    transition: background-color 0.25s ease;
-    color: #222;
+    background-color: vars.$bg-card;
+    transition: background-color 0.2s ease;
+    color: vars.$text-secondary;
+    border-bottom: 1px solid vars.$border-subtle;
 
     .day-date-container,
     .day-balance-container {
@@ -50,12 +40,12 @@
       justify-content: center;
 
       .day-balance {
-        padding-left: 20px;
-        font-weight: 300;
-        font-size: 0.9rem;
-        color: #444;
+        padding-left: 28px;
+        font-weight: 500;
+        font-size: 0.85rem;
+        color: vars.$text-secondary;
         transition: 0.2s ease-in-out;
-        font-family: "JetBrains Mono", monospace;
+        font-family: vars.$font-mono;
       }
     }
 
@@ -65,11 +55,11 @@
       justify-content: center;
 
       .day-date {
-        font-size: 1.2rem;
-        font-weight: 600;
+        font-size: 1.1rem;
+        font-weight: 700;
         text-align: center;
         transition: 0.2s ease-in-out;
-        color: #dadada;
+        color: vars.$text-primary;
       }
     }
   }
@@ -80,86 +70,116 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    background-color: vars.$card-primary-color;
-    transition: background 0.25s ease;
+    background-color: vars.$bg-card;
+    transition: background 0.2s ease;
+    padding-top: 4px;
   }
 
   .day-item {
     width: 90%;
     margin-top: 5px;
-    height: 30px;
+    height: 28px;
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    background-color: #1d1d1d;
-    border-radius: 40px;
-    overflow-x: hidden;
+    gap: 6px;
+    padding: 0 10px;
+    box-sizing: border-box;
+    background-color: vars.$bg-card-elevated;
+    border-radius: vars.$radius-pill;
+    overflow: hidden;
+    cursor: grab;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+
+    &:hover {
+      transform: scale(1.03);
+    }
+
+    &:active {
+      cursor: grabbing;
+    }
+
+    &.is-dragging {
+      opacity: 0.4;
+    }
 
     div {
-      font-size: 0.9rem;
-      color: #eaeaea;
+      font-size: 0.85rem;
+      color: vars.$text-primary;
     }
 
     .item-color {
-      margin-left: 10px;
-      height: 6px;
-      width: 6px;
+      height: 7px;
+      width: 7px;
+      flex: 0 0 7px;
       border-radius: 50%;
+      box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
     }
 
     .item-amount {
-      margin-left: 5px;
-      text-align: center;
-      width: 50%;
-      font-size: 0.8rem;
+      text-align: left;
+      flex: 0 0 auto;
+      font-size: 0.78rem;
       font-weight: 700;
-      color: #fff;
-      font-family: "JetBrains Mono", monospace;
+      color: vars.$text-primary;
+      font-family: vars.$font-mono;
+      white-space: nowrap;
     }
 
     .item-description {
-      margin-left: 5px;
-      color: #ccc;
+      color: vars.$text-secondary;
+      flex: 1 1 auto;
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
+  }
+
+  &.drag-over {
+    border-color: vars.$accent;
+    box-shadow: 0 0 14px rgba(vars.$accent, 0.5);
+    background-color: rgba(vars.$accent, 0.06);
   }
 }
 
 .inactive-day {
   .day-header {
-    color: #aaa;
+    color: vars.$text-muted;
 
     .day-balance-container .day-balance {
-      color: #bbb;
+      color: vars.$text-muted;
     }
   }
 
-  background-color: #171717;
+  background-color: vars.$bg-app;
 }
 
 .inactive-month {
-  opacity: 0.3;
+  opacity: 0.32;
 }
 
-.negative {
-  border-radius: 6px;
-  border-color: vars.$disabled-primary-color;
-  border: 2px solid vars.$disabled-primary-color;
-  box-shadow: 0 0 8px rgba(vars.$disabled-primary-color, 0.6);
+.calendar-day.negative {
+  border-color: rgba(vars.$negative, 0.55);
+  box-shadow: 0 0 12px rgba(vars.$negative, 0.35);
+
+  .day-header .day-balance {
+    color: vars.$negative;
+  }
 }
 
 .active-day {
-  border-color: vars.$secondary-color;
-  border: 2px solid vars.$secondary-color;
-  box-shadow: 0 0 8px rgba(vars.$secondary-color, 0.6);
+  border-color: vars.$accent;
+  box-shadow: 0 0 14px rgba(vars.$accent, 0.45);
 
   .day-header {
     .day-date {
-      font-weight: 700;
-      color: white;
+      font-weight: 800;
+      color: vars.$accent;
     }
 
     .day-balance-container .day-balance {
-      color: white;
+      color: vars.$text-primary;
     }
   }
 }
@@ -169,8 +189,9 @@
     height: vars.$day-height * 0.4;
     min-height: 50px;
     margin-left: vars.$day-margin + 0.15%;
-    border: 0;
-    border-radius: 4px;
+    border: 1px solid vars.$border-subtle;
+    border-radius: 6px;
+    box-shadow: none;
 
     &:hover {
       transform: none;
@@ -184,7 +205,7 @@
 
       .day-date-container .day-date {
         height: 50%;
-        color: #222;
+        color: vars.$text-primary;
       }
 
       .day-balance-container {
@@ -192,7 +213,7 @@
       }
 
       &:active {
-        background-color: vars.$tertiary-color;
+        background-color: rgba(vars.$accent, 0.18);
       }
     }
 
@@ -201,17 +222,17 @@
       background-color: transparent;
     }
 
-    .add-transaction-button-container button {
+    .day-item {
       display: none;
     }
   }
 
   .active-day {
-    border: 1px solid vars.$secondary-color;
-    box-shadow: 0 0 8px rgba(vars.$secondary-color, 0.6);
+    border: 1px solid vars.$accent;
+    box-shadow: 0 0 10px rgba(vars.$accent, 0.5);
 
     .day-header {
-      background-color: vars.$secondary-color;
+      background-color: rgba(vars.$accent, 0.16);
     }
   }
 }

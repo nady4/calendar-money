@@ -31,7 +31,6 @@ const useValidateUser = ({
   useEffect(() => {
     try {
       const isFormValid = userSchema.parse({ username, email, password });
-      console.log(isFormValid);
       setDisableSubmitButton(!isFormValid);
     } catch (error) {
       if (error instanceof z.ZodError) {

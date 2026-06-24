@@ -28,7 +28,6 @@ function NewTransaction({
   const categoriesDatalist = useRef<HTMLDataListElement>(null);
   const categoryInput = useRef<HTMLInputElement>(null);
   const [repeats, setRepeats] = useState<"weekly" | "monthly" | null>(null);
-  const repeatsBox = useRef<HTMLSelectElement>(null);
   const navigate = useNavigate();
 
   useCategoryOptions({ user, categoriesDatalist });
@@ -85,11 +84,6 @@ function NewTransaction({
     }
   };
 
-  const onRepeatsChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = event.target.value;
-    setRepeats(value === "none" ? null : value as "weekly" | "monthly");
-  };
-
   const handleSubmit = async (event: React.FormEvent) => {
     event?.preventDefault();
 
@@ -128,13 +122,16 @@ function NewTransaction({
   return (
     <div className="form">
       <h2>New Transaction</h2>
-      <img
-        src={exitButton}
+      <button
+        type="button"
+        aria-label="Close"
         className="exit-button"
         onClick={() => {
           navigate("/dashboard");
         }}
-      />
+      >
+        <img src={exitButton} alt="" />
+      </button>
       <form id="new-transaction-form">
         <label htmlFor="amount">Amount</label>
         <input
@@ -155,13 +152,26 @@ function NewTransaction({
         />
 
         <label htmlFor="category">Category</label>
-        <input
-          className="category-input"
-          ref={categoryInput}
-          name="category"
-          list="categories-datalist"
-          onChange={onCategoryChange}
-        />
+        <div className="category-field">
+          <input
+            className="category-input"
+            ref={categoryInput}
+            name="category"
+            list="categories-datalist"
+            onChange={onCategoryChange}
+          />
+          {category && (
+            <span
+              className={`category-type-badge ${
+                category.type === "Income" ? "is-income" : "is-expense"
+              }`}
+              title={`This is an ${category.type.toLowerCase()} category`}
+            >
+              <span className="category-type-dot" />
+              {category.type === "Income" ? "Income" : "Expense"}
+            </span>
+          )}
+        </div>
         <datalist id="categories-datalist" ref={categoriesDatalist}></datalist>
 
         <label htmlFor="date">Date</label>
@@ -173,17 +183,32 @@ function NewTransaction({
           value={selectedDay.toString().slice(0, 10)}
         />
         <div className="repeat-container">
-          <label htmlFor="repeat">Repeat</label>
-          <select
-            name="repeat"
-            id="repeat"
-            ref={repeatsBox}
-            onChange={onRepeatsChange}
-          >
-            <option value="none">None</option>
-            <option value="weekly">Weekly</option>
-            <option value="monthly">Monthly</option>
-          </select>
+          <label className="repeat-label">Repeat</label>
+          <div className="repeat-options" role="radiogroup" aria-label="Repeat">
+            {(
+              [
+                { value: null, label: "None" },
+                { value: "weekly" as const, label: "Weekly" },
+                { value: "monthly" as const, label: "Monthly" }
+              ]
+            ).map((opt) => (
+              <label
+                key={opt.label}
+                className={`repeat-option ${
+                  repeats === opt.value ? "is-active" : ""
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="repeat"
+                  value={opt.label}
+                  checked={repeats === opt.value}
+                  onChange={() => setRepeats(opt.value)}
+                />
+                <span>{opt.label}</span>
+              </label>
+            ))}
+          </div>
         </div>
 
         <div className="submit-button-container">

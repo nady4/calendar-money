@@ -28,8 +28,6 @@ function TransactionList({
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log(user.transactions, selectedDay);
-    console.log(getDayTransactions(user.transactions, selectedDay));
     setDayTransactions(getDayTransactions(user.transactions, selectedDay));
   }, [selectedDay, user.transactions]);
 
@@ -38,15 +36,18 @@ function TransactionList({
       <h2>
         {selectedDay.toLocaleString("en", { month: "long", day: "numeric" })}
       </h2>
-      <img
-        src={exitButton}
+      <button
+        type="button"
+        aria-label="Close"
         className="exit-button"
         onClick={() => {
           setSelectedTransaction(null);
           setSelectedDay(Temporal.Now.plainDate("gregory"));
           navigate("/dashboard");
         }}
-      />
+      >
+        <img src={exitButton} alt="" />
+      </button>
       <div className="day-view-header">
         <div className="day-view-buttons">
           <div className="day-change-buttons-container">

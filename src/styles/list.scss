@@ -3,90 +3,23 @@
 
 .list {
   width: 100%;
-  height: 100vh;
-  overflow-y: hidden;
-  background-color: #1b1b1b;
-  color: white;
-  z-index: 100;
+  min-height: 100vh;
+  overflow: hidden;
+  background: vars.$bg-app;
+  color: vars.$text-primary;
+  font-family: "Nunito Sans", sans-serif;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  padding: 70px 20px 40px;
+  box-sizing: border-box;
+  position: relative;
 
   h2 {
-    font-size: 2.1rem;
-  }
-
-  .type-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    label {
-      text-align: center;
-    }
-
-    .type-boxes {
-      display: flex;
-      flex-direction: row;
-      align-items: flex-end;
-      justify-content: space-between;
-      height: 50px;
-
-      label {
-        font-size: 1.1rem;
-        margin-bottom: 10px;
-      }
-
-      #income-box,
-      #expense-box {
-        width: 30px;
-        height: 30px;
-        &:hover {
-          cursor: pointer;
-        }
-      }
-      #income-box {
-        margin-left: 10px;
-        margin-right: auto;
-        &:checked {
-          filter: invert(0%) sepia(0%) saturate(100%) hue-rotate(270deg)
-            brightness(150%) contrast(100%);
-        }
-      }
-      #expense-box {
-        margin-right: 10px;
-        margin-left: auto;
-        &:checked {
-          filter: invert(0%) sepia(0%) saturate(100%) hue-rotate(140deg)
-            brightness(100%) contrast(100%);
-        }
-      }
-    }
-
-    .repeat-container {
-      margin-top: 40px;
-      padding: 0;
-      height: 50px;
-      width: 250px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      label {
-        margin-top: 0;
-        margin-bottom: 0;
-        height: 40px;
-      }
-
-      input {
-        margin-top: 0;
-        margin-left: 10px;
-        height: 20px;
-        width: 20px;
-      }
-    }
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin: 8px 0;
+    color: vars.$text-primary;
   }
 
   .exit-button {
@@ -99,53 +32,81 @@
         display: flex;
         flex-direction: row;
         align-items: center;
-        justify-content: space-between;
+        justify-content: center;
+        gap: 14px;
         width: 100%;
       }
 
       .day-change-button {
         background-color: transparent;
-        border: none;
-        color: white;
+        border: 1px solid vars.$border-subtle;
+        border-radius: 50%;
+        width: 42px;
+        height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: vars.$text-secondary;
         cursor: pointer;
-        transition: 0.2s ease-in-out;
+        transition: transform 0.18s ease;
 
         &:hover {
-          transform: scale(1.2);
-          color: rgb(177, 177, 177);
+          transform: scale(1.08);
         }
 
         &:active {
-          transform: scale(0.9);
-          color: rgb(61, 61, 61);
+          transform: scale(0.92);
         }
 
         svg {
-          height: 50px;
-          width: 50px;
+          height: 22px;
+          width: 22px;
         }
       }
     }
   }
 
-  .items-container {
-    width: 50%;
-    min-width: 350px;
-    height: 60%;
-    margin: 20px 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    overflow-y: scroll;
-    background-color: #2828284e;
+  .add-button {
+    @extend %add-button;
+    margin-top: 20px;
 
-    .item {
-      width: 90%;
+    .add {
+      padding: 10px 24px;
+      border-radius: vars.$radius-sm;
+      background: vars.$accent-soft;
+      color: vars.$accent;
+      border: 1px solid rgba(vars.$accent, 0.4);
     }
   }
 
-  .add-button {
-    @extend %add-button;
+  .items-container {
+    width: 100%;
+    max-width: 520px;
+    min-width: 280px;
+    max-height: 60vh;
+    margin: 20px 0;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    overflow-y: auto;
+    gap: 10px;
+    background: vars.$bg-card;
+    border: 1px solid vars.$border-subtle;
+    border-radius: vars.$radius-card;
+    box-shadow: vars.$shadow-card;
+
+    .item {
+      width: 100%;
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .list {
+    .items-container {
+      max-width: 100%;
+    }
   }
 }

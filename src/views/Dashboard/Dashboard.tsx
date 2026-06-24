@@ -1,5 +1,5 @@
 import { Temporal } from "@js-temporal/polyfill";
-import { UserType } from "../../types";
+import { UserType, TransactionType } from "../../types";
 import Dropdown from "../../components/Dashboard/Dropdown";
 import NavBar from "../../components/Dashboard/NavBar";
 import Calendar from "../../components/Dashboard/Calendar";
@@ -12,6 +12,9 @@ interface DashboardProps {
   setSelectedDay: React.Dispatch<React.SetStateAction<Temporal.PlainDate>>;
   isDropdownOpen: boolean;
   setIsDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setSelectedTransaction: React.Dispatch<
+    React.SetStateAction<TransactionType | null>
+  >;
 }
 
 function Dashboard({
@@ -21,6 +24,7 @@ function Dashboard({
   setSelectedDay,
   isDropdownOpen,
   setIsDropdownOpen,
+  setSelectedTransaction,
 }: DashboardProps) {
   return (
     <div className="app-main">
@@ -37,9 +41,11 @@ function Dashboard({
         isDropdownOpen={isDropdownOpen}
         setIsDropdownOpen={setIsDropdownOpen}
         isStatsView={false}
+        setSelectedTransaction={setSelectedTransaction}
       />
       <Calendar
         user={user}
+        setUser={setUser}
         selectedDay={selectedDay}
         setSelectedDay={setSelectedDay}
       />

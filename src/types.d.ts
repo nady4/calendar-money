@@ -32,4 +32,12 @@ interface TotalType {
   balance: number;
 }
 
-export { CategoryType, TransactionType, UserType, TotalType };
+interface BudgetType {
+  id: string;
+  categoryId: string;
+  categoryName: string;
+  limit: number;
+  period: "monthly" | "yearly";
+}
+
+export { CategoryType, TransactionType, UserType, TotalType, BudgetType };

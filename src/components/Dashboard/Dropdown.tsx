@@ -6,6 +6,7 @@ import UserIcon from "../../assets/userIcon.svg";
 import CalendarIcon from "../../assets/calendarIcon.svg";
 import CategoriesIcon from "../../assets/categoriesIcon.svg";
 import StatsIcon from "../../assets/statsIcon.svg";
+import BudgetIcon from "../../assets/budgetIcon.svg";
 import LogoutIcon from "../../assets/logoutIcon.svg";
 import "../../styles/Dropdown.scss";
 import { memo } from "react";
@@ -36,8 +37,6 @@ const Dropdown = ({
 
       if (!response.ok) {
         console.error("Backend logout failed with status:", response.status);
-      } else {
-        console.log("Backend logout successful");
       }
     } catch (error) {
       console.error("Error during backend logout fetch:", error);
@@ -66,6 +65,26 @@ const Dropdown = ({
         isDropdownOpen ? "dropdown-open" : "dropdown-closed"
       }`}
     >
+      <button
+        type="button"
+        aria-label="Close menu"
+        className="dropdown-close"
+        onClick={() => setIsDropdownOpen(false)}
+      >
+        <svg
+          viewBox="0 0 24 24"
+          width="18"
+          height="18"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <line x1="6" y1="6" x2="18" y2="18" />
+          <line x1="6" y1="18" x2="18" y2="6" />
+        </svg>
+      </button>
       <div className="dropdown-header">
         <img className="dropdown-user-icon" src={CatUser} alt="user" />
         <h2 className="dropdown-username">{user.username}</h2>
@@ -119,6 +138,16 @@ const Dropdown = ({
         >
           <img className="dropdown-item-icon" src={StatsIcon} alt="stats" />
           <p className="dropdown-item-text">STATS</p>
+        </div>
+        <div
+          className="dropdown-item"
+          onClick={() => {
+            setIsDropdownOpen(false);
+            navigate("/budgets");
+          }}
+        >
+          <img className="dropdown-item-icon" src={BudgetIcon} alt="budgets" />
+          <p className="dropdown-item-text">BUDGETS</p>
         </div>
       </div>
       <div className="dropdown-footer">
