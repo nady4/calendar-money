@@ -64,12 +64,7 @@ function App() {
         </div>
       ) : (
         <Routes>
-          <Route
-            path="/"
-            element={
-              user.loggedIn ? <Navigate to="/dashboard" /> : <Landing />
-            }
-          />
+          <Route path="/" element={<Landing user={user} />} />
           <Route
             path="/register"
             element={

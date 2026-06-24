@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import "../../styles/Landing.scss";
 import { useState } from "react";
+import { UserType } from "../../types";
 
 const features = [
   {
@@ -37,7 +38,7 @@ const features = [
   }
 ];
 
-const Landing = () => {
+const Landing = ({ user }: { user: UserType }) => {
   const [hoveredFeature, setHoveredFeature] = useState<string>("calendar");
 
   return (
@@ -53,12 +54,32 @@ const Landing = () => {
           <a href="#faq">FAQ</a>
         </nav>
         <div className="landing-nav-cta">
-          <Link to="/login" className="btn btn-ghost">
-            Log in
-          </Link>
-          <Link to="/register" className="btn btn-primary">
-            Get started
-          </Link>
+          {user.loggedIn ? (
+            <>
+              <Link to="/dashboard" className="btn btn-ghost">
+                Dashboard
+              </Link>
+              <button
+                className="btn btn-primary"
+                onClick={() => {
+                  localStorage.removeItem("token");
+                  localStorage.removeItem("user");
+                  window.location.reload();
+                }}
+              >
+                Log out
+              </button>
+            </>
+          ) : (
+            <>
+              <Link to="/login" className="btn btn-ghost">
+                Log in
+              </Link>
+              <Link to="/register" className="btn btn-primary">
+                Get started
+              </Link>
+            </>
+          )}
         </div>
       </header>
 

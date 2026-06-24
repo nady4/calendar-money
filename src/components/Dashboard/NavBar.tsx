@@ -12,11 +12,9 @@ import {
   formatCurrency
 } from "../../util/functions";
 import { months } from "../../util/constants";
-import { justDropped } from "../../util/dragState";
 import LeftIcon from "@mui/icons-material/ChevronLeft";
 import RightIcon from "@mui/icons-material/ChevronRight";
 import WhiteMenuButton from "../../assets/whiteMenuButton.svg";
-import ExitButton from "../../assets/blackExitButton.svg";
 import balanceIcon from "../../assets/balance.svg";
 import incomeIcon from "../../assets/income.svg";
 import expensesIcon from "../../assets/expenses.svg";
@@ -247,16 +245,13 @@ const NavBar = ({
           )}
         </div>
 
-        <div className="logout-container">
+        <div className="logo-container">
           <button
-            className="logout-button-container"
-            onClick={() => {
-              if (justDropped.isRecent()) return;
-              localStorage.removeItem("token");
-              window.location.reload();
-            }}
+            className="logo-button-container"
+            onClick={() => navigate("/")}
+            aria-label="Go to landing"
           >
-            <img className="logout-button" src={ExitButton} alt="logout" />
+            <img className="logo-button" src="/favicon.svg" alt="logo" />
           </button>
         </div>
       </div>
