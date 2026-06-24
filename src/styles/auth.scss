@@ -2,21 +2,25 @@
 @use "./buttons" as *;
 
 .auth-main {
+  height: 100vh;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
   background: vars.$bg-app;
 }
 
 .container {
   flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   background: vars.$bg-app;
   font-family: "Nunito Sans", sans-serif;
-  padding: 40px 20px;
+  padding: 24px 20px;
+  overflow-y: auto;
 
   .fieldset {
     width: 100%;

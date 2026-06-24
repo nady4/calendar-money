@@ -10,7 +10,13 @@
 
 <table>
   <tr>
-    <td colspan="2" align="center"><em>Dashboard (month view)</em></td>
+    <td colspan="2" align="center"><em>Landing</em></td>
+  </tr>
+  <tr>
+    <td colspan="2" align="center"><img src="./public/assets/docs/landing.png" alt="Dashboard month view" /></td>
+  </tr>
+  <tr>
+    <td colspan="2" align="center"><em>Dashboard</em></td>
   </tr>
   <tr>
     <td colspan="2" align="center"><img src="./public/assets/docs/dashboard.png" alt="Dashboard month view" /></td>

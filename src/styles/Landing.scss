@@ -1,10 +1,6 @@
 @use "./variables" as vars;
 
 .landing {
-  --positive: vars.$positive;
-  --negative: vars.$negative;
-  --accent: vars.$accent;
-
   min-height: 100vh;
   background: vars.$bg-app;
   color: vars.$text-primary;
@@ -120,25 +116,17 @@
   }
 
   &.btn-primary {
-    background: linear-gradient(
-      135deg,
-      vars.$accent 0%,
-      vars.$secondary-color 100%
-    );
+    background: vars.$accent;
     color: #fff;
-    border-color: color-mix(in srgb, vars.$accent 60%, #ffffff 0%);
+    border-color: vars.$accent;
     box-shadow:
       0 8px 22px color-mix(in srgb, vars.$accent 38%, transparent),
       0 1px 0 rgba(255, 255, 255, 0.18) inset,
       0 -2px 0 color-mix(in srgb, #000 18%, transparent) inset;
 
     :root[data-theme="light"] & {
-      background: linear-gradient(
-        135deg,
-        vars.$accent 0%,
-        vars.$secondary-color 100%
-      );
-      border-color: color-mix(in srgb, vars.$accent 50%, #ffffff 30%);
+      background: vars.$accent;
+      border-color: vars.$accent;
       box-shadow:
         0 8px 22px color-mix(in srgb, vars.$accent 35%, transparent),
         0 1px 0 rgba(255, 255, 255, 0.5) inset,
@@ -146,6 +134,9 @@
     }
 
     &:hover {
+      background: color-mix(in srgb, vars.$accent 88%, #ffffff 12%);
+      border-color: color-mix(in srgb, vars.$accent 88%, #ffffff 12%);
+      color: #fff;
       transform: translateY(-2px);
       box-shadow:
         0 14px 32px color-mix(in srgb, vars.$accent 50%, transparent),
@@ -156,6 +147,8 @@
 
     &:active {
       transform: translateY(0) scale(0.98);
+      background: color-mix(in srgb, vars.$accent 92%, #000000 8%);
+      border-color: color-mix(in srgb, vars.$accent 92%, #000000 8%);
       filter: brightness(0.97) saturate(1);
       box-shadow:
         0 4px 12px color-mix(in srgb, vars.$accent 30%, transparent),
@@ -179,7 +172,6 @@
     }
 
     &:hover {
-      background: color-mix(in srgb, vars.$accent 14%, vars.$bg-card);
       border-color: vars.$accent;
       color: vars.$accent;
       transform: translateY(-1px);
@@ -188,6 +180,8 @@
 
     &:active {
       transform: translateY(0) scale(0.98);
+      background: color-mix(in srgb, vars.$accent 92%, #000000 8%);
+      border-color: color-mix(in srgb, vars.$accent 92%, #000000 8%);
     }
   }
 
@@ -203,8 +197,12 @@
   gap: 48px;
   align-items: center;
   padding: 80px 32px 96px;
-  max-width: 1380px;
+  max-width: 1400px;
   margin: 0 auto;
+
+  .hero-copy {
+    margin-right: 50px;
+  }
 
   .eyebrow {
     display: inline-block;
@@ -231,7 +229,7 @@
       background: linear-gradient(120deg, vars.$accent, vars.$secondary-color);
       -webkit-background-clip: text;
       background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: vars.$accent;
     }
   }
 

@@ -83,6 +83,17 @@ function Login({
   return (
     <main className="auth-main">
       <ToastContainer />
+      <header className="landing-nav">
+        <Link to="/" className="landing-brand">
+          <img src="/favicon.svg" alt="" className="brand-mark" />
+          <span className="brand-name">Calendar Money</span>
+        </Link>
+        <div className="landing-nav-cta">
+          <Link to="/register" className="btn btn-primary">
+            Register
+          </Link>
+        </div>
+      </header>
       <div className="container">
         <fieldset id="log_up" className="fieldset">
           <legend className="legend">Nice to see you again! 👋</legend>
