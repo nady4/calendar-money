@@ -51,8 +51,11 @@
 
 ## 🌐 Live demo
 
+
+- **URL:** <b><a href="https://money.nady4.com">money.nady4.com</a></b>
+- **Demo account:** username `nady4` / password `nady4` — or register a new one.
+
 - This frontend is intended to run locally together with the **[calendar-money-api](https://github.com/nady4/calendar-money-api)** backend. A hosted demo is not provided.
-- To explore the flow, register a new account, then use the API's `seed` script or the in-app **Export / Import CSV** section to load sample data.
 
 <br>
 
