@@ -28,6 +28,14 @@ function NewTransaction({
   const categoriesDatalist = useRef<HTMLDataListElement>(null);
   const categoryInput = useRef<HTMLInputElement>(null);
   const [repeats, setRepeats] = useState<"weekly" | "monthly" | null>(null);
+
+  const [showNewCategory, setShowNewCategory] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState("");
+  const [newCategoryType, setNewCategoryType] = useState<"Income" | "Expense" | "">("");
+  const [newCategoryColor, setNewCategoryColor] = useState("#5b8cff");
+  const [isCreatingCategory, setIsCreatingCategory] = useState(false);
+  const [newCategoryError, setNewCategoryError] = useState<string | null>(null);
+
   const navigate = useNavigate();
 
   useCategoryOptions({ user, categoriesDatalist });
@@ -83,6 +91,82 @@ function NewTransaction({
       }
     }
   };
+
+  const resetNewCategoryForm = () => {
+    setNewCategoryName("");
+    setNewCategoryType("");
+    setNewCategoryColor("#5b8cff");
+    setNewCategoryError(null);
+  };
+
+  const handleToggleNewCategory = () => {
+    setShowNewCategory((prev) => {
+      if (prev) resetNewCategoryForm();
+      return !prev;
+    });
+  };
+
+  const handleCreateCategory = async () => {
+    if (!newCategoryName || !newCategoryType) return;
+    if (
+      user.categories.some(
+        (c) => c.name.toLowerCase() === newCategoryName.trim().toLowerCase()
+      )
+    ) {
+      setNewCategoryError("A category with that name already exists.");
+      return;
+    }
+
+    setIsCreatingCategory(true);
+    setNewCategoryError(null);
+
+    try {
+      const response = await fetch(`${API_URL}/categories/${user.id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({
+          name: newCategoryName.trim(),
+          type: newCategoryType,
+          color: newCategoryColor,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setNewCategoryError(data?.error || "Could not create category.");
+        return;
+      }
+
+      setUser(data.user);
+      const created = (data.user as UserType).categories.find(
+        (c) => c.name === newCategoryName.trim()
+      );
+      if (created) {
+        setCategory(created);
+        if (categoryInput.current) {
+          categoryInput.current.placeholder = `${
+            created.type === "Income" ? "( + )" : "( - )"
+          } ${created.name} `;
+          categoryInput.current.value = "";
+        }
+      }
+
+      resetNewCategoryForm();
+      setShowNewCategory(false);
+    } catch (error) {
+      console.error("Error creating category:", error);
+      setNewCategoryError("Could not create category.");
+    } finally {
+      setIsCreatingCategory(false);
+    }
+  };
+
+  const canCreateCategory =
+    newCategoryName.trim().length > 3 && newCategoryType !== "";
 
   const handleSubmit = async (event: React.FormEvent) => {
     event?.preventDefault();
@@ -173,6 +257,131 @@ function NewTransaction({
           )}
         </div>
         <datalist id="categories-datalist" ref={categoriesDatalist}></datalist>
+
+        <div className="new-category-toggle-row">
+          <button
+            type="button"
+            className="new-category-toggle"
+            onClick={handleToggleNewCategory}
+            aria-expanded={showNewCategory}
+          >
+            {showNewCategory ? "× Cancel" : "+ New category"}
+          </button>
+        </div>
+
+        {showNewCategory && (
+          <div className="new-category-inline">
+            <label htmlFor="new-category-name" className="label">
+              Category name
+            </label>
+            <input
+              type="text"
+              id="new-category-name"
+              className="input"
+              name="new-category-name"
+              value={newCategoryName}
+              onChange={(e) => {
+                setNewCategoryName(e.target.value);
+                setNewCategoryError(null);
+              }}
+              placeholder="e.g. Groceries"
+              maxLength={32}
+              autoFocus
+            />
+
+            <label className="label">Type</label>
+            <div className="type-boxes">
+              <label
+                htmlFor="new-category-income"
+                className={`type-option is-income ${
+                  newCategoryType === "Income" ? "is-selected" : ""
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="new-category-type"
+                  id="new-category-income"
+                  checked={newCategoryType === "Income"}
+                  onChange={() => {
+                    setNewCategoryType("Income");
+                    setNewCategoryError(null);
+                  }}
+                />
+                <span>Income</span>
+              </label>
+              <label
+                htmlFor="new-category-expense"
+                className={`type-option is-expense ${
+                  newCategoryType === "Expense" ? "is-selected" : ""
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="new-category-type"
+                  id="new-category-expense"
+                  checked={newCategoryType === "Expense"}
+                  onChange={() => {
+                    setNewCategoryType("Expense");
+                    setNewCategoryError(null);
+                  }}
+                />
+                <span>Expense</span>
+              </label>
+            </div>
+
+            <label htmlFor="new-category-color" className="label">
+              Color
+            </label>
+            <div className="new-category-color-row">
+              <input
+                type="color"
+                id="new-category-color"
+                className="new-category-color-input"
+                name="new-category-color"
+                value={newCategoryColor}
+                onChange={(e) => setNewCategoryColor(e.target.value)}
+              />
+              <div className="new-category-color-swatches">
+                {[
+                  "#5b8cff",
+                  "#22c55e",
+                  "#ef4444",
+                  "#f59e0b",
+                  "#a855f7",
+                  "#06b6d4",
+                  "#ec4899",
+                  "#94a3b8"
+                ].map((c) => (
+                  <button
+                    type="button"
+                    key={c}
+                    aria-label={`Pick color ${c}`}
+                    className={`new-category-swatch ${
+                      newCategoryColor === c ? "is-active" : ""
+                    }`}
+                    style={{ backgroundColor: c }}
+                    onClick={() => setNewCategoryColor(c)}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {newCategoryError && (
+              <p className="new-category-error" role="alert">
+                {newCategoryError}
+              </p>
+            )}
+
+            <button
+              type="button"
+              className="submit-button"
+              disabled={!canCreateCategory || isCreatingCategory}
+              onClick={handleCreateCategory}
+            >
+              {isCreatingCategory ? "Creating…" : "Create category"}
+            </button>
+          </div>
+        )}
 
         <label htmlFor="date">Date</label>
         <input
