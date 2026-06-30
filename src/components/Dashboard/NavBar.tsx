@@ -51,7 +51,7 @@ const NavBar = ({
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isScanOpen, setIsScanOpen] = useState(false);
   const isMobile = useMediaQuery("(max-width:600px)");
-  const scanButtonRef = useRef<HTMLButtonElement>(null);
+  const scanContainerRef = useRef<HTMLDivElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -59,8 +59,8 @@ const NavBar = ({
     if (!isScanOpen) return;
     const handleClick = (event: MouseEvent) => {
       if (
-        scanButtonRef.current &&
-        !scanButtonRef.current.contains(event.target as Node)
+        scanContainerRef.current &&
+        !scanContainerRef.current.contains(event.target as Node)
       ) {
         setIsScanOpen(false);
       }
@@ -275,66 +275,66 @@ const NavBar = ({
             </div>
           )}
         </div>
+        <div className="buttons-container">
+          <div className="scan-container" ref={scanContainerRef}>
+            <button
+              type="button"
+              className="scan-button"
+              aria-label="Scan invoice"
+              aria-haspopup="true"
+              aria-expanded={isScanOpen}
+              onClick={() => setIsScanOpen((prev) => !prev)}
+            >
+              <AddAPhotoIcon fontSize="small" />
+            </button>
 
-        <div className="scan-container">
-          <button
-            type="button"
-            ref={scanButtonRef}
-            className="scan-button"
-            aria-label="Scan invoice"
-            aria-haspopup="true"
-            aria-expanded={isScanOpen}
-            onClick={() => setIsScanOpen((prev) => !prev)}
-          >
-            <AddAPhotoIcon fontSize="small" />
-          </button>
+            {isScanOpen && (
+              <div className="scan-popover" role="menu">
+                <button
+                  type="button"
+                  className="scan-popover-item"
+                  onClick={() => cameraInputRef.current?.click()}
+                >
+                  <PhotoCameraIcon fontSize="small" />
+                  <span>Take photo</span>
+                </button>
+                <button
+                  type="button"
+                  className="scan-popover-item"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <UploadFileIcon fontSize="small" />
+                  <span>Upload image</span>
+                </button>
+              </div>
+            )}
 
-          {isScanOpen && (
-            <div className="scan-popover" role="menu">
-              <button
-                type="button"
-                className="scan-popover-item"
-                onClick={() => cameraInputRef.current?.click()}
-              >
-                <PhotoCameraIcon fontSize="small" />
-                <span>Take photo</span>
-              </button>
-              <button
-                type="button"
-                className="scan-popover-item"
-                onClick={() => fileInputRef.current?.click()}
-              >
-                <UploadFileIcon fontSize="small" />
-                <span>Upload image</span>
-              </button>
-            </div>
-          )}
+            <input
+              ref={cameraInputRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              className="scan-file-input"
+              onChange={handleScanFile}
+            />
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className="scan-file-input"
+              onChange={handleScanFile}
+            />
+          </div>
 
-          <input
-            ref={cameraInputRef}
-            type="file"
-            accept="image/*"
-            capture="environment"
-            className="scan-file-input"
-            onChange={handleScanFile}
-          />
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            className="scan-file-input"
-            onChange={handleScanFile}
-          />
-        </div>
-
-        <div className="logo-container">
-          <button
-            className="logo-button-container"
-            onClick={() => navigate("/")}
-            aria-label="Go to landing"
-          >
-            <img className="logo-button" src="/favicon.svg" alt="logo" />
-          </button>
+          <div className="logo-container">
+            <button
+              className="logo-button-container"
+              onClick={() => navigate("/")}
+              aria-label="Go to landing"
+            >
+              <img className="logo-button" src="/favicon.svg" alt="logo" />
+            </button>
+          </div>
         </div>
       </div>
 

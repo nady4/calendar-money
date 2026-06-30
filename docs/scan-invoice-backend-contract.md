@@ -31,15 +31,26 @@ payload (`response_format: json_object` + `image_url` content part).
 ```
 VISION_API_BASE=https://opencode.ai/zen/go/v1
 VISION_API_KEY=<your OpenCode Go key>
-VISION_MODEL=glm-5.2
+VISION_MODEL=kimi-k2.6
 VISION_API_MAX_BYTES=10485760   # optional
 ```
 
-Fallbacks on the **same** `/chat/completions` endpoint (swap `VISION_MODEL` only,
-no code change), in order of decreasing likelihood of accepting image input:
-1. `deepseek-v4-pro`
-2. `kimi-k2.6`
-3. `mimo-v2.5`
+`kimi-k2.6` is confirmed working end-to-end against a real receipt image (4 line
+items + receipt-level date extracted). Pricing $0.95/$4.00 per 1M tokens.
+
+Go models verified to accept image input on `/chat/completions` (in order of
+extraction quality on a sample receipt):
+1. `kimi-k2.6` — recommended, 4/4 lines extracted
+2. `kimi-k2.7-code` — 4/4 lines, same price
+3. `mimo-v2.5` — 3/4 lines, cheapest ($0.14/$0.28)
+
+Go models known to **reject** image input on `/chat/completions`:
+- `glm-5.2`, `deepseek-v4-pro`, `deepseek-v4-flash`, `mimo-v2.5-pro` — `image_url` not supported
+- `glm-5.1` — accepts images but extracts nothing useful
+
+**Important:** Go's gateway returns 400/500 if you send `response_format: json_object`
+together with an image input. The controller intentionally omits `response_format`
+and parses the JSON out of the model's text content (with a regex fallback).
 
 Go models that use the Anthropic `/messages` shape (MiniMax M3 / M2.7 / M2.5,
 Qwen3.7 Max / Plus, Qwen3.6 Plus) are **not** supported by the current
@@ -53,6 +64,9 @@ VISION_API_BASE=<base URL, no trailing slash>
 VISION_API_KEY=<your key>
 VISION_MODEL=<vision-capable model id>
 ```
+If the gateway supports `response_format: json_object` with vision input you may
+re-add it to the controller for stricter output; the OpenCode Go gateway does
+not, which is why it is omitted upstream.
 
 ## Vision request shape
 

@@ -10,6 +10,7 @@ import {
   normalizeRowsForBulk,
 } from "../../util/scanApi";
 import { bulkImportTransactions } from "../../util/transactionApi";
+import { API_URL } from "../../util/api";
 import useCategoryOptions from "../../hooks/useCategoryOptions";
 import {
   clearHeldImage,
@@ -72,6 +73,15 @@ function ScanReview({ user, setUser }: ScanReviewProps) {
     type: "idle" | "loading" | "success" | "error";
     message: string;
   }>({ type: "idle", message: "" });
+
+  const [showNewCategory, setShowNewCategory] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState("");
+  const [newCategoryType, setNewCategoryType] = useState<"Income" | "Expense" | "">(
+    ""
+  );
+  const [newCategoryColor, setNewCategoryColor] = useState("#5b8cff");
+  const [isCreatingCategory, setIsCreatingCategory] = useState(false);
+  const [newCategoryError, setNewCategoryError] = useState<string | null>(null);
 
   const categoriesDatalist = useRef<HTMLDataListElement>(null);
   useCategoryOptions({ user, categoriesDatalist });
@@ -168,6 +178,89 @@ function ScanReview({ user, setUser }: ScanReviewProps) {
       updateRow(row.id, { categoryName: value });
     }
   };
+
+  const resetNewCategoryForm = () => {
+    setNewCategoryName("");
+    setNewCategoryType("");
+    setNewCategoryColor("#5b8cff");
+    setNewCategoryError(null);
+  };
+
+  const handleToggleNewCategory = () => {
+    setShowNewCategory((prev) => {
+      if (prev) resetNewCategoryForm();
+      return !prev;
+    });
+  };
+
+  const handleCreateCategory = async () => {
+    if (!newCategoryName.trim() || !newCategoryType) return;
+    if (
+      user.categories.some(
+        (c) =>
+          c.name.toLowerCase() === newCategoryName.trim().toLowerCase()
+      )
+    ) {
+      setNewCategoryError("A category with that name already exists.");
+      return;
+    }
+
+    setIsCreatingCategory(true);
+    setNewCategoryError(null);
+
+    try {
+      const response = await fetch(`${API_URL}/categories/${user.id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({
+          name: newCategoryName.trim(),
+          type: newCategoryType,
+          color: newCategoryColor,
+        }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        setNewCategoryError(data?.error || "Could not create category.");
+        return;
+      }
+
+      setUser(data.user);
+      setRows((prev) =>
+        prev.map((row) => {
+          const match =
+            row.categoryName.trim().toLowerCase() ===
+            newCategoryName.trim().toLowerCase();
+          if (!match) return row;
+          const created = (data.user as UserType).categories.find(
+            (c: { name: string }) => c.name === newCategoryName.trim()
+          ) as CategoryType | undefined;
+          return created
+            ? {
+                ...row,
+                categoryName: created.name,
+                categoryType: created.type as "Income" | "Expense",
+                color: created.color,
+              }
+            : row;
+        })
+      );
+
+      resetNewCategoryForm();
+      setShowNewCategory(false);
+    } catch (err) {
+      console.error("Error creating category:", err);
+      setNewCategoryError("Could not create category.");
+    } finally {
+      setIsCreatingCategory(false);
+    }
+  };
+
+  const canCreateCategory =
+    newCategoryName.trim().length > 3 && newCategoryType !== "";
 
   const handleAddAll = async () => {
     if (!canSubmit) return;
@@ -304,7 +397,113 @@ function ScanReview({ user, setUser }: ScanReviewProps) {
               />
               <span>Apply this date to rows missing a date</span>
             </label>
+            <button
+              type="button"
+              className="add-category-toggle"
+              onClick={handleToggleNewCategory}
+              aria-expanded={showNewCategory}
+            >
+              {showNewCategory ? "× Cancel" : "+ New category"}
+            </button>
           </div>
+
+          {showNewCategory && (
+            <div className="scan-new-category-inline">
+              <label className="nc-label">
+                Category name
+                <input
+                  type="text"
+                  className="nc-input"
+                  value={newCategoryName}
+                  maxLength={32}
+                  autoFocus
+                  placeholder="e.g. Groceries"
+                  onChange={(e) => {
+                    setNewCategoryName(e.target.value);
+                    setNewCategoryError(null);
+                  }}
+                />
+              </label>
+
+              <label className="nc-label">Type</label>
+              <div className="nc-type-boxes">
+                <label
+                  className={`nc-type-option is-income ${
+                    newCategoryType === "Income" ? "is-selected" : ""
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="scan-new-category-type"
+                    checked={newCategoryType === "Income"}
+                    onChange={() => {
+                      setNewCategoryType("Income");
+                      setNewCategoryError(null);
+                    }}
+                  />
+                  <span>Income</span>
+                </label>
+                <label
+                  className={`nc-type-option is-expense ${
+                    newCategoryType === "Expense" ? "is-selected" : ""
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="scan-new-category-type"
+                    checked={newCategoryType === "Expense"}
+                    onChange={() => {
+                      setNewCategoryType("Expense");
+                      setNewCategoryError(null);
+                    }}
+                  />
+                  <span>Expense</span>
+                </label>
+              </div>
+
+              <label className="nc-label">Color</label>
+              <div className="nc-color-row">
+                <input
+                  type="color"
+                  className="nc-color-input"
+                  value={newCategoryColor}
+                  onChange={(e) => setNewCategoryColor(e.target.value)}
+                />
+                <div className="nc-color-swatches">
+                  {[
+                    "#5b8cff", "#22c55e", "#ef4444", "#f59e0b",
+                    "#a855f7", "#06b6d4", "#ec4899", "#94a3b8",
+                  ].map((c) => (
+                    <button
+                      type="button"
+                      key={c}
+                      aria-label={`Pick color ${c}`}
+                      className={`nc-swatch ${
+                        newCategoryColor === c ? "is-active" : ""
+                      }`}
+                      style={{ backgroundColor: c }}
+                      onClick={() => setNewCategoryColor(c)}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {newCategoryError && (
+                <p className="nc-error" role="alert">
+                  {newCategoryError}
+                </p>
+              )}
+
+              <button
+                type="button"
+                className="submit-button nc-submit"
+                disabled={!canCreateCategory || isCreatingCategory}
+                onClick={handleCreateCategory}
+              >
+                {isCreatingCategory ? "Creating…" : "Create category"}
+              </button>
+            </div>
+          )}
 
           <div className="scan-review-table">
             <div className="scan-review-row scan-review-header">
@@ -312,7 +511,6 @@ function ScanReview({ user, setUser }: ScanReviewProps) {
               <div>Amount</div>
               <div>Date</div>
               <div>Category</div>
-              <div>Type</div>
               <div />
             </div>
 
@@ -360,31 +558,31 @@ function ScanReview({ user, setUser }: ScanReviewProps) {
                     }
                   />
                   <div className="cell cell-category">
-                    <input
-                      className={`category-input ${
-                        !row.categoryName.trim() ? "is-missing" : ""
-                      }`}
-                      list="scan-categories-datalist"
-                      value={row.categoryName}
-                      placeholder="Category"
-                      onChange={(e) =>
-                        handleCategoryChange(row, e.target.value)
-                      }
-                    />
-                    {existing && (
-                      <span
-                        className={`category-type-badge ${
-                          typeIsIncome ? "is-income" : "is-expense"
+                    <div className="category-main">
+                      <input
+                        className={`category-input ${
+                          !row.categoryName.trim() ? "is-missing" : ""
                         }`}
-                      >
-                        <span className="category-type-dot" />
-                        {existing.type}
-                      </span>
-                    )}
-                  </div>
-                  <div className="cell cell-type">
-                    {isNew ? (
-                      <div className="type-toggle">
+                        list="scan-categories-datalist"
+                        value={row.categoryName}
+                        placeholder="Category"
+                        onChange={(e) =>
+                          handleCategoryChange(row, e.target.value)
+                        }
+                      />
+                      {existing && (
+                        <span
+                          className={`category-type-badge ${
+                            typeIsIncome ? "is-income" : "is-expense"
+                          }`}
+                        >
+                          <span className="category-type-dot" />
+                          {existing.type}
+                        </span>
+                      )}
+                    </div>
+                    {isNew && (
+                      <div className="category-new-controls">
                         <button
                           type="button"
                           className={`type-pill is-income ${
@@ -393,6 +591,7 @@ function ScanReview({ user, setUser }: ScanReviewProps) {
                           onClick={() =>
                             updateRow(row.id, { categoryType: "Income" })
                           }
+                          title="Income"
                         >
                           +
                         </button>
@@ -404,8 +603,9 @@ function ScanReview({ user, setUser }: ScanReviewProps) {
                           onClick={() =>
                             updateRow(row.id, { categoryType: "Expense" })
                           }
+                          title="Expense"
                         >
-                          -
+                          −
                         </button>
                         <input
                           type="color"
@@ -417,14 +617,6 @@ function ScanReview({ user, setUser }: ScanReviewProps) {
                           }
                         />
                       </div>
-                    ) : (
-                      <span
-                        className={`type-badge ${
-                          typeIsIncome ? "is-income" : "is-expense"
-                        }`}
-                      >
-                        {existing?.type ?? "—"}
-                      </span>
                     )}
                   </div>
                   <button

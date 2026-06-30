@@ -47,7 +47,9 @@
         height: 40px;
         width: 40px;
         filter: var(--icon-filter, brightness(0) invert(0.85));
-        transition: transform 0.18s ease, filter 0.18s ease;
+        transition:
+          transform 0.18s ease,
+          filter 0.18s ease;
       }
 
       &:hover .menu-button {
@@ -65,12 +67,9 @@
     }
 
     .money-container {
-      width: 5%;
       cursor: pointer;
       transition: 0.2s ease-in-out;
-      width: 400px;
-      margin-left: 20px;
-      padding-right: 80px;
+      width: 500px;
 
       .money-item {
         display: flex;
@@ -92,6 +91,7 @@
 
         .balance {
           color: vars.$text-primary;
+          padding-right: 50px;
         }
 
         .income {
@@ -152,8 +152,7 @@
     .search-container {
       position: relative;
       width: 340px;
-      margin: 0 15px;
-      padding-left: 80px;
+      margin-left: 400px;
 
       .search-bar {
         display: flex;
@@ -280,122 +279,146 @@
       }
     }
 
-    .scan-container {
-      position: relative;
-      width: auto;
-      margin: 0 12px;
-      padding: 0;
+    .buttons-container {
+      width: 150px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
 
-      .scan-button {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 38px;
-        height: 38px;
-        border-radius: 50%;
-        background-color: vars.$bg-card-elevated;
-        border: 1px solid vars.$border-subtle;
-        color: vars.$text-secondary;
-        cursor: pointer;
-        transition:
-          transform 0.18s ease,
-          border-color 0.18s ease,
-          box-shadow 0.18s ease;
+      .scan-container {
+        position: relative;
+        width: auto;
+        margin: 0 12px;
+        display: block;
+        height: auto;
 
-        &:hover {
-          transform: scale(1.08);
-          border-color: vars.$accent;
-          box-shadow: 0 4px 14px var(--accent-strong);
-          color: vars.$accent;
-        }
-
-        &:active {
-          transform: scale(0.94);
-        }
-
-        &:focus-visible {
-          outline: 2px solid vars.$accent;
-          outline-offset: 2px;
-        }
-      }
-
-      .scan-popover {
-        position: absolute;
-        top: 46px;
-        right: 0;
-        min-width: 180px;
-        display: flex;
-        flex-direction: column;
-        background-color: vars.$bg-card;
-        border: 1px solid vars.$border-strong;
-        border-radius: vars.$radius-sm;
-        box-shadow: vars.$shadow-pop;
-        z-index: 12;
-        overflow: hidden;
-
-        .scan-popover-item {
-          display: flex;
+        .scan-button {
+          display: inline-flex;
           align-items: center;
-          gap: 10px;
-          padding: 10px 14px;
-          background: none;
-          border: none;
-          color: vars.$text-primary;
-          font-family: "Nunito Sans", sans-serif;
-          font-size: 0.9rem;
-          font-weight: 600;
+          justify-content: center;
+          width: 38px;
+          height: 38px;
+          border-radius: 50%;
+          background-color: vars.$bg-card-elevated;
+          border: 1px solid vars.$border-subtle;
+          color: vars.$text-secondary;
           cursor: pointer;
-          text-align: left;
-          transition: background-color 0.15s ease, transform 0.15s ease;
+          transition:
+            transform 0.18s ease,
+            border-color 0.18s ease,
+            box-shadow 0.18s ease;
 
           &:hover {
-            background-color: vars.$bg-card-elevated;
-            transform: translateX(2px);
+            transform: scale(1.08);
+            border-color: vars.$accent;
+            box-shadow: 0 4px 14px var(--accent-strong);
+            color: vars.$accent;
+          }
+
+          &:active {
+            transform: scale(0.94);
+          }
+
+          &:focus-visible {
+            outline: 2px solid vars.$accent;
+            outline-offset: 2px;
           }
         }
-      }
 
-      .scan-file-input {
-        display: none;
-      }
-    }
+        .scan-popover {
+          position: absolute;
+          top: 46px;
+          right: 0;
+          height: 100px;
+          min-width: 180px;
+          display: flex;
+          flex-direction: column;
+          background-color: vars.$bg-card;
+          border: 1px solid vars.$border-strong;
+          border-radius: vars.$radius-sm;
+          box-shadow: vars.$shadow-pop;
+          z-index: 12;
+          overflow: hidden;
 
-    .logo-container {
-      width: 5%;
+          .scan-popover-item {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            background: none;
+            border: none;
+            color: vars.$text-primary;
+            font-family: "Nunito Sans", sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: left;
+            transition:
+              background-color 0.15s ease,
+              transform 0.15s ease;
 
-      .logo-button-container {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        background: var(--bg-card-elevated);
-        border: 1px solid var(--border-subtle);
-        cursor: pointer;
-        transition: transform 0.18s ease, box-shadow 0.18s ease,
-          border-color 0.18s ease;
-        padding: 0;
-        overflow: hidden;
-
-        .logo-button {
-          height: 20px;
-          width: 20px;
-          filter: var(--accent-filter, brightness(0) saturate(100%) invert(56%) sepia(85%) saturate(2476%) hue-rotate(177deg) brightness(96%) contrast(96%));
-          transition: transform 0.18s ease, filter 0.18s ease;
+            &:hover {
+              background-color: vars.$bg-card-elevated;
+              transform: translateX(2px);
+            }
+          }
         }
 
-        &:hover {
-          transform: scale(1.08);
-          border-color: var(--accent);
-          box-shadow: 0 4px 14px var(--accent-strong);
+        .scan-file-input {
+          display: none;
+        }
+      }
+
+      .logo-container {
+        .logo-button-container {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 36px;
+          height: 36px;
+          border-radius: 50%;
+          background: var(--bg-card-elevated);
+          border: 1px solid var(--border-subtle);
+          cursor: pointer;
+          transition:
+            transform 0.18s ease,
+            box-shadow 0.18s ease,
+            border-color 0.18s ease;
+          padding: 0;
+          overflow: hidden;
 
           .logo-button {
-            filter: var(--accent-filter-hover, brightness(0) saturate(100%) invert(56%) sepia(85%) saturate(2476%) hue-rotate(177deg) brightness(110%) contrast(100%));
+            height: 20px;
+            width: 20px;
+            filter: var(
+              --accent-filter,
+              brightness(0) saturate(100%) invert(56%) sepia(85%)
+                saturate(2476%) hue-rotate(177deg) brightness(96%) contrast(96%)
+            );
+            transition:
+              transform 0.18s ease,
+              filter 0.18s ease;
           }
-        }
-        &:active {
-          transform: scale(0.95);
+
+          &:hover {
+            transform: scale(1.08);
+            border-color: var(--accent);
+            box-shadow: 0 4px 14px var(--accent-strong);
+
+            .logo-button {
+              filter: var(
+                --accent-filter-hover,
+                brightness(0) saturate(100%) invert(56%) sepia(85%)
+                  saturate(2476%) hue-rotate(177deg) brightness(110%)
+                  contrast(100%)
+              );
+            }
+          }
+          &:active {
+            transform: scale(0.95);
+          }
         }
       }
     }
@@ -580,16 +603,22 @@
       }
 
       .scan-container {
-        margin: 0 6px 0 auto;
+        margin: 0 8px 0 6px;
+
+        .scan-button {
+          width: 32px;
+          height: 32px;
+        }
 
         .scan-popover {
-          right: -4px;
+          right: -6px;
+          left: auto;
           min-width: 160px;
         }
       }
 
       .logo-container {
-        margin-left: auto;
+        margin-left: 0;
         width: auto;
         flex: 0 0 auto;
       }

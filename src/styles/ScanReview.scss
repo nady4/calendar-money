@@ -126,6 +126,185 @@
         accent-color: vars.$accent;
       }
     }
+
+    .add-category-toggle {
+      margin-left: auto;
+      background: none;
+      border: none;
+      color: vars.$accent;
+      font-family: "Nunito Sans", sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: vars.$radius-sm;
+      transition: transform 0.18s ease, background-color 0.18s ease;
+
+      &:hover {
+        background: vars.$accent-soft;
+        transform: scale(1.03);
+      }
+
+      &:active {
+        transform: scale(0.97);
+      }
+
+      &:focus-visible {
+        outline: 2px solid vars.$accent;
+        outline-offset: 2px;
+      }
+    }
+  }
+
+  .scan-new-category-inline {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    padding: 16px 18px;
+    background: vars.$bg-card;
+    border: 1px solid vars.$border-subtle;
+    border-radius: vars.$radius-sm;
+    box-shadow: vars.$shadow-card;
+    animation: scan-new-cat-slide 0.18s ease-out;
+
+    .nc-label {
+      align-self: flex-start;
+      margin: 10px 0 4px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: vars.$text-secondary;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      width: 100%;
+    }
+
+    .nc-input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid vars.$border-subtle;
+      border-radius: vars.$radius-sm;
+      background: vars.$bg-card-elevated;
+      color: vars.$text-primary;
+      font-family: "Nunito Sans", sans-serif;
+      font-size: 0.95rem;
+      box-sizing: border-box;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+      &:focus {
+        outline: none;
+        border-color: vars.$accent;
+        box-shadow: 0 0 0 3px vars.$accent-soft;
+      }
+
+      &::placeholder {
+        color: vars.$text-muted;
+      }
+    }
+
+    .nc-type-boxes {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+
+      .nc-type-option {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        background: vars.$bg-card-elevated;
+        border: 1px solid vars.$border-subtle;
+        border-radius: vars.$radius-pill;
+        color: vars.$text-secondary;
+        font-weight: 700;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: transform 0.15s ease, background-color 0.15s ease,
+          border-color 0.15s ease, color 0.15s ease;
+
+        input {
+          position: absolute;
+          opacity: 0;
+          pointer-events: none;
+          width: 0;
+          height: 0;
+        }
+
+        &:hover {
+          transform: scale(1.04);
+        }
+
+        &.is-income.is-selected {
+          background: vars.$positive-soft;
+          border-color: rgba(vars.$positive, 0.6);
+          color: vars.$positive;
+        }
+
+        &.is-expense.is-selected {
+          background: vars.$negative-soft;
+          border-color: rgba(vars.$negative, 0.6);
+          color: vars.$negative;
+        }
+      }
+    }
+
+    .nc-color-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+
+      .nc-color-input {
+        width: 40px;
+        height: 34px;
+        padding: 2px;
+        border: 1px solid vars.$border-subtle;
+        border-radius: vars.$radius-sm;
+        background: none;
+        cursor: pointer;
+        flex: 0 0 auto;
+      }
+
+      .nc-color-swatches {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        flex: 1 1 auto;
+      }
+
+      .nc-swatch {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        border: 2px solid transparent;
+        cursor: pointer;
+        padding: 0;
+        transition: transform 0.15s ease, border-color 0.15s ease;
+
+        &:hover {
+          transform: scale(1.12);
+        }
+
+        &.is-active {
+          border-color: vars.$text-primary;
+          box-shadow: 0 0 0 2px vars.$bg-card-elevated;
+        }
+      }
+    }
+
+    .nc-error {
+      margin: 6px 0 0;
+      font-size: 0.85rem;
+      color: vars.$negative;
+      text-align: center;
+    }
+
+    .nc-submit {
+      align-self: center;
+      width: 180px;
+      margin-top: 12px;
+    }
   }
 
   .scan-review-table {
@@ -141,7 +320,7 @@
 
   .scan-review-row {
     display: grid;
-    grid-template-columns: 2.2fr 1fr 1.1fr 1.6fr 1.1fr 36px;
+    grid-template-columns: 2.2fr 1fr 1.1fr 1.9fr 36px;
     align-items: center;
     gap: 8px;
     padding: 10px 12px;
@@ -201,12 +380,14 @@
     }
 
     .cell-category {
-      position: relative;
       padding: 0;
       border: none;
       background: none;
       border-radius: 0;
       box-shadow: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
 
       .category-input {
         width: 100%;
@@ -297,54 +478,61 @@
           border: 1px solid rgba(vars.$negative, 0.45);
         }
       }
+    }
 
-      .type-toggle {
+    .category-main {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+
+    .category-new-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .type-pill {
+        width: 26px;
+        height: 26px;
         display: inline-flex;
         align-items: center;
-        gap: 6px;
+        justify-content: center;
+        border: 1px solid vars.$border-subtle;
+        border-radius: 50%;
+        background: vars.$bg-card-elevated;
+        color: vars.$text-secondary;
+        font-weight: 800;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: transform 0.15s ease, background-color 0.15s ease,
+          border-color 0.15s ease, color 0.15s ease;
 
-        .type-pill {
-          width: 28px;
-          height: 28px;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          border: 1px solid vars.$border-subtle;
-          border-radius: 50%;
-          background: vars.$bg-card-elevated;
-          color: vars.$text-secondary;
-          font-weight: 800;
-          font-size: 1rem;
-          cursor: pointer;
-          transition: transform 0.15s ease, background-color 0.15s ease,
-            border-color 0.15s ease, color 0.15s ease;
-
-          &:hover {
-            transform: scale(1.08);
-          }
-
-          &.is-income.is-selected {
-            background: vars.$positive-soft;
-            border-color: rgba(vars.$positive, 0.6);
-            color: vars.$positive;
-          }
-
-          &.is-expense.is-selected {
-            background: vars.$negative-soft;
-            border-color: rgba(vars.$negative, 0.6);
-            color: vars.$negative;
-          }
+        &:hover {
+          transform: scale(1.08);
         }
 
-        .type-color {
-          width: 28px;
-          height: 28px;
-          padding: 2px;
-          border: 1px solid vars.$border-subtle;
-          border-radius: 50%;
-          background: none;
-          cursor: pointer;
+        &.is-income.is-selected {
+          background: vars.$positive-soft;
+          border-color: rgba(vars.$positive, 0.6);
+          color: vars.$positive;
         }
+
+        &.is-expense.is-selected {
+          background: vars.$negative-soft;
+          border-color: rgba(vars.$negative, 0.6);
+          color: vars.$negative;
+        }
+      }
+
+      .type-color {
+        width: 26px;
+        height: 26px;
+        padding: 2px;
+        border: 1px solid vars.$border-subtle;
+        border-radius: 50%;
+        background: none;
+        cursor: pointer;
       }
     }
 
