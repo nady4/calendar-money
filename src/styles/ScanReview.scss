@@ -1,0 +1,436 @@
+@use "./variables" as vars;
+@use "./buttons" as *;
+
+.scan-review {
+  width: 100%;
+  min-height: 100vh;
+  background: vars.$bg-app;
+  color: vars.$text-primary;
+  font-family: "Nunito Sans", sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px 60px;
+  box-sizing: border-box;
+  position: relative;
+
+  h2 {
+    margin: 0 0 16px;
+    font-size: 1.7rem;
+    font-weight: 800;
+    color: vars.$text-primary;
+    text-align: center;
+  }
+
+  .exit-button {
+    @extend %exit-button;
+  }
+
+  .loading {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--scrim);
+    z-index: 20;
+  }
+
+  .scan-review-error {
+    width: 100%;
+    max-width: 420px;
+    margin-top: 24px;
+    padding: 24px;
+    background: vars.$bg-card;
+    border: 1px solid vars.$border-subtle;
+    border-radius: vars.$radius-card;
+    box-shadow: vars.$shadow-card;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+
+    p {
+      margin: 0;
+      text-align: center;
+      color: vars.$text-secondary;
+    }
+
+    .submit-button {
+      @extend %submit-button;
+    }
+  }
+
+  .scan-review-body {
+    width: 100%;
+    max-width: 920px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 18px;
+  }
+
+  .scan-review-options {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 18px;
+    padding: 14px 18px;
+    background: vars.$bg-card;
+    border: 1px solid vars.$border-subtle;
+    border-radius: vars.$radius-sm;
+
+    .receipt-date-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: vars.$text-secondary;
+      font-weight: 600;
+      font-size: 0.9rem;
+
+      span {
+        color: vars.$text-secondary;
+      }
+
+      input {
+        padding: 8px 12px;
+        border: 1px solid vars.$border-subtle;
+        border-radius: vars.$radius-sm;
+        background: vars.$bg-card-elevated;
+        color: vars.$text-primary;
+        font-family: vars.$font-mono;
+        font-size: 0.9rem;
+
+        &:focus {
+          outline: none;
+          border-color: vars.$accent;
+          box-shadow: 0 0 0 3px vars.$accent-soft;
+        }
+      }
+    }
+
+    .receipt-date-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      color: vars.$text-primary;
+      font-size: 0.88rem;
+      font-weight: 600;
+      user-select: none;
+
+      input {
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+        accent-color: vars.$accent;
+      }
+    }
+  }
+
+  .scan-review-table {
+    width: 100%;
+    background: vars.$bg-card;
+    border: 1px solid vars.$border-subtle;
+    border-radius: vars.$radius-card;
+    box-shadow: vars.$shadow-card;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .scan-review-row {
+    display: grid;
+    grid-template-columns: 2.2fr 1fr 1.1fr 1.6fr 1.1fr 36px;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-bottom: 1px solid vars.$border-subtle;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &.scan-review-header {
+      background: vars.$bg-card-elevated;
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: vars.$text-muted;
+      > div {
+        padding: 0 4px;
+      }
+    }
+
+    &.is-invalid {
+      background: rgba(vars.$negative, 0.07);
+    }
+
+    .cell {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid vars.$border-subtle;
+      border-radius: vars.$radius-sm;
+      background: vars.$bg-card-elevated;
+      color: vars.$text-primary;
+      font-family: "Nunito Sans", sans-serif;
+      font-size: 0.9rem;
+      box-sizing: border-box;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+      &:focus {
+        outline: none;
+        border-color: vars.$accent;
+        box-shadow: 0 0 0 3px vars.$accent-soft;
+      }
+
+      &::placeholder {
+        color: vars.$text-muted;
+      }
+    }
+
+    .cell-amount {
+      font-family: vars.$font-mono;
+      text-align: right;
+    }
+
+    .cell-date {
+      font-family: vars.$font-mono;
+      font-size: 0.85rem;
+    }
+
+    .cell-category {
+      position: relative;
+      padding: 0;
+      border: none;
+      background: none;
+      border-radius: 0;
+      box-shadow: none;
+
+      .category-input {
+        width: 100%;
+        padding: 8px 10px;
+        border: 1px solid vars.$border-subtle;
+        border-radius: vars.$radius-sm;
+        background: vars.$bg-card-elevated;
+        color: vars.$text-primary;
+        font-family: "Nunito Sans", sans-serif;
+        font-size: 0.9rem;
+        box-sizing: border-box;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+        &:focus {
+          outline: none;
+          border-color: vars.$accent;
+          box-shadow: 0 0 0 3px vars.$accent-soft;
+        }
+
+        &.is-missing {
+          border-color: rgba(vars.$negative, 0.6);
+        }
+      }
+
+      .category-type-badge {
+        position: absolute;
+        top: 50%;
+        right: 8px;
+        transform: translateY(-50%);
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 2px 8px;
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        border-radius: vars.$radius-pill;
+        pointer-events: none;
+
+        .category-type-dot {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+        }
+
+        &.is-income {
+          background: vars.$positive-soft;
+          color: vars.$positive;
+          border: 1px solid rgba(vars.$positive, 0.45);
+
+          .category-type-dot {
+            background: vars.$positive;
+          }
+        }
+
+        &.is-expense {
+          background: vars.$negative-soft;
+          color: vars.$negative;
+          border: 1px solid rgba(vars.$negative, 0.45);
+
+          .category-type-dot {
+            background: vars.$negative;
+          }
+        }
+      }
+    }
+
+    .cell-type {
+      .type-badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: vars.$radius-pill;
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+
+        &.is-income {
+          background: vars.$positive-soft;
+          color: vars.$positive;
+          border: 1px solid rgba(vars.$positive, 0.45);
+        }
+
+        &.is-expense {
+          background: vars.$negative-soft;
+          color: vars.$negative;
+          border: 1px solid rgba(vars.$negative, 0.45);
+        }
+      }
+
+      .type-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        .type-pill {
+          width: 28px;
+          height: 28px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          border: 1px solid vars.$border-subtle;
+          border-radius: 50%;
+          background: vars.$bg-card-elevated;
+          color: vars.$text-secondary;
+          font-weight: 800;
+          font-size: 1rem;
+          cursor: pointer;
+          transition: transform 0.15s ease, background-color 0.15s ease,
+            border-color 0.15s ease, color 0.15s ease;
+
+          &:hover {
+            transform: scale(1.08);
+          }
+
+          &.is-income.is-selected {
+            background: vars.$positive-soft;
+            border-color: rgba(vars.$positive, 0.6);
+            color: vars.$positive;
+          }
+
+          &.is-expense.is-selected {
+            background: vars.$negative-soft;
+            border-color: rgba(vars.$negative, 0.6);
+            color: vars.$negative;
+          }
+        }
+
+        .type-color {
+          width: 28px;
+          height: 28px;
+          padding: 2px;
+          border: 1px solid vars.$border-subtle;
+          border-radius: 50%;
+          background: none;
+          cursor: pointer;
+        }
+      }
+    }
+
+    .row-delete {
+      width: 28px;
+      height: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      border-radius: 50%;
+      background: transparent;
+      color: vars.$text-muted;
+      cursor: pointer;
+      transition: transform 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+
+      &:hover {
+        color: vars.$negative;
+        background: rgba(vars.$negative, 0.12);
+        transform: scale(1.08);
+      }
+    }
+  }
+
+  .scan-review-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 4px;
+
+    .scan-status {
+      margin: 0;
+      font-size: 0.85rem;
+      font-family: vars.$font-mono;
+      text-align: center;
+
+      &.scan-status-error {
+        color: vars.$negative;
+      }
+
+      &.scan-status-warning {
+        color: vars.$text-secondary;
+      }
+    }
+
+    .submit-button {
+      @extend %submit-button;
+      width: 200px;
+      margin-top: 8px;
+    }
+  }
+}
+
+/* 📱 Mobile */
+@media (max-width: 600px) {
+  .scan-review {
+    padding: 70px 12px 40px;
+
+    h2 {
+      font-size: 1.35rem;
+    }
+
+    .scan-review-table {
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      border-radius: 0;
+    }
+
+    .scan-review-row {
+      grid-template-columns: 1fr;
+      gap: 8px;
+      padding: 14px;
+      margin-bottom: 10px;
+      background: vars.$bg-card;
+      border: 1px solid vars.$border-subtle;
+      border-radius: vars.$radius-sm;
+
+      &.scan-review-header {
+        display: none;
+      }
+
+      .row-delete {
+        align-self: flex-end;
+      }
+    }
+  }
+}

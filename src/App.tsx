@@ -10,6 +10,7 @@ import EditCategory from "./views/Category/EditCategory.tsx";
 import TransactionList from "./views/Transaction/TransactionList.tsx";
 import NewTransaction from "./views/Transaction/NewTransaction.tsx";
 import EditTransaction from "./views/Transaction/EditTransaction.tsx";
+import ScanReview from "./views/Transaction/ScanReview.tsx";
 import Account from "./views/Account/Account.tsx";
 import Stats from "./views/Stats/Stats.tsx";
 import Budgets from "./views/Budgets/Budgets.tsx";
@@ -192,6 +193,16 @@ function App() {
                 selectedDay={selectedDay}
                 setSelectedDay={setSelectedDay}
               />
+            }
+          />
+          <Route
+            path="/scan-review"
+            element={
+              user.loggedIn ? (
+                <ScanReview user={user} setUser={setUser} />
+              ) : (
+                <Navigate to="/login" />
+              )
             }
           />
         </Routes>

@@ -1,9 +1,13 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMediaQuery } from "@mui/material";
 import { Temporal } from "@js-temporal/polyfill";
 import SearchIcon from "@mui/icons-material/Search";
+import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
+import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
+import UploadFileIcon from "@mui/icons-material/UploadFile";
 import { UserType, TransactionType } from "../../types";
+import { setHeldImage } from "../../util/scannedImageHolder";
 import {
   getDayTotal,
   getMonthTotal,
@@ -45,7 +49,34 @@ const NavBar = ({
   const [isNavBarOpen, setIsNavBarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [isScanOpen, setIsScanOpen] = useState(false);
   const isMobile = useMediaQuery("(max-width:600px)");
+  const scanButtonRef = useRef<HTMLButtonElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!isScanOpen) return;
+    const handleClick = (event: MouseEvent) => {
+      if (
+        scanButtonRef.current &&
+        !scanButtonRef.current.contains(event.target as Node)
+      ) {
+        setIsScanOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [isScanOpen]);
+
+  const handleScanFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    setIsScanOpen(false);
+    if (!file) return;
+    setHeldImage(file);
+    navigate("/scan-review");
+  };
 
   const searchResults = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
@@ -243,6 +274,57 @@ const NavBar = ({
               })}
             </div>
           )}
+        </div>
+
+        <div className="scan-container">
+          <button
+            type="button"
+            ref={scanButtonRef}
+            className="scan-button"
+            aria-label="Scan invoice"
+            aria-haspopup="true"
+            aria-expanded={isScanOpen}
+            onClick={() => setIsScanOpen((prev) => !prev)}
+          >
+            <AddAPhotoIcon fontSize="small" />
+          </button>
+
+          {isScanOpen && (
+            <div className="scan-popover" role="menu">
+              <button
+                type="button"
+                className="scan-popover-item"
+                onClick={() => cameraInputRef.current?.click()}
+              >
+                <PhotoCameraIcon fontSize="small" />
+                <span>Take photo</span>
+              </button>
+              <button
+                type="button"
+                className="scan-popover-item"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <UploadFileIcon fontSize="small" />
+                <span>Upload image</span>
+              </button>
+            </div>
+          )}
+
+          <input
+            ref={cameraInputRef}
+            type="file"
+            accept="image/*"
+            capture="environment"
+            className="scan-file-input"
+            onChange={handleScanFile}
+          />
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            className="scan-file-input"
+            onChange={handleScanFile}
+          />
         </div>
 
         <div className="logo-container">

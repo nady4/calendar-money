@@ -40,4 +40,26 @@ interface BudgetType {
   period: "monthly" | "yearly";
 }
 
-export { CategoryType, TransactionType, UserType, TotalType, BudgetType };
+interface ScannedTransactionDraft {
+  date?: string;
+  amount: number;
+  description: string;
+  categoryName: string;
+  categoryType: "Income" | "Expense";
+  color: string;
+}
+
+interface ScannedResult {
+  date: string | null;
+  transactions: ScannedTransactionDraft[];
+}
+
+export {
+  CategoryType,
+  TransactionType,
+  UserType,
+  TotalType,
+  BudgetType,
+  ScannedTransactionDraft,
+  ScannedResult
+};
