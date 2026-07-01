@@ -519,6 +519,8 @@
   .ai-vision-key {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
     gap: 8px;
     padding: 12px 14px;
     background: vars.$bg-card;
@@ -623,169 +625,173 @@
     }
   }
 
-    .csv-status {
-      margin: 0;
-      font-size: 0.8rem;
-      text-align: center;
-      font-family: vars.$font-mono;
+  .csv-status {
+    margin: 0;
+    font-size: 0.8rem;
+    text-align: center;
+    font-family: vars.$font-mono;
 
-      &.csv-status-success {
+    &.csv-status-success {
+      color: vars.$positive;
+    }
+
+    &.csv-status-error {
+      color: vars.$negative;
+    }
+
+    &.csv-status-loading {
+      color: vars.$text-secondary;
+    }
+  }
+
+  .new-category-toggle-row {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 6px;
+  }
+
+  .new-category-toggle {
+    background: none;
+    border: none;
+    color: vars.$accent;
+    font-family: "Nunito Sans", sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: vars.$radius-sm;
+    transition:
+      transform 0.18s ease,
+      background-color 0.18s ease;
+
+    &:hover {
+      background: vars.$accent-soft;
+      transform: scale(1.03);
+    }
+
+    &:active {
+      transform: scale(0.97);
+    }
+
+    &:focus-visible {
+      outline: 2px solid vars.$accent;
+      outline-offset: 2px;
+    }
+  }
+
+  .new-category-inline {
+    width: 100%;
+    margin-top: 14px;
+    padding: 16px;
+    background: vars.$bg-card-elevated;
+    border: 1px solid vars.$border-subtle;
+    border-radius: vars.$radius-sm;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    box-sizing: border-box;
+    animation: new-category-slide 0.18s ease-out;
+
+    .label {
+      margin: 8px 0 4px;
+      font-size: 0.85rem;
+    }
+
+    .type-boxes {
+      margin-top: 2px;
+      margin-bottom: 4px;
+    }
+
+    .type-option {
+      position: relative;
+
+      input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+        width: 0;
+        height: 0;
+      }
+
+      &.is-selected {
+        background: vars.$accent-soft;
+        border-color: rgba(vars.$accent, 0.6);
+        color: vars.$accent;
+      }
+
+      &.is-income.is-selected {
+        background: vars.$positive-soft;
+        border-color: rgba(vars.$positive, 0.6);
         color: vars.$positive;
       }
 
-      &.csv-status-error {
+      &.is-expense.is-selected {
+        background: vars.$negative-soft;
+        border-color: rgba(vars.$negative, 0.6);
         color: vars.$negative;
       }
-
-      &.csv-status-loading {
-        color: vars.$text-secondary;
-      }
     }
 
-    .new-category-toggle-row {
-      width: 100%;
-      display: flex;
-      justify-content: flex-end;
-      margin-top: 6px;
+    .submit-button {
+      margin-top: 12px;
+      align-self: center;
+    }
+  }
+
+  .new-category-color-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    margin-top: 4px;
+  }
+
+  .new-category-color-input {
+    width: 44px;
+    height: 36px;
+    padding: 2px;
+    cursor: pointer;
+    flex: 0 0 auto;
+  }
+
+  .new-category-color-swatches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    flex: 1 1 auto;
+  }
+
+  .new-category-swatch {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    padding: 0;
+    transition:
+      transform 0.18s ease,
+      border-color 0.18s ease;
+
+    &:hover {
+      transform: scale(1.12);
     }
 
-    .new-category-toggle {
-      background: none;
-      border: none;
-      color: vars.$accent;
-      font-family: "Nunito Sans", sans-serif;
-      font-size: 0.85rem;
-      font-weight: 700;
-      cursor: pointer;
-      padding: 4px 6px;
-      border-radius: vars.$radius-sm;
-      transition: transform 0.18s ease, background-color 0.18s ease;
-
-      &:hover {
-        background: vars.$accent-soft;
-        transform: scale(1.03);
-      }
-
-      &:active {
-        transform: scale(0.97);
-      }
-
-      &:focus-visible {
-        outline: 2px solid vars.$accent;
-        outline-offset: 2px;
-      }
+    &.is-active {
+      border-color: vars.$text-primary;
+      box-shadow:
+        0 0 0 2px vars.$bg-card-elevated,
+        0 0 6px rgba(0, 0, 0, 0.3);
     }
+  }
 
-    .new-category-inline {
-      width: 100%;
-      margin-top: 14px;
-      padding: 16px;
-      background: vars.$bg-card-elevated;
-      border: 1px solid vars.$border-subtle;
-      border-radius: vars.$radius-sm;
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-      gap: 6px;
-      box-sizing: border-box;
-      animation: new-category-slide 0.18s ease-out;
-
-      .label {
-        margin: 8px 0 4px;
-        font-size: 0.85rem;
-      }
-
-      .type-boxes {
-        margin-top: 2px;
-        margin-bottom: 4px;
-      }
-
-      .type-option {
-        position: relative;
-
-        input[type="radio"] {
-          position: absolute;
-          opacity: 0;
-          pointer-events: none;
-          width: 0;
-          height: 0;
-        }
-
-        &.is-selected {
-          background: vars.$accent-soft;
-          border-color: rgba(vars.$accent, 0.6);
-          color: vars.$accent;
-        }
-
-        &.is-income.is-selected {
-          background: vars.$positive-soft;
-          border-color: rgba(vars.$positive, 0.6);
-          color: vars.$positive;
-        }
-
-        &.is-expense.is-selected {
-          background: vars.$negative-soft;
-          border-color: rgba(vars.$negative, 0.6);
-          color: vars.$negative;
-        }
-      }
-
-      .submit-button {
-        margin-top: 12px;
-        align-self: center;
-      }
-    }
-
-    .new-category-color-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      width: 100%;
-      margin-top: 4px;
-    }
-
-    .new-category-color-input {
-      width: 44px;
-      height: 36px;
-      padding: 2px;
-      cursor: pointer;
-      flex: 0 0 auto;
-    }
-
-    .new-category-color-swatches {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      flex: 1 1 auto;
-    }
-
-    .new-category-swatch {
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      border: 2px solid transparent;
-      cursor: pointer;
-      padding: 0;
-      transition: transform 0.18s ease, border-color 0.18s ease;
-
-      &:hover {
-        transform: scale(1.12);
-      }
-
-      &.is-active {
-        border-color: vars.$text-primary;
-        box-shadow:
-          0 0 0 2px vars.$bg-card-elevated,
-          0 0 6px rgba(0, 0, 0, 0.3);
-      }
-    }
-
-    .new-category-error {
-      margin: 6px 0 0;
-      font-size: 0.85rem;
-      color: vars.$negative;
-      text-align: center;
-    }
+  .new-category-error {
+    margin: 6px 0 0;
+    font-size: 0.85rem;
+    color: vars.$negative;
+    text-align: center;
+  }
 }
 
 @keyframes new-category-slide {

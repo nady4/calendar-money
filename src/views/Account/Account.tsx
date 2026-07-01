@@ -43,14 +43,11 @@ const Account = ({ user, setUser }: AccountProps) => {
     let cancelled = false;
     const load = async () => {
       try {
-        const response = await fetch(
-          `${API_URL}/users/${user.id}/vision-key`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
+        const response = await fetch(`${API_URL}/users/${user.id}/vision-key`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`
           }
-        );
+        });
         const data = (await response.json().catch(() => ({}))) as {
           status?: VisionKeyStatus;
         };
@@ -72,23 +69,20 @@ const Account = ({ user, setUser }: AccountProps) => {
     if (trimmed.length < 8) {
       setVisionKeyStatus({
         type: "error",
-        message: "Key looks too short.",
+        message: "Key looks too short."
       });
       return;
     }
     setVisionKeyStatus({ type: "loading", message: "Testing key..." });
     try {
-      const response = await fetch(
-        `${API_URL}/users/${user.id}/vision-key`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify({ key: trimmed }),
-        }
-      );
+      const response = await fetch(`${API_URL}/users/${user.id}/vision-key`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        },
+        body: JSON.stringify({ key: trimmed })
+      });
       const data = await response.json().catch(() => ({}));
       if (!response.ok) {
         throw new Error(data?.error || "Could not save key.");
@@ -100,13 +94,13 @@ const Account = ({ user, setUser }: AccountProps) => {
         type: "success",
         message: data?.status?.lastFour
           ? `Key saved (••••${data.status.lastFour.replace(/^••••/, "")}).`
-          : "Key saved.",
+          : "Key saved."
       });
       refreshQuota();
     } catch (err) {
       setVisionKeyStatus({
         type: "error",
-        message: err instanceof Error ? err.message : "Could not save key.",
+        message: err instanceof Error ? err.message : "Could not save key."
       });
     }
   };
@@ -114,15 +108,12 @@ const Account = ({ user, setUser }: AccountProps) => {
   const handleRemoveVisionKey = async () => {
     setVisionKeyStatus({ type: "loading", message: "Removing key..." });
     try {
-      const response = await fetch(
-        `${API_URL}/users/${user.id}/vision-key`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+      const response = await fetch(`${API_URL}/users/${user.id}/vision-key`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
         }
-      );
+      });
       const data = await response.json().catch(() => ({}));
       if (!response.ok) {
         throw new Error(data?.error || "Could not remove key.");
@@ -133,7 +124,7 @@ const Account = ({ user, setUser }: AccountProps) => {
     } catch (err) {
       setVisionKeyStatus({
         type: "error",
-        message: err instanceof Error ? err.message : "Could not remove key.",
+        message: err instanceof Error ? err.message : "Could not remove key."
       });
     }
   };
@@ -438,7 +429,7 @@ const Account = ({ user, setUser }: AccountProps) => {
                   width: `${Math.min(
                     100,
                     (quota.usedDay / Math.max(1, quota.limitDay)) * 100
-                  )}%`,
+                  )}%`
                 }}
               />
             </div>
@@ -454,7 +445,7 @@ const Account = ({ user, setUser }: AccountProps) => {
                   width: `${Math.min(
                     100,
                     (quota.usedMonth / Math.max(1, quota.limitMonth)) * 100
-                  )}%`,
+                  )}%`
                 }}
               />
             </div>
@@ -469,7 +460,7 @@ const Account = ({ user, setUser }: AccountProps) => {
             <h4 className="ai-vision-key-title">Vision API key (BYOK)</h4>
             <p className="ai-vision-key-help">
               Optional. Add your own OpenAI-compatible vision key to bypass the
-              daily scan limit. We encrypt it at rest with AES-256-GCM.
+              daily scan limit.
             </p>
             <p className="ai-vision-key-status">
               {hasVisionKey ? "Status: key on file" : "Status: no key set"}

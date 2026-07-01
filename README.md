@@ -30,6 +30,14 @@
     <td><img src="./public/assets/docs/stats2.png" alt="Stats breakdown" /></td>
   </tr>
   <tr>
+    <td align="center"><em>Scan Invoice</em></td>
+    <td align="center"><em>Account</em></td>
+  </tr>
+  <tr>
+    <td><img src="./public/assets/docs/scan.png" alt="New transaction" /></td>
+    <td><img src="./public/assets/docs/account.png" alt="Budgets" /></td>
+  </tr>
+  <tr>
     <td align="center"><em>New transaction</em></td>
     <td align="center"><em>Budgets</em></td>
   </tr>
@@ -50,7 +58,6 @@
 <br>
 
 ## 🌐 Live demo
-
 
 - **URL:** <b><a href="https://money.nady4.com">money.nady4.com</a></b>
 - **Demo account:** username `nady4` / password `nady4` — or register a new one.
@@ -142,23 +149,23 @@
 
 ## 🛠️ Tech stack
 
-| Area               | Technology                                              |
-| ------------------ | ------------------------------------------------------- |
-| Frontend framework | React 18 + Vite 6                                       |
-| Routing            | React Router 7 (`BrowserRouter`)                        |
-| Language           | TypeScript                                              |
-| Charts             | Chart.js 4 + react-chartjs-2                            |
-| Date handling      | `@js-temporal/polyfill`                                 |
-| UI components      | Material UI icons + custom SCSS                         |
-| Forms / pickers    | react-color, react-toastify                             |
-| Validation         | `zod` (Register form + scan payload)                    |
-| Image processing   | `heic-decode` (HEIC/HEIF → JPEG in-browser)             |
-| Package manager    | npm (lockfile committed) and pnpm (lockfile + workspace hint committed) |
-| Styles             | Sass (SCSS) with a design-token system                  |
-| Linting            | ESLint                                                  |
-| Backend (separate) | Node.js + Express + Mongoose (see `calendar-money-api`) |
-| Auth (backend)     | JWT (`jsonwebtoken`) + bcrypt                           |
-| Database (backend) | MongoDB (Mongoose)                                      |
+| Area               | Technology                                                                           |
+| ------------------ | ------------------------------------------------------------------------------------ |
+| Frontend framework | React 18 + Vite 6                                                                    |
+| Routing            | React Router 7 (`BrowserRouter`)                                                     |
+| Language           | TypeScript                                                                           |
+| Charts             | Chart.js 4 + react-chartjs-2                                                         |
+| Date handling      | `@js-temporal/polyfill`                                                              |
+| UI components      | Material UI icons + custom SCSS                                                      |
+| Forms / pickers    | react-color, react-toastify                                                          |
+| Validation         | `zod` (Register form + scan payload)                                                 |
+| Image processing   | `heic-decode` (HEIC/HEIF → JPEG in-browser)                                          |
+| Package manager    | npm (lockfile committed) and pnpm (lockfile + workspace hint committed)              |
+| Styles             | Sass (SCSS) with a design-token system                                               |
+| Linting            | ESLint                                                                               |
+| Backend (separate) | Node.js + Express + Mongoose (see `calendar-money-api`)                              |
+| Auth (backend)     | JWT (`jsonwebtoken`) + bcrypt                                                        |
+| Database (backend) | MongoDB (Mongoose)                                                                   |
 | Vision (backend)   | OpenAI-compatible vision model (configurable via `VISION_API_BASE` / `VISION_MODEL`) |
 
 <br>
