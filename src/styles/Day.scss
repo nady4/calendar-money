@@ -40,7 +40,7 @@
       justify-content: center;
 
       .day-balance {
-        padding-left: 28px;
+        padding-left: 3rem;
         font-weight: 500;
         font-size: 0.85rem;
         color: vars.$text-secondary;
@@ -89,7 +89,9 @@
     border-radius: vars.$radius-pill;
     overflow: hidden;
     cursor: grab;
-    transition: transform 0.15s ease, opacity 0.15s ease;
+    transition:
+      transform 0.15s ease,
+      opacity 0.15s ease;
 
     &:hover {
       transform: scale(1.03);
