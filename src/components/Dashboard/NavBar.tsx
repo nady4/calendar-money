@@ -1,13 +1,17 @@
-import { useState, useMemo, useRef, useEffect } from "react";
+import { useState, useMemo, useRef, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMediaQuery } from "@mui/material";
 import { Temporal } from "@js-temporal/polyfill";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import SearchIcon from "@mui/icons-material/Search";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import { UserType, TransactionType } from "../../types";
 import { setHeldImage } from "../../util/scannedImageHolder";
+import { prepareScanFile } from "../../util/scanUpload";
+import useScanQuota from "../../hooks/useScanQuota";
 import {
   getDayTotal,
   getMonthTotal,
@@ -50,10 +54,13 @@ const NavBar = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isScanOpen, setIsScanOpen] = useState(false);
+  const [isScanDragOver, setIsScanDragOver] = useState(false);
   const isMobile = useMediaQuery("(max-width:600px)");
   const scanContainerRef = useRef<HTMLDivElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { quota, byok } = useScanQuota(user.id);
+  const quotaExhausted = quota.usedDay >= quota.limitDay;
 
   useEffect(() => {
     if (!isScanOpen) return;
@@ -65,17 +72,88 @@ const NavBar = ({
         setIsScanOpen(false);
       }
     };
+    const handleKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setIsScanOpen(false);
+    };
     document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
+    document.addEventListener("keydown", handleKey);
+    return () => {
+      document.removeEventListener("mousedown", handleClick);
+      document.removeEventListener("keydown", handleKey);
+    };
   }, [isScanOpen]);
+
+  const acceptScannedFile = useCallback(
+    async (raw: File) => {
+      const result = await prepareScanFile(raw);
+      if (!result.ok) {
+        toast.error(result.message, { theme: "dark" });
+        return;
+      }
+      result.warnings.forEach((w) => toast.warn(w, { theme: "dark" }));
+      setHeldImage(result.file);
+      navigate("/scan-review");
+    },
+    [navigate]
+  );
 
   const handleScanFile = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     event.target.value = "";
     setIsScanOpen(false);
     if (!file) return;
-    setHeldImage(file);
-    navigate("/scan-review");
+    acceptScannedFile(file);
+  };
+
+  useEffect(() => {
+    if (!isScanOpen) return;
+    const handlePaste = (event: ClipboardEvent) => {
+      const items = event.clipboardData?.items;
+      if (!items) return;
+      for (let i = 0; i < items.length; i += 1) {
+        const item = items[i];
+        if (item.kind === "file" && item.type.startsWith("image/")) {
+          const file = item.getAsFile();
+          if (file) {
+            event.preventDefault();
+            setIsScanOpen(false);
+            acceptScannedFile(file);
+            return;
+          }
+        }
+      }
+    };
+    window.addEventListener("paste", handlePaste);
+    return () => window.removeEventListener("paste", handlePaste);
+  }, [isScanOpen, acceptScannedFile]);
+
+  const handleScanDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    if (!event.dataTransfer.types.includes("Files")) return;
+    event.preventDefault();
+    setIsScanDragOver(true);
+  };
+
+  const handleScanDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
+    if (
+      event.currentTarget.contains(event.relatedTarget as Node | null)
+    ) {
+      return;
+    }
+    setIsScanDragOver(false);
+  };
+
+  const handleScanDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setIsScanDragOver(false);
+    const file = event.dataTransfer.files?.[0];
+    setIsScanOpen(false);
+    if (!file) return;
+    acceptScannedFile(file);
+  };
+
+  const handleScanClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    setIsScanOpen((prev) => !prev);
   };
 
   const searchResults = useMemo(() => {
@@ -155,6 +233,11 @@ const NavBar = ({
 
   return (
     <div className="navbar">
+      <ToastContainer
+        position="bottom-center"
+        autoClose={4000}
+        theme="dark"
+      />
       <div className="navbar-top">
         <div className="gradient-border-top"></div>
         <div
@@ -283,17 +366,30 @@ const NavBar = ({
               aria-label="Scan invoice"
               aria-haspopup="true"
               aria-expanded={isScanOpen}
-              onClick={() => setIsScanOpen((prev) => !prev)}
+              disabled={quotaExhausted}
+              title={
+                quotaExhausted
+                  ? "Daily scan limit reached. Resets at midnight."
+                  : "Scan a receipt"
+              }
+              onClick={handleScanClick}
             >
               <AddAPhotoIcon fontSize="small" />
             </button>
 
             {isScanOpen && (
-              <div className="scan-popover" role="menu">
+              <div
+                className={`scan-popover ${isScanDragOver ? "is-drag-over" : ""}`}
+                role="menu"
+                onDragOver={handleScanDragOver}
+                onDragLeave={handleScanDragLeave}
+                onDrop={handleScanDrop}
+              >
                 <button
                   type="button"
                   className="scan-popover-item"
                   onClick={() => cameraInputRef.current?.click()}
+                  disabled={quotaExhausted}
                 >
                   <PhotoCameraIcon fontSize="small" />
                   <span>Take photo</span>
@@ -302,17 +398,58 @@ const NavBar = ({
                   type="button"
                   className="scan-popover-item"
                   onClick={() => fileInputRef.current?.click()}
+                  disabled={quotaExhausted}
                 >
                   <UploadFileIcon fontSize="small" />
                   <span>Upload image</span>
                 </button>
+                <div className="scan-quota" aria-live="polite">
+                  {byok ? (
+                    <span className="scan-quota-byok">Using your own key · no daily limit</span>
+                  ) : (
+                    <>
+                      <div className="scan-quota-row">
+                        <span>Scans today</span>
+                        <span>
+                          {quota.usedDay} / {quota.limitDay}
+                        </span>
+                      </div>
+                      <div
+                        className={`scan-quota-bar ${
+                          quotaExhausted
+                            ? "is-exhausted"
+                            : quota.usedDay / Math.max(1, quota.limitDay) >= 0.8
+                              ? "is-warning"
+                              : ""
+                        }`}
+                      >
+                        <span
+                          style={{
+                            width: `${Math.min(
+                              100,
+                              (quota.usedDay / Math.max(1, quota.limitDay)) * 100
+                            )}%`,
+                          }}
+                        />
+                      </div>
+                      {quotaExhausted && (
+                        <p className="scan-quota-warning">
+                          Daily limit reached. Resets at midnight.
+                        </p>
+                      )}
+                    </>
+                  )}
+                </div>
+                <p className="scan-popover-hint">
+                  Drop an image here · paste from clipboard
+                </p>
               </div>
             )}
 
             <input
               ref={cameraInputRef}
               type="file"
-              accept="image/*"
+              accept="image/jpeg,image/png,image/webp,image/heic,image/heif"
               capture="environment"
               className="scan-file-input"
               onChange={handleScanFile}
@@ -320,7 +457,7 @@ const NavBar = ({
             <input
               ref={fileInputRef}
               type="file"
-              accept="image/*"
+              accept="image/jpeg,image/png,image/webp,image/heic,image/heif"
               className="scan-file-input"
               onChange={handleScanFile}
             />

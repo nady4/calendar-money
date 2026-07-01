@@ -54,6 +54,24 @@ interface ScannedResult {
   transactions: ScannedTransactionDraft[];
 }
 
+interface ScanQuota {
+  usedDay: number;
+  limitDay: number;
+  usedMonth: number;
+  limitMonth: number;
+  resetsAt: string;
+}
+
+interface ScanQuotaResponse {
+  quota: ScanQuota;
+  byok: boolean;
+}
+
+interface VisionKeyStatus {
+  hasKey: boolean;
+  lastFour: string | null;
+}
+
 export {
   CategoryType,
   TransactionType,
@@ -61,5 +79,8 @@ export {
   TotalType,
   BudgetType,
   ScannedTransactionDraft,
-  ScannedResult
+  ScannedResult,
+  ScanQuota,
+  ScanQuotaResponse,
+  VisionKeyStatus
 };

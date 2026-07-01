@@ -26,14 +26,103 @@
     @extend %exit-button;
   }
 
-  .loading {
-    position: fixed;
-    inset: 0;
+  .receipt-preview {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    background: var(--scrim);
-    z-index: 20;
+    gap: 6px;
+    width: 100%;
+    max-width: 360px;
+    margin: 0 auto 16px;
+    padding: 0;
+    background: vars.$bg-card;
+    border: 1px solid vars.$border-subtle;
+    border-radius: vars.$radius-sm;
+    box-shadow: vars.$shadow-card;
+    cursor: zoom-in;
+    overflow: hidden;
+    font-family: "Nunito Sans", sans-serif;
+
+    img {
+      display: block;
+      max-width: 100%;
+      max-height: 60vh;
+      width: 100%;
+      object-fit: contain;
+      background: var(--bg-app);
+    }
+
+    .receipt-preview-zoom {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: vars.$text-muted;
+      padding: 6px 0 8px;
+      letter-spacing: 0.02em;
+    }
+
+    &:hover .receipt-preview-zoom {
+      color: vars.$accent;
+    }
+
+    &:focus-visible {
+      outline: 2px solid vars.$accent;
+      outline-offset: 2px;
+    }
+  }
+
+  .loading-cancel {
+    margin-top: 4px;
+    padding: 6px 14px;
+    background: none;
+    border: 1px solid vars.$border-subtle;
+    border-radius: vars.$radius-pill;
+    color: vars.$text-secondary;
+    font-family: "Nunito Sans", sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+
+    &:hover {
+      background: vars.$bg-card-elevated;
+      color: vars.$text-primary;
+    }
+  }
+
+  .loading {
+    width: 100%;
+    max-width: 420px;
+    margin-top: 24px;
+    padding: 32px 40px;
+    background: vars.$bg-card;
+    border: 1px solid vars.$border-subtle;
+    border-radius: vars.$radius-card;
+    box-shadow: vars.$shadow-card;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    animation: fadeIn 0.4s ease-in-out;
+
+    .loading-receipt {
+      max-width: 180px;
+      max-height: 220px;
+      object-fit: contain;
+      border-radius: vars.$radius-sm;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+      transform: rotate(-4deg);
+      animation: receiptSway 2.4s ease-in-out infinite;
+    }
+  }
+
+  @keyframes receiptSway {
+    0%,
+    100% {
+      transform: rotate(-4deg) translateY(0);
+    }
+    50% {
+      transform: rotate(-2deg) translateY(-4px);
+    }
   }
 
   .scan-review-error {
@@ -619,6 +708,100 @@
       .row-delete {
         align-self: flex-end;
       }
+    }
+  }
+}
+
+.receipt-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  .receipt-lightbox-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(0, 0, 0, 0.4);
+    color: white;
+    font-size: 1.4rem;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 2;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.7);
+    }
+  }
+
+  .receipt-lightbox-toolbar {
+    position: absolute;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 6px 12px;
+    border-radius: 999px;
+    color: white;
+    font-family: "Nunito Sans", sans-serif;
+    font-size: 0.85rem;
+    z-index: 2;
+
+    button {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      background: none;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      line-height: 1;
+
+      &:last-child {
+        width: auto;
+        padding: 0 12px;
+        border-radius: 999px;
+        font-size: 0.8rem;
+      }
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.12);
+      }
+    }
+  }
+
+  .receipt-lightbox-stage {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: grab;
+    overflow: hidden;
+
+    &:active {
+      cursor: grabbing;
+    }
+
+    img {
+      max-width: 90%;
+      max-height: 85vh;
+      object-fit: contain;
+      user-select: none;
+      transform-origin: center center;
+      transition: transform 0.05s linear;
     }
   }
 }

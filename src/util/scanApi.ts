@@ -1,5 +1,5 @@
 import { API_URL } from "./api";
-import { ScannedResult } from "../types";
+import { ScannedResult, ScanQuota } from "../types";
 
 const MAX_DIMENSION = 1568;
 const JPEG_QUALITY = 0.8;
@@ -64,6 +64,17 @@ const resizeImage = (file: File): Promise<File> =>
 
 interface ExtractOptions {
   existingCategoryNames?: string[];
+  useMyKey?: boolean;
+  signal?: AbortSignal;
+  onQuota?: (quota: ScanQuota, byok: boolean) => void;
+}
+
+interface ExtractResult {
+  result: ScannedResult | null;
+  error: string | null;
+  quota?: ScanQuota;
+  byok?: boolean;
+  quotaExceeded?: boolean;
 }
 
 const extractTransactionsFromImage = async (
@@ -71,7 +82,7 @@ const extractTransactionsFromImage = async (
   file: File,
   token: string | null,
   options: ExtractOptions = {}
-): Promise<{ result: ScannedResult | null; error: string | null }> => {
+): Promise<ExtractResult> => {
   let upload = file;
   try {
     upload = await resizeImage(file);
@@ -87,20 +98,37 @@ const extractTransactionsFromImage = async (
       JSON.stringify(options.existingCategoryNames)
     );
   }
+  if (options.useMyKey) {
+    formData.append("useMyKey", "true");
+  }
 
   try {
     const response = await fetch(`${API_URL}/transactions/scan/${userId}`, {
       method: "POST",
       headers: token ? { Authorization: `Bearer ${token}` } : undefined,
       body: formData,
+      signal: options.signal,
     });
 
     const data = await response.json().catch(() => ({}));
     if (!response.ok) {
-      return { result: null, error: data?.error || `Scan failed (status ${response.status})` };
+      if (response.status === 429 && data?.quota) {
+        options.onQuota?.(data.quota, Boolean(data.byok));
+        return {
+          result: null,
+          error: data?.error || "Daily scan limit reached.",
+          quota: data.quota,
+          byok: Boolean(data.byok),
+          quotaExceeded: true,
+        };
+      }
+      return {
+        result: null,
+        error: data?.error || `Scan failed (status ${response.status})`,
+      };
     }
 
-const transactions: unknown[] = Array.isArray(data?.transactions)
+    const transactions: unknown[] = Array.isArray(data?.transactions)
       ? data.transactions
       : [];
     const sanitized: ScannedResult = {
@@ -125,8 +153,20 @@ const transactions: unknown[] = Array.isArray(data?.transactions)
         })),
     };
 
-    return { result: sanitized, error: null };
+    if (data?.quota) {
+      options.onQuota?.(data.quota, Boolean(data.byok));
+    }
+
+    return {
+      result: sanitized,
+      error: null,
+      quota: data?.quota,
+      byok: Boolean(data?.byok),
+    };
   } catch (err) {
+    if (err instanceof DOMException && err.name === "AbortError") {
+      return { result: null, error: "Scan cancelled." };
+    }
     return {
       result: null,
       error: err instanceof Error ? err.message : "Network error during scan.",

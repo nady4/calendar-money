@@ -324,14 +324,25 @@
             outline: 2px solid vars.$accent;
             outline-offset: 2px;
           }
+
+          &:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+
+            &:hover {
+              transform: none;
+              border-color: vars.$border-subtle;
+              box-shadow: none;
+              color: vars.$text-secondary;
+            }
+          }
         }
 
         .scan-popover {
           position: absolute;
           top: 46px;
           right: 0;
-          height: 100px;
-          min-width: 180px;
+          min-width: 200px;
           display: flex;
           flex-direction: column;
           background-color: vars.$bg-card;
@@ -340,6 +351,12 @@
           box-shadow: vars.$shadow-pop;
           z-index: 12;
           overflow: hidden;
+          transition: border-color 0.15s ease, background-color 0.15s ease;
+
+          &.is-drag-over {
+            border-color: vars.$accent;
+            background-color: vars.$bg-card-elevated;
+          }
 
           .scan-popover-item {
             width: 100%;
@@ -359,10 +376,76 @@
               background-color 0.15s ease,
               transform 0.15s ease;
 
-            &:hover {
+            &:hover:not(:disabled) {
               background-color: vars.$bg-card-elevated;
               transform: translateX(2px);
             }
+
+            &:disabled {
+              opacity: 0.5;
+              cursor: not-allowed;
+            }
+          }
+
+          .scan-quota {
+            padding: 10px 14px;
+            border-top: 1px solid vars.$border-subtle;
+            background: var(--bg-card-elevated);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+          }
+
+          .scan-quota-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: vars.$text-secondary;
+          }
+
+          .scan-quota-byok {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: vars.$accent;
+          }
+
+          .scan-quota-bar {
+            height: 4px;
+            background: var(--border-subtle);
+            border-radius: 999px;
+            overflow: hidden;
+
+            span {
+              display: block;
+              height: 100%;
+              background: vars.$accent;
+              border-radius: 999px;
+              transition: width 0.3s ease;
+            }
+
+            &.is-warning span {
+              background: #f59e0b;
+            }
+
+            &.is-exhausted span {
+              background: #ef4444;
+            }
+          }
+
+          .scan-quota-warning {
+            margin: 0;
+            font-size: 0.75rem;
+            color: #ef4444;
+            font-weight: 600;
+          }
+
+          .scan-popover-hint {
+            margin: 0;
+            padding: 8px 14px 12px;
+            font-size: 0.72rem;
+            color: vars.$text-muted;
+            border-top: 1px solid vars.$border-subtle;
           }
         }
 

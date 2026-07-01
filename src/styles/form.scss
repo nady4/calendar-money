@@ -464,6 +464,114 @@
     gap: 10px;
   }
 
+  .ai-quota {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 12px 14px;
+    background: vars.$bg-card;
+    border: 1px solid vars.$border-subtle;
+    border-radius: vars.$radius-sm;
+  }
+
+  .ai-quota-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: vars.$text-secondary;
+    font-family: vars.$font-mono;
+  }
+
+  .ai-quota-bar {
+    height: 6px;
+    background: var(--border-subtle);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 4px;
+
+    span {
+      display: block;
+      height: 100%;
+      background: vars.$accent;
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+
+    &.is-warning span {
+      background: #f59e0b;
+    }
+
+    &.is-exhausted span {
+      background: #ef4444;
+    }
+  }
+
+  .ai-quota-byok {
+    margin: 4px 0 0;
+    font-size: 0.78rem;
+    color: vars.$accent;
+    font-weight: 600;
+    font-family: vars.$font-mono;
+    text-align: center;
+  }
+
+  .ai-vision-key {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px 14px;
+    background: vars.$bg-card;
+    border: 1px solid vars.$border-subtle;
+    border-radius: vars.$radius-sm;
+  }
+
+  .ai-vision-key-title {
+    margin: 0;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: vars.$text-primary;
+  }
+
+  .ai-vision-key-help {
+    margin: 0;
+    font-size: 0.78rem;
+    color: vars.$text-muted;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  .ai-vision-key-status {
+    margin: 0;
+    font-size: 0.78rem;
+    color: vars.$text-secondary;
+    font-weight: 600;
+    font-family: vars.$font-mono;
+  }
+
+  .ai-vision-key-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .ai-vision-key-input {
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--bg-app);
+    color: vars.$text-primary;
+    border: 1px solid vars.$border-subtle;
+    border-radius: vars.$radius-sm;
+    font-family: vars.$font-mono;
+    font-size: 0.85rem;
+
+    &:focus {
+      outline: 2px solid vars.$accent;
+      outline-offset: 1px;
+      border-color: transparent;
+    }
+  }
+
   .csv-title {
     margin: 0;
     font-size: 0.95rem;

@@ -1,13 +1,14 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../../util/api";
-import { UserType } from "../../types.d";
+import { UserType, VisionKeyStatus } from "../../types.d";
 import { bulkImportTransactions } from "../../util/transactionApi";
 import { downloadBackupCsv, parseBackupCsv } from "../../util/csvTransactions";
 import { useStartOnMonday } from "../../util/weekStart";
 import { ACCENT_OPTIONS, ThemeMode } from "../../util/theme";
 import { useTheme as useThemeContext } from "../../components/themeContext";
 import useValidateUser from "../../hooks/useValidateUser";
+import useScanQuota from "../../hooks/useScanQuota";
 import exitButton from "../../assets/whiteExitButton.svg";
 import "../../styles/form.scss";
 
@@ -25,10 +26,117 @@ const Account = ({ user, setUser }: AccountProps) => {
     type: "idle" | "loading" | "success" | "error";
     message: string;
   }>({ type: "idle", message: "" });
+  const [visionKey, setVisionKey] = useState("");
+  const [showVisionKeyInput, setShowVisionKeyInput] = useState(false);
+  const [visionKeyStatus, setVisionKeyStatus] = useState<{
+    type: "idle" | "loading" | "success" | "error";
+    message: string;
+  }>({ type: "idle", message: "" });
+  const [hasVisionKey, setHasVisionKey] = useState(false);
   const [startOnMonday, setStartOnMonday] = useStartOnMonday();
   const { themeMode, setThemeMode, accent, setAccent } = useThemeContext();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+  const { quota, byok, refresh: refreshQuota } = useScanQuota(user.id);
+
+  useEffect(() => {
+    let cancelled = false;
+    const load = async () => {
+      try {
+        const response = await fetch(
+          `${API_URL}/users/${user.id}/vision-key`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        const data = (await response.json().catch(() => ({}))) as {
+          status?: VisionKeyStatus;
+        };
+        if (!cancelled && data?.status) {
+          setHasVisionKey(Boolean(data.status.hasKey));
+        }
+      } catch (err) {
+        console.error("Failed to load vision key status:", err);
+      }
+    };
+    if (user.id) load();
+    return () => {
+      cancelled = true;
+    };
+  }, [user.id]);
+
+  const handleSaveVisionKey = async () => {
+    const trimmed = visionKey.trim();
+    if (trimmed.length < 8) {
+      setVisionKeyStatus({
+        type: "error",
+        message: "Key looks too short.",
+      });
+      return;
+    }
+    setVisionKeyStatus({ type: "loading", message: "Testing key..." });
+    try {
+      const response = await fetch(
+        `${API_URL}/users/${user.id}/vision-key`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({ key: trimmed }),
+        }
+      );
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(data?.error || "Could not save key.");
+      }
+      setVisionKey("");
+      setShowVisionKeyInput(false);
+      setHasVisionKey(true);
+      setVisionKeyStatus({
+        type: "success",
+        message: data?.status?.lastFour
+          ? `Key saved (••••${data.status.lastFour.replace(/^••••/, "")}).`
+          : "Key saved.",
+      });
+      refreshQuota();
+    } catch (err) {
+      setVisionKeyStatus({
+        type: "error",
+        message: err instanceof Error ? err.message : "Could not save key.",
+      });
+    }
+  };
+
+  const handleRemoveVisionKey = async () => {
+    setVisionKeyStatus({ type: "loading", message: "Removing key..." });
+    try {
+      const response = await fetch(
+        `${API_URL}/users/${user.id}/vision-key`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(data?.error || "Could not remove key.");
+      }
+      setHasVisionKey(false);
+      setVisionKeyStatus({ type: "success", message: "Key removed." });
+      refreshQuota();
+    } catch (err) {
+      setVisionKeyStatus({
+        type: "error",
+        message: err instanceof Error ? err.message : "Could not remove key.",
+      });
+    }
+  };
 
   useValidateUser({ username, email, password, setDisableSubmitButton });
 
@@ -304,6 +412,140 @@ const Account = ({ user, setUser }: AccountProps) => {
                 </label>
               ))}
             </div>
+          </div>
+        </div>
+
+        <div className="csv-section">
+          <h3 className="csv-title">AI receipt scanning</h3>
+          <div className="ai-quota">
+            <div className="ai-quota-row">
+              <span>Today</span>
+              <span>
+                {quota.usedDay} / {quota.limitDay}
+              </span>
+            </div>
+            <div
+              className={`ai-quota-bar ${
+                quota.usedDay >= quota.limitDay
+                  ? "is-exhausted"
+                  : quota.usedDay / Math.max(1, quota.limitDay) >= 0.8
+                    ? "is-warning"
+                    : ""
+              }`}
+            >
+              <span
+                style={{
+                  width: `${Math.min(
+                    100,
+                    (quota.usedDay / Math.max(1, quota.limitDay)) * 100
+                  )}%`,
+                }}
+              />
+            </div>
+            <div className="ai-quota-row">
+              <span>This month</span>
+              <span>
+                {quota.usedMonth} / {quota.limitMonth}
+              </span>
+            </div>
+            <div className="ai-quota-bar">
+              <span
+                style={{
+                  width: `${Math.min(
+                    100,
+                    (quota.usedMonth / Math.max(1, quota.limitMonth)) * 100
+                  )}%`,
+                }}
+              />
+            </div>
+            {byok && (
+              <p className="ai-quota-byok">
+                Using your own API key — daily limits are bypassed.
+              </p>
+            )}
+          </div>
+
+          <div className="ai-vision-key">
+            <h4 className="ai-vision-key-title">Vision API key (BYOK)</h4>
+            <p className="ai-vision-key-help">
+              Optional. Add your own OpenAI-compatible vision key to bypass the
+              daily scan limit. We encrypt it at rest with AES-256-GCM.
+            </p>
+            <p className="ai-vision-key-status">
+              {hasVisionKey ? "Status: key on file" : "Status: no key set"}
+            </p>
+
+            {showVisionKeyInput ? (
+              <div className="ai-vision-key-form">
+                <input
+                  type="password"
+                  className="ai-vision-key-input"
+                  placeholder="sk-…"
+                  value={visionKey}
+                  autoFocus
+                  onChange={(e) => {
+                    setVisionKey(e.target.value);
+                    setVisionKeyStatus({ type: "idle", message: "" });
+                  }}
+                />
+                <div className="ai-vision-key-buttons">
+                  <button
+                    type="button"
+                    className="csv-button csv-button-primary"
+                    disabled={
+                      visionKeyStatus.type === "loading" ||
+                      visionKey.trim().length < 8
+                    }
+                    onClick={handleSaveVisionKey}
+                  >
+                    Test &amp; save
+                  </button>
+                  <button
+                    type="button"
+                    className="csv-button"
+                    onClick={() => {
+                      setShowVisionKeyInput(false);
+                      setVisionKey("");
+                      setVisionKeyStatus({ type: "idle", message: "" });
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="ai-vision-key-buttons">
+                <button
+                  type="button"
+                  className="csv-button csv-button-primary"
+                  onClick={() => {
+                    setShowVisionKeyInput(true);
+                    setVisionKeyStatus({ type: "idle", message: "" });
+                  }}
+                >
+                  {hasVisionKey ? "Replace key" : "Add key"}
+                </button>
+                {hasVisionKey && (
+                  <button
+                    type="button"
+                    className="csv-button"
+                    onClick={handleRemoveVisionKey}
+                    disabled={visionKeyStatus.type === "loading"}
+                  >
+                    Remove key
+                  </button>
+                )}
+              </div>
+            )}
+
+            {visionKeyStatus.type !== "idle" && (
+              <p
+                className={`csv-status csv-status-${visionKeyStatus.type}`}
+                role="status"
+              >
+                {visionKeyStatus.message}
+              </p>
+            )}
           </div>
         </div>
 

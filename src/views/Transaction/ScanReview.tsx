@@ -12,10 +12,12 @@ import {
 import { bulkImportTransactions } from "../../util/transactionApi";
 import { API_URL } from "../../util/api";
 import useCategoryOptions from "../../hooks/useCategoryOptions";
+import useScanQuota from "../../hooks/useScanQuota";
 import {
   clearHeldImage,
   getHeldImage,
 } from "../../util/scannedImageHolder";
+import ReceiptLightbox from "../../components/ReceiptLightbox";
 import exitButton from "../../assets/whiteExitButton.svg";
 import CloseIcon from "@mui/icons-material/Close";
 import "../../styles/ScanReview.scss";
@@ -67,6 +69,10 @@ function ScanReview({ user, setUser }: ScanReviewProps) {
   const [rows, setRows] = useState<ReviewRow[]>([]);
   const [loading, setLoading] = useState(Boolean(heldImage));
   const [error, setError] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const abortRef = useRef<AbortController | null>(null);
+  const { applyFromResponse } = useScanQuota(user.id);
   const [receiptDate, setReceiptDate] = useState(todayString());
   const [applyDateToUndated, setApplyDateToUndated] = useState(true);
   const [bulkStatus, setBulkStatus] = useState<{
@@ -88,18 +94,27 @@ function ScanReview({ user, setUser }: ScanReviewProps) {
 
   useEffect(() => {
     if (!heldImage) return;
+    const url = URL.createObjectURL(heldImage);
+    setPreviewUrl(url);
     let cancelled = false;
+    const controller = new AbortController();
+    abortRef.current = controller;
     (async () => {
       setLoading(true);
       setError(null);
-      const { result: scanned, error: scanError } =
+      const { result: scanned, error: scanError, quota, byok } =
         await extractTransactionsFromImage(
           user.id,
           heldImage,
           localStorage.getItem("token"),
-          { existingCategoryNames: user.categories.map((c) => c.name) }
+          {
+            existingCategoryNames: user.categories.map((c) => c.name),
+            signal: controller.signal,
+            onQuota: applyFromResponse,
+          }
         );
       if (cancelled) return;
+      if (quota) applyFromResponse(quota, Boolean(byok));
       if (scanError || !scanned) {
         setError(scanError || "Could not read the invoice.");
         setLoading(false);
@@ -111,8 +126,16 @@ function ScanReview({ user, setUser }: ScanReviewProps) {
     })();
     return () => {
       cancelled = true;
+      URL.revokeObjectURL(url);
+      controller.abort();
+      abortRef.current = null;
     };
-  }, [user.id, user.categories, heldImage]);
+  }, [user.id, user.categories, heldImage, applyFromResponse]);
+
+  const handleCancelScan = () => {
+    abortRef.current?.abort();
+    setLoading(false);
+  };
 
   useEffect(() => {
     if (!applyDateToUndated) return;
@@ -322,6 +345,19 @@ function ScanReview({ user, setUser }: ScanReviewProps) {
     <div className="scan-review">
       <ToastContainer {...toastConfig} />
       <h2>Review scanned transactions</h2>
+      {previewUrl && (
+        <button
+          type="button"
+          className="receipt-preview"
+          onClick={() => setLightboxOpen(true)}
+          aria-label="Open receipt in full size"
+        >
+          <img src={previewUrl} alt="Scanned receipt" />
+          <span className="receipt-preview-zoom" aria-hidden>
+            Click to zoom
+          </span>
+        </button>
+      )}
       <button
         type="button"
         aria-label="Close"
@@ -336,13 +372,25 @@ function ScanReview({ user, setUser }: ScanReviewProps) {
 
       {loading && (
         <div className="loading" role="status" aria-live="polite">
-          <div className="loading-card">
-            <img src="/favicon.svg" alt="" className="loading-icon" />
-            <p className="loading-label">Reading your invoice</p>
-            <div className="loading-bar" aria-hidden>
-              <span />
-            </div>
+          {previewUrl && (
+            <img
+              src={previewUrl}
+              alt="Scanned receipt preview"
+              className="loading-receipt"
+            />
+          )}
+          <img src="/favicon.svg" alt="" className="loading-icon" />
+          <p className="loading-label">Reading your invoice</p>
+          <div className="loading-bar" aria-hidden>
+            <span />
           </div>
+          <button
+            type="button"
+            className="loading-cancel"
+            onClick={handleCancelScan}
+          >
+            Cancel
+          </button>
         </div>
       )}
 
@@ -658,6 +706,14 @@ function ScanReview({ user, setUser }: ScanReviewProps) {
             </button>
           </div>
         </div>
+      )}
+
+      {lightboxOpen && previewUrl && (
+        <ReceiptLightbox
+          src={previewUrl}
+          alt="Scanned receipt"
+          onClose={() => setLightboxOpen(false)}
+        />
       )}
     </div>
   );
