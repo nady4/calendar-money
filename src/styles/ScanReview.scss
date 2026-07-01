@@ -26,6 +26,13 @@
     @extend %exit-button;
   }
 
+  .receipt-preview-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 360px;
+    margin: 0 auto 16px;
+  }
+
   .receipt-preview {
     display: flex;
     flex-direction: column;
@@ -33,7 +40,6 @@
     gap: 6px;
     width: 100%;
     max-width: 360px;
-    margin: 0 auto 16px;
     padding: 0;
     background: vars.$bg-card;
     border: 1px solid vars.$border-subtle;
@@ -68,40 +74,57 @@
       outline: 2px solid vars.$accent;
       outline-offset: 2px;
     }
+
+    &:disabled {
+      cursor: default;
+
+      &:hover .receipt-preview-zoom {
+        color: vars.$text-muted;
+      }
+    }
   }
 
   .loading-cancel {
     margin-top: 4px;
-    padding: 6px 14px;
-    background: none;
-    border: 1px solid vars.$border-subtle;
+    padding: 8px 18px;
+    background: vars.$accent;
+    border: 1px solid vars.$accent;
     border-radius: vars.$radius-pill;
-    color: vars.$text-secondary;
+    color: #fff;
     font-family: "Nunito Sans", sans-serif;
-    font-size: 0.8rem;
-    font-weight: 600;
+    font-size: 0.85rem;
+    font-weight: 700;
     cursor: pointer;
-    transition: background-color 0.15s ease, color 0.15s ease;
+    transition:
+      background-color 0.15s ease,
+      transform 0.15s ease,
+      box-shadow 0.15s ease;
 
     &:hover {
-      background: vars.$bg-card-elevated;
-      color: vars.$text-primary;
+      background: rgba(vars.$accent, 0.85);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(vars.$accent, 0.4);
+    }
+
+    &:active {
+      transform: translateY(0);
     }
   }
 
   .loading {
+    position: absolute;
+    inset: 0;
     width: 100%;
-    max-width: 420px;
-    margin-top: 24px;
+    height: 100%;
     padding: 32px 40px;
-    background: vars.$bg-card;
-    border: 1px solid vars.$border-subtle;
-    border-radius: vars.$radius-card;
-    box-shadow: vars.$shadow-card;
+    background: rgba(0, 0, 0, 0.78);
+    border-radius: vars.$radius-sm;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 18px;
+    z-index: 2;
     animation: fadeIn 0.4s ease-in-out;
 
     .loading-receipt {
@@ -137,16 +160,17 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: space-around;
     gap: 14px;
 
     p {
-      margin: 0;
       text-align: center;
       color: vars.$text-secondary;
     }
 
     .submit-button {
       @extend %submit-button;
+      width: 200px;
     }
   }
 
@@ -227,7 +251,9 @@
       cursor: pointer;
       padding: 4px 8px;
       border-radius: vars.$radius-sm;
-      transition: transform 0.18s ease, background-color 0.18s ease;
+      transition:
+        transform 0.18s ease,
+        background-color 0.18s ease;
 
       &:hover {
         background: vars.$accent-soft;
@@ -279,7 +305,9 @@
       font-family: "Nunito Sans", sans-serif;
       font-size: 0.95rem;
       box-sizing: border-box;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease;
 
       &:focus {
         outline: none;
@@ -309,8 +337,11 @@
         font-weight: 700;
         font-size: 0.85rem;
         cursor: pointer;
-        transition: transform 0.15s ease, background-color 0.15s ease,
-          border-color 0.15s ease, color 0.15s ease;
+        transition:
+          transform 0.15s ease,
+          background-color 0.15s ease,
+          border-color 0.15s ease,
+          color 0.15s ease;
 
         input {
           position: absolute;
@@ -369,7 +400,9 @@
         border: 2px solid transparent;
         cursor: pointer;
         padding: 0;
-        transition: transform 0.15s ease, border-color 0.15s ease;
+        transition:
+          transform 0.15s ease,
+          border-color 0.15s ease;
 
         &:hover {
           transform: scale(1.12);
@@ -445,7 +478,9 @@
       font-family: "Nunito Sans", sans-serif;
       font-size: 0.9rem;
       box-sizing: border-box;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease;
 
       &:focus {
         outline: none;
@@ -488,7 +523,9 @@
         font-family: "Nunito Sans", sans-serif;
         font-size: 0.9rem;
         box-sizing: border-box;
-        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        transition:
+          border-color 0.15s ease,
+          box-shadow 0.15s ease;
 
         &:focus {
           outline: none;
@@ -594,8 +631,11 @@
         font-weight: 800;
         font-size: 1rem;
         cursor: pointer;
-        transition: transform 0.15s ease, background-color 0.15s ease,
-          border-color 0.15s ease, color 0.15s ease;
+        transition:
+          transform 0.15s ease,
+          background-color 0.15s ease,
+          border-color 0.15s ease,
+          color 0.15s ease;
 
         &:hover {
           transform: scale(1.08);
@@ -636,7 +676,10 @@
       background: transparent;
       color: vars.$text-muted;
       cursor: pointer;
-      transition: transform 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+      transition:
+        transform 0.15s ease,
+        color 0.15s ease,
+        background-color 0.15s ease;
 
       &:hover {
         color: vars.$negative;

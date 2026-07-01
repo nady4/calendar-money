@@ -7,16 +7,13 @@ import { v4 as uuid } from "uuid";
 import { CategoryType, ScannedResult, UserType } from "../../types";
 import {
   extractTransactionsFromImage,
-  normalizeRowsForBulk,
+  normalizeRowsForBulk
 } from "../../util/scanApi";
 import { bulkImportTransactions } from "../../util/transactionApi";
 import { API_URL } from "../../util/api";
 import useCategoryOptions from "../../hooks/useCategoryOptions";
 import useScanQuota from "../../hooks/useScanQuota";
-import {
-  clearHeldImage,
-  getHeldImage,
-} from "../../util/scannedImageHolder";
+import { clearHeldImage, getHeldImage } from "../../util/scannedImageHolder";
 import ReceiptLightbox from "../../components/ReceiptLightbox";
 import exitButton from "../../assets/whiteExitButton.svg";
 import CloseIcon from "@mui/icons-material/Close";
@@ -51,7 +48,7 @@ const buildRows = (result: ScannedResult): ReviewRow[] =>
       hadOwnDate: Boolean(t.date),
       categoryName: t.categoryName,
       categoryType: t.categoryType,
-      color: t.color,
+      color: t.color
     };
   });
 
@@ -82,9 +79,9 @@ function ScanReview({ user, setUser }: ScanReviewProps) {
 
   const [showNewCategory, setShowNewCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
-  const [newCategoryType, setNewCategoryType] = useState<"Income" | "Expense" | "">(
-    ""
-  );
+  const [newCategoryType, setNewCategoryType] = useState<
+    "Income" | "Expense" | ""
+  >("");
   const [newCategoryColor, setNewCategoryColor] = useState("#5b8cff");
   const [isCreatingCategory, setIsCreatingCategory] = useState(false);
   const [newCategoryError, setNewCategoryError] = useState<string | null>(null);
@@ -102,17 +99,21 @@ function ScanReview({ user, setUser }: ScanReviewProps) {
     (async () => {
       setLoading(true);
       setError(null);
-      const { result: scanned, error: scanError, quota, byok } =
-        await extractTransactionsFromImage(
-          user.id,
-          heldImage,
-          localStorage.getItem("token"),
-          {
-            existingCategoryNames: user.categories.map((c) => c.name),
-            signal: controller.signal,
-            onQuota: applyFromResponse,
-          }
-        );
+      const {
+        result: scanned,
+        error: scanError,
+        quota,
+        byok
+      } = await extractTransactionsFromImage(
+        user.id,
+        heldImage,
+        localStorage.getItem("token"),
+        {
+          existingCategoryNames: user.categories.map((c) => c.name),
+          signal: controller.signal,
+          onQuota: applyFromResponse
+        }
+      );
       if (cancelled) return;
       if (quota) applyFromResponse(quota, Boolean(byok));
       if (scanError || !scanned) {
@@ -140,9 +141,7 @@ function ScanReview({ user, setUser }: ScanReviewProps) {
   useEffect(() => {
     if (!applyDateToUndated) return;
     setRows((prev) =>
-      prev.map((row) =>
-        row.hadOwnDate ? row : { ...row, date: receiptDate }
-      )
+      prev.map((row) => (row.hadOwnDate ? row : { ...row, date: receiptDate }))
     );
   }, [receiptDate, applyDateToUndated]);
 
@@ -195,7 +194,7 @@ function ScanReview({ user, setUser }: ScanReviewProps) {
       updateRow(row.id, {
         categoryName: existing.name,
         categoryType: existing.type as "Income" | "Expense",
-        color: existing.color,
+        color: existing.color
       });
     } else {
       updateRow(row.id, { categoryName: value });
@@ -220,8 +219,7 @@ function ScanReview({ user, setUser }: ScanReviewProps) {
     if (!newCategoryName.trim() || !newCategoryType) return;
     if (
       user.categories.some(
-        (c) =>
-          c.name.toLowerCase() === newCategoryName.trim().toLowerCase()
+        (c) => c.name.toLowerCase() === newCategoryName.trim().toLowerCase()
       )
     ) {
       setNewCategoryError("A category with that name already exists.");
@@ -236,13 +234,13 @@ function ScanReview({ user, setUser }: ScanReviewProps) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`
         },
         body: JSON.stringify({
           name: newCategoryName.trim(),
           type: newCategoryType,
-          color: newCategoryColor,
-        }),
+          color: newCategoryColor
+        })
       });
 
       const data = await response.json();
@@ -266,7 +264,7 @@ function ScanReview({ user, setUser }: ScanReviewProps) {
                 ...row,
                 categoryName: created.name,
                 categoryType: created.type as "Income" | "Expense",
-                color: created.color,
+                color: created.color
               }
             : row;
         })
@@ -300,7 +298,7 @@ function ScanReview({ user, setUser }: ScanReviewProps) {
           categoryType: existing
             ? (existing.type as "Income" | "Expense")
             : row.categoryType,
-          color: row.color,
+          color: row.color
         };
       })
     );
@@ -338,60 +336,54 @@ function ScanReview({ user, setUser }: ScanReviewProps) {
   const toastConfig = {
     position: "bottom-center" as const,
     autoClose: 3000,
-    theme: "dark" as const,
+    theme: "dark" as const
   };
 
   return (
-    <div className="scan-review">
+    <div className={`scan-review ${loading ? "is-loading" : ""}`}>
       <ToastContainer {...toastConfig} />
-      <h2>Review scanned transactions</h2>
+      {!loading && <h2>Review scanned transactions</h2>}
       {previewUrl && (
-        <button
-          type="button"
-          className="receipt-preview"
-          onClick={() => setLightboxOpen(true)}
-          aria-label="Open receipt in full size"
-        >
-          <img src={previewUrl} alt="Scanned receipt" />
-          <span className="receipt-preview-zoom" aria-hidden>
-            Click to zoom
-          </span>
-        </button>
-      )}
-      <button
-        type="button"
-        aria-label="Close"
-        className="exit-button"
-        onClick={() => {
-          clearHeldImage();
-          navigate("/dashboard");
-        }}
-      >
-        <img src={exitButton} alt="" />
-      </button>
-
-      {loading && (
-        <div className="loading" role="status" aria-live="polite">
-          {previewUrl && (
-            <img
-              src={previewUrl}
-              alt="Scanned receipt preview"
-              className="loading-receipt"
-            />
-          )}
-          <img src="/favicon.svg" alt="" className="loading-icon" />
-          <p className="loading-label">Reading your invoice</p>
-          <div className="loading-bar" aria-hidden>
-            <span />
-          </div>
+        <div className="receipt-preview-wrapper">
           <button
             type="button"
-            className="loading-cancel"
-            onClick={handleCancelScan}
+            className="receipt-preview"
+            onClick={() => setLightboxOpen(true)}
+            aria-label="Open receipt in full size"
+            disabled={loading}
           >
-            Cancel
+            <img src={previewUrl} alt="Scanned receipt" />
           </button>
+          {loading && (
+            <div className="loading" role="status" aria-live="polite">
+              <img src="/favicon.svg" alt="" className="loading-icon" />
+              <p className="loading-label">Reading your invoice</p>
+              <div className="loading-bar" aria-hidden>
+                <span />
+              </div>
+              <button
+                type="button"
+                className="loading-cancel"
+                onClick={handleCancelScan}
+              >
+                Cancel
+              </button>
+            </div>
+          )}
         </div>
+      )}
+      {!loading && (
+        <button
+          type="button"
+          aria-label="Close"
+          className="exit-button"
+          onClick={() => {
+            clearHeldImage();
+            navigate("/dashboard");
+          }}
+        >
+          <img src={exitButton} alt="" />
+        </button>
       )}
 
       {!loading && error && (
@@ -519,8 +511,14 @@ function ScanReview({ user, setUser }: ScanReviewProps) {
                 />
                 <div className="nc-color-swatches">
                   {[
-                    "#5b8cff", "#22c55e", "#ef4444", "#f59e0b",
-                    "#a855f7", "#06b6d4", "#ec4899", "#94a3b8",
+                    "#5b8cff",
+                    "#22c55e",
+                    "#ef4444",
+                    "#f59e0b",
+                    "#a855f7",
+                    "#06b6d4",
+                    "#ec4899",
+                    "#94a3b8"
                   ].map((c) => (
                     <button
                       type="button"
@@ -593,7 +591,7 @@ function ScanReview({ user, setUser }: ScanReviewProps) {
                     onChange={(e) => {
                       const parsed = parseFloat(e.target.value);
                       updateRow(row.id, {
-                        amount: Number.isFinite(parsed) ? parsed : 0,
+                        amount: Number.isFinite(parsed) ? parsed : 0
                       });
                     }}
                   />
@@ -602,7 +600,10 @@ function ScanReview({ user, setUser }: ScanReviewProps) {
                     type="date"
                     value={row.date}
                     onChange={(e) =>
-                      updateRow(row.id, { date: e.target.value, hadOwnDate: true })
+                      updateRow(row.id, {
+                        date: e.target.value,
+                        hadOwnDate: true
+                      })
                     }
                   />
                   <div className="cell cell-category">

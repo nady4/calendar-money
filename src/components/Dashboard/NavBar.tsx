@@ -134,9 +134,7 @@ const NavBar = ({
   };
 
   const handleScanDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
-    if (
-      event.currentTarget.contains(event.relatedTarget as Node | null)
-    ) {
+    if (event.currentTarget.contains(event.relatedTarget as Node | null)) {
       return;
     }
     setIsScanDragOver(false);
@@ -233,11 +231,7 @@ const NavBar = ({
 
   return (
     <div className="navbar">
-      <ToastContainer
-        position="bottom-center"
-        autoClose={4000}
-        theme="dark"
-      />
+      <ToastContainer position="bottom-center" autoClose={4000} theme="dark" />
       <div className="navbar-top">
         <div className="gradient-border-top"></div>
         <div
@@ -405,7 +399,9 @@ const NavBar = ({
                 </button>
                 <div className="scan-quota" aria-live="polite">
                   {byok ? (
-                    <span className="scan-quota-byok">Using your own key · no daily limit</span>
+                    <span className="scan-quota-byok">
+                      Using your own key · no daily limit
+                    </span>
                   ) : (
                     <>
                       <div className="scan-quota-row">
@@ -427,8 +423,9 @@ const NavBar = ({
                           style={{
                             width: `${Math.min(
                               100,
-                              (quota.usedDay / Math.max(1, quota.limitDay)) * 100
-                            )}%`,
+                              (quota.usedDay / Math.max(1, quota.limitDay)) *
+                                100
+                            )}%`
                           }}
                         />
                       </div>
@@ -441,7 +438,7 @@ const NavBar = ({
                   )}
                 </div>
                 <p className="scan-popover-hint">
-                  Drop an image here · paste from clipboard
+                  Drop an image here or paste from clipboard
                 </p>
               </div>
             )}
