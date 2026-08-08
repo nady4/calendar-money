@@ -1,7 +1,7 @@
 <h1 align="center"> Calendar Money </h1>
 
 <p align="center">
-💸 Full-stack cash-flow management web application built with React 18, Vite 6, TypeScript, Chart.js, Sass, and a Node.js + Express + MongoDB backend. Calendar dashboard, drag-and-drop transaction editing, deep statistics with charts, category budgets, CSV backup/restore, AI receipt scanning with quota & BYOK, and UI customization.
+💸 Full-stack cash-flow management web application built with React 18, Vite 6, TypeScript, Chart.js, Sass, and a Node.js + Express + MongoDB backend. Calendar dashboard, drag-and-drop transaction editing, deep statistics with charts, category budgets, CSV backup/restore with PDF export, AI receipt scanning with quota & BYOK, and UI customization.
 </p>
 
 <br>
@@ -102,6 +102,7 @@
 - **Color-coded category badge** on the create / edit page — green Income / red Expense indicator next to the category field so the type is obvious.
 - **Bulk import via CSV or scan review** — both the Account CSV import and the Scan Review "Add all" action go through the same `POST /transactions/bulk/:userId` endpoint. The endpoint creates missing categories on the fly and resolves category references by id or name, so imports and scan reviews share a single round-trippable format.
 - **CSV backup & restore** from the Account page — exports categories and transactions in the exact database shape (DB columns: `date`, `amount`, `description`, `category`, `group` + `_id`) split into two `## categories` / `## transactions` sections. Imports parse the same file, create missing categories, and report back `imported.transactions`, `imported.categories` and `imported.skipped` counts. The CSV is the single source of truth for a full restore.
+- **PDF export** from the Account page — a one-click `Export PDF` button next to `Export CSV` generates a formatted report (`backup-<user>-<date>.pdf`) via `jspdf` + `jspdf-autotable`: a header with the username and export date, a categories table (with color swatches), a date-sorted transactions table (date, description, category, signed amount with green income / red expense values), page numbers, and income / expense / balance totals at the end. Unlike the CSV, the PDF is a read-only human-readable report, not a backup format.
 
 ### 🗂️ Categories
 
@@ -198,9 +199,9 @@ calendar-money/             # This repo (frontend)
 │   │   ├── Budgets/         # Budget list + add form + period navigator
 │   │   ├── Transaction/     # List / New / Edit / ScanReview
 │   │   ├── Category/        # List / New / Edit
-│   │   └── Account/         # Profile + preferences + CSV import/export + scan quota + BYOK
+│   │   └── Account/         # Profile + preferences + CSV import/export + PDF export + scan quota + BYOK
 │   ├── util/                # api, theme, weekStart, transactionApi, scanApi, scanUpload,
-│   │                        # scannedImageHolder, csvTransactions, budgets, dragState,
+│   │                        # scannedImageHolder, csvTransactions, pdfExport, budgets, dragState,
 │   │                        # functions (date/aggregation math), chartUtils, constants
 │   ├── types.d.ts           # Shared TS interfaces (Category, Transaction, User, Budget,
 │   │                        # ScannedResult, ScanQuota, VisionKeyStatus, ...)
@@ -301,7 +302,7 @@ npm run preview
 - The backend repo is intentionally separate — `calendar-money` is a pure-frontend Vite app. Hosting the static `dist/` on any static host (Netlify, Vercel, GitHub Pages) works as long as the host is configured to serve `index.html` for unknown routes (SPA fallback).
 - The `BrowserRouter` switch (no `/#/` in the URL) requires that the host doesn't strip the path. If you self-host behind a custom server, add a catch-all that serves `index.html`.
 - The mobile dashboard intentionally hides per-day transaction chips to keep day cells scannable on small screens; the per-month summary is shown above the calendar.
-- The repeat expansion limit (12) and the DB-shape CSV format (with `_id`, `category`, `group`) are designed for round-trippable backups — exporting and re-importing on the same account preserves the data and the repeat group relationships.
+- The repeat expansion limit (12) and the DB-shape CSV format (with `_id`, `category`, `group`) are designed for round-trippable backups — exporting and re-importing on the same account preserves the data and the repeat group relationships. The PDF export (`src/util/pdfExport.ts`) is the read-only, human-readable counterpart: it never participates in imports, so the CSV remains the single restore path.
 - The AI receipt scan is **stateless on the frontend** — no image is ever persisted to `localStorage` or IndexedDB. The file is held in a module-level `File` reference between the navbar popover and the `/scan-review` page, and is released as soon as the user navigates away.
 - The scan quota and the BYOK key are **per-user** and live entirely on the server. The frontend only mirrors them in memory for UI purposes; the next page load refetches the truth from `GET /users/:id/scan-quota` and `GET /users/:id/vision-key`.
 
