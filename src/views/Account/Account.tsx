@@ -4,6 +4,7 @@ import { API_URL } from "../../util/api";
 import { UserType, VisionKeyStatus } from "../../types.d";
 import { bulkImportTransactions } from "../../util/transactionApi";
 import { downloadBackupCsv, parseBackupCsv } from "../../util/csvTransactions";
+import { downloadBackupPdf } from "../../util/pdfExport";
 import { useStartOnMonday } from "../../util/weekStart";
 import { ACCENT_OPTIONS, ThemeMode } from "../../util/theme";
 import { useTheme as useThemeContext } from "../../components/themeContext";
@@ -210,6 +211,23 @@ const Account = ({ user, setUser }: AccountProps) => {
     setCsvStatus({
       type: "success",
       message: `Exported ${txCount} transactions and ${catCount} categories.`
+    });
+  };
+
+  const handleExportPdf = () => {
+    if (!user.transactions?.length && !user.categories?.length) {
+      setCsvStatus({
+        type: "error",
+        message: "There is nothing to export yet."
+      });
+      return;
+    }
+    downloadBackupPdf(user);
+    const txCount = user.transactions?.length ?? 0;
+    const catCount = user.categories?.length ?? 0;
+    setCsvStatus({
+      type: "success",
+      message: `Exported ${txCount} transactions and ${catCount} categories to PDF.`
     });
   };
 
@@ -550,6 +568,14 @@ const Account = ({ user, setUser }: AccountProps) => {
               disabled={csvStatus.type === "loading"}
             >
               Export CSV
+            </button>
+            <button
+              type="button"
+              className="csv-button csv-button-primary"
+              onClick={handleExportPdf}
+              disabled={csvStatus.type === "loading"}
+            >
+              Export PDF
             </button>
             <button
               type="button"
