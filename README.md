@@ -1,7 +1,7 @@
 <h1 align="center"> Calendar Money </h1>
 
 <p align="center">
-💸 Full-stack cash-flow management web application built with React 18, Vite 6, TypeScript, Chart.js, Sass, and a Node.js + Express + MongoDB backend. Calendar dashboard, drag-and-drop transaction editing, deep statistics with charts, category budgets, CSV backup/restore with PDF export, AI receipt scanning with quota & BYOK, and UI customization.
+💸 Full-stack cash-flow management platform featuring a calendar-based financial dashboard, interactive analytics, budgeting tools, data portability, and AI-powered receipt scanning. Built with React, TypeScript, Node.js, Express, and MongoDB.
 </p>
 
 <br>
