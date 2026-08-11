@@ -1,7 +1,7 @@
 <h1 align="center"> Calendar Money </h1>
 
 <p align="center">
-💸 Full-stack cash-flow management platform featuring a calendar-based financial dashboard, interactive analytics, budgeting tools, data portability, and AI-powered receipt scanning. Built with React, TypeScript, Node.js, Express, and MongoDB.
+💸 A personal finance app that turns your income and expenses into a calendar, so you can plan your life.
 </p>
 
 <br>
