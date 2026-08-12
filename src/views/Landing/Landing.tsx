@@ -6,33 +6,33 @@ import { UserType } from "../../types";
 const features = [
   {
     id: "calendar",
-    title: "A calendar that thinks in money",
+    title: "See your money before it happens",
     description:
-      "Every day carries its own balance. Add income and expenses on the right date, with a colour-coded category. Click a day to drill into every transaction that touched it.",
+      "Every day shows its projected balance. Add income and expenses to the dates they happen, then open any day to see exactly what moves your balance.",
     image: "/assets/docs/dashboard.png",
     alt: "Calendar Money dashboard view"
   },
   {
     id: "stats",
-    title: "See the story behind the numbers",
+    title: "Understand where your money goes",
     description:
-      "Headline KPIs, period-over-period deltas, doughnut breakdowns and an all-time net worth trajectory. Switch between month and year scope in a tap.",
+      "See your cash flow at a glance with key metrics, category breakdowns and net worth over time. Switch between monthly and yearly views to spot the bigger picture.",
     image: "/assets/docs/stats1.png",
     alt: "Statistics view with cash flow chart"
   },
   {
     id: "budgets",
-    title: "Set limits, watch the meter",
+    title: "Know how much you can spend",
     description:
-      "Define monthly or yearly limits per category. A live progress bar tells you when you're burning too fast, with over-budget alerts the moment you cross the line.",
+      "Set spending limits for each category and track them as you go. Live progress bars and over-budget alerts keep you aware before small expenses become a problem.",
     image: "/assets/docs/budgets.png",
     alt: "Budgets view with progress bars"
   },
   {
     id: "categories",
-    title: "Color-coded categories, your way",
+    title: "Make your money easy to read",
     description:
-      "Group income and expenses into categories with a colour and a label. Filter the list, tag every transaction, and watch the categories light up across the calendar, stats and budgets.",
+      "Organize income and expenses with custom categories, colors and labels. Your categories stay consistent across the calendar, statistics and budgets.",
     image: "/assets/docs/categories.png",
     alt: "Categories list with color tags"
   }
@@ -85,14 +85,14 @@ const Landing = ({ user }: { user: UserType }) => {
 
       <section className="hero" id="top">
         <div className="hero-copy">
-          <span className="eyebrow">A new home for personal finance</span>
+          <span className="eyebrow">Know before you spend</span>
           <h1>
-            Your money, <span className="grad">on your calendar.</span>
+            Your <span className="grad">money</span> has a{" "}
+            <span className="grad">calendar</span>
           </h1>
           <p className="hero-sub">
-            Track income and expenses the way you actually live them, day by
-            day. Set budgets, visualise patterns, and move transactions with a
-            single drag.
+            A personal finance app that turns your income and expenses into a
+            calendar, so you can plan your life.
           </p>
           <div className="hero-cta">
             <Link to="/register" className="btn btn-primary btn-lg">
@@ -124,10 +124,11 @@ const Landing = ({ user }: { user: UserType }) => {
       </section>
 
       <section className="features" id="features">
-        <h2 className="section-title">Built for the way you spend</h2>
+        <h2 className="section-title">Your life happens on a calendar</h2>
         <p className="section-lead">
-          Every screen is a thin layer on top of a single timeline of
-          transactions. No spreadsheets, no juggling tabs.
+          See income, expenses, and balances exactly when they happen. No
+          spreadsheets, no scattered numbers, just a clear view of what your
+          money is doing over time.
         </p>
 
         <div className="feature-grid">
@@ -161,7 +162,7 @@ const Landing = ({ user }: { user: UserType }) => {
       </section>
 
       <section className="preview" id="preview">
-        <h2 className="section-title">A closer look</h2>
+        <h2 className="section-title">See your money in context</h2>
         <div className="preview-grid">
           <div className="preview-item preview-item-tall">
             <div className="screenshot-frame">
@@ -175,8 +176,8 @@ const Landing = ({ user }: { user: UserType }) => {
             <div className="preview-caption">
               <span className="preview-tag">Calendar</span>
               <p>
-                The whole month, one balance per day, every transaction in
-                reach.
+                Your whole month at a glance, with every balance, income, and
+                expense exactly where it happens.
               </p>
             </div>
           </div>
@@ -192,8 +193,8 @@ const Landing = ({ user }: { user: UserType }) => {
             <div className="preview-caption">
               <span className="preview-tag preview-tag-stats">Stats</span>
               <p>
-                Donut breakdowns, top expenses, and where your money really
-                goes.
+                See the patterns behind your spending and understand where your
+                money actually goes.
               </p>
             </div>
           </div>
@@ -209,8 +210,8 @@ const Landing = ({ user }: { user: UserType }) => {
             <div className="preview-caption">
               <span className="preview-tag preview-tag-budgets">Budgets</span>
               <p>
-                Set a limit, watch the bar fill, get a red alert the moment you
-                cross.
+                Set boundaries for your spending and know when you're getting
+                close before you go over.
               </p>
             </div>
           </div>
