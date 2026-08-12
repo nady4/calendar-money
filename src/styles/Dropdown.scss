@@ -134,6 +134,9 @@
       cursor: pointer;
       column-gap: 14px;
       text-align: left;
+      background: transparent;
+      color: inherit;
+      font: inherit;
 
       transition: background-color 0.18s ease, transform 0.15s ease,
         border-color 0.18s ease;
@@ -147,6 +150,7 @@
       }
 
       .dropdown-item-text {
+        margin: 0;
         font-weight: 700;
         font-size: 0.95rem;
         letter-spacing: 0.04em;
@@ -156,6 +160,15 @@
 
       &:hover {
         transform: scale(1.03);
+      }
+
+      &.is-active {
+        background: vars.$accent-soft;
+        border-color: rgba(vars.$accent, 0.35);
+
+        .dropdown-item-text {
+          color: vars.$accent;
+        }
       }
 
       &:active {
@@ -189,6 +202,8 @@
       border: 1px solid rgba(vars.$negative, 0.6);
       box-shadow: 0 0 16px rgba(vars.$negative, 0.45);
       text-align: center;
+      background-color: rgba(vars.$negative, 0.92);
+      color: inherit;
 
       transition: all 0.2s ease;
 

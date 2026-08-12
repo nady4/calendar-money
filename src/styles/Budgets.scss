@@ -34,9 +34,41 @@
 
     .budgets-sub {
       margin: 4px 0 0;
-      font-size: 13px;
+      font-size: 14px;
       color: vars.$text-secondary;
-      text-transform: capitalize;
+    }
+  }
+
+  .budgets-storage-note {
+    align-self: flex-end;
+    margin: -12px 0 0;
+    color: vars.$text-muted;
+    font-size: 0.72rem;
+  }
+
+  .budgets-story {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 15px 18px;
+    background: vars.$accent-soft;
+    border: 1px solid rgba(vars.$accent, 0.28);
+    border-radius: vars.$radius-sm;
+    color: vars.$text-secondary;
+    font-size: 0.86rem;
+
+    strong {
+      font-family: vars.$font-mono;
+      font-size: 0.92rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .is-room {
+      color: vars.$positive;
+    }
+
+    .is-over {
+      color: vars.$negative;
     }
   }
 
@@ -143,6 +175,45 @@
   .budgets-empty {
     color: vars.$text-muted;
     font-size: 14px;
+  }
+
+  .budgets-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 22px;
+    background: vars.$bg-card;
+    border: 1px solid vars.$border-subtle;
+    border-radius: vars.$radius-card;
+
+    p,
+    span {
+      margin: 0;
+    }
+
+    p {
+      color: vars.$text-primary;
+      font-weight: 700;
+    }
+
+    span {
+      color: vars.$text-muted;
+      font-size: 0.84rem;
+    }
+
+    button {
+      margin-top: 6px;
+      padding: 9px 13px;
+      border: 1px solid vars.$accent;
+      border-radius: vars.$radius-sm;
+      background: vars.$accent-soft;
+      color: vars.$accent;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
   }
 
   /* ---- Add form ---- */
@@ -270,7 +341,11 @@
       transition: width 0.3s ease;
 
       &.over {
-        background: linear-gradient(90deg, vars.$negative, vars.$disabled-secondary-color);
+        background: linear-gradient(
+          90deg,
+          vars.$negative,
+          vars.$disabled-secondary-color
+        );
       }
     }
 
@@ -286,7 +361,7 @@
 
       .over {
         color: vars.$negative;
-        font-weight: 700;
+        font-weight: 600;
       }
     }
 

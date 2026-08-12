@@ -70,33 +70,41 @@
 
 ### 🗓️ Dashboard
 
-- **Monthly calendar** as the primary surface — each day cell shows the day number, the running balance, and the transactions that fell on that day, color-coded by category.
+- **Calendar-first financial context** — the dashboard opens with a plain-language month summary showing money coming in, money going out, the net for the month, and the next entries on the calendar.
+- **Complete monthly grid** — every month renders all of its days, including six-week months, with a clear distinction between the active month, today, selected days, and days outside the month.
+- **Meaningful day cells** — each day shows its running total after that day, same-day money in/out activity, category-colored entries, and a visible `+N more` indicator instead of silently clipping busy days.
+- **Contextual day view** — opening a day explains whether entries are recorded or coming up, summarizes money in/out and the running total after the day, then shows the underlying entries.
+- **Add to calendar** — transaction creation is framed as telling the calendar what happened or what is coming, with a live preview of the date and month impact before saving.
 - **Start-week-on-Monday** toggle (Account → Preferences) reshuffles the grid and the weekday header in real time.
 - **Drag-and-drop transactions between days** — pick up a transaction in a day cell, drop it on another day, and the date updates instantly via a `PUT /transactions/:userId`. Repeating series (weekly / monthly) are kept intact by tagging every member with the same `group` uuid and propagating the move through the backend.
 - **Global transaction search** from the navbar — type to find any transaction by description or category name, click a result to open the edit page.
-- **Date-changer arrows** in the navbar step the dashboard by month (or by year on the Stats view); tapping the month label opens a per-month strip with income / expense / balance totals.
+- **Date-changer arrows** in the navbar step the dashboard by month (or by year on the Stats view); tapping the month label opens a per-month strip with explicit income, expense, and net labels.
+- **Responsive financial signal** — mobile keeps the running total and day activity visible, adds an in-panel transaction search, and preserves the same calendar meaning instead of reducing the grid to day numbers.
 
 ### 📈 Statistics
 
 - **Period selector** (Month / Year) and **period navigator** with prev / next buttons (period-aware: stepping by month or by year depending on the active scope).
-- **KPI hero** — Net Balance, Income, Expenses and Savings Rate for the selected period. Every tile (except Savings Rate) carries a ▲/▼ delta pill against the previous period, with a special-case when the previous value is 0.
+- **Financial story first** — the page starts by explaining what changed in the selected period, including the largest recorded expense where available, before showing the detailed visualizations.
+- **Contextual KPIs** — Net for period, Coming in, Going out, and Kept from income, with neutral previous-period comparisons and expense-aware direction semantics.
 - **Cash-flow chart** — line chart with three series (Income, Expenses, Balance) over the days of the selected month or the months of the selected year. A segmented toggle switches between **Cumulative** and **Per day / Per month**.
-- **Income & Expense donuts** — side-by-side doughnut charts. Each has a center total chip, a colored category legend with `$ amount` and `% share`, and a tailored tooltip (`Category: $X (Y%)`).
-- **Ranked categories** — Top Expenses and Top Income Sources ranked lists, each with rank, color dot, progress bar, `$ amount` and `% of type`.
-- **Notable transactions** — Biggest Expenses and Largest Income lists, clickable straight into the Edit Transaction page.
-- **All-time net-worth chart** — a filled line chart with the full transaction history, current value, and the absolute change since the first point.
+- **Where money moved** — category doughnuts, ranked lists, and notable entries use human-readable headings such as Where it went and Entries that shaped spending while preserving the underlying amounts and percentages.
+- **Running-total history** — the all-time chart is labeled as recorded running activity rather than net worth, which matches the available data model.
+- **Calm empty states** — periods without activity explain what is missing instead of displaying unexplained zero charts.
 
 ### 🎯 Budgets
 
-- Per-category budgets with **monthly or yearly** scope, switched via a segmented control in the Budgets header.
+- Per-category **spending guardrails** with **monthly or yearly** scope, switched via a segmented control in the Budgets header.
 - **Period navigator** (the same `PeriodNavigator` used by Stats) — `‹ / ›` buttons step the active month or year in sync with the rest of the app.
-- **Progress bars** that turn red when you go over, and a live "Over by $X" / "$X left" message.
+- **Decision-oriented progress** — each guardrail explains how much has been used, how much room remains, or how far beyond the limit the category is without shame-driven copy.
 - **Add / edit / delete** from the Budgets page, persisted in `localStorage` per user (`budgets:<userId>`). Categories already covered by a budget for the active period are disabled in the picker.
 - **Linked category breakdown** — the Budgets page computes the per-category spent total for the active period and shows the bar against the limit, so you can see at a glance how much of the budget is consumed.
+- **Storage disclosure and safer removal** — the page makes clear that guardrails are saved on this device and requires a second confirmation before removing one.
 
 ### 🔁 Transactions
 
-- **Create / edit / delete** with full validation: amount (number), description (non-empty), category (chosen from the user's categories), date (defaults to the selected calendar day), and **repeat** (None / Weekly / Monthly). The `repeat` selector is a pill row matching the preferences style.
+- **Create / edit / delete** with full validation: amount (number), description (non-empty), category (chosen from the user's categories), date (defaults to the selected calendar day), and **repeat** (None / Weekly / Monthly). The form explains the entry's effect on the selected day and month before it is saved.
+- **Human feedback** — save buttons show their state, errors appear inline, and success messages describe the resulting calendar total instead of only saying that a request completed.
+- **Safer removal** — transactions, recurring series, categories, and accounts require an explicit confirmation before destructive operations.
 - **Inline `+ New category`** — from the New / Edit form, a single click expands a small panel where you can name a category, pick Income or Expense, and choose a color from 8 swatches (or a free-form color input). On submit, the category is created via the API, the user state is updated, and the new category is auto-selected.
 - **Repeat expansion capped at 12** — the backend creates 12 weekly copies or 12 monthly copies and tags them with a shared `group` uuid so editing or deleting one member of the series updates or removes the whole set.
 - **Color-coded category badge** on the create / edit page — green Income / red Expense indicator next to the category field so the type is obvious.
@@ -134,17 +142,18 @@
 ### 🎨 Design & UX
 
 - **Dark + Light theme** with a token-driven design system in `src/styles/variables.scss`. Every color, border, shadow, radius, and font is a token — swapping themes is one CSS rule.
-- **Hover = size only** — buttons, cards, and day cells scale on hover, no color or background change. Keeps the UI calm and predictable.
+- **Calm instrument hierarchy** — the existing dark/light token system, accent colors, category colors, monospace financial figures, and restrained card surfaces remain in place while the hierarchy now favors a small number of meaningful signals.
+- **Accessible interaction states** — keyboard focus rings, semantic controls, reduced-motion support, live status messages, and keyboard-operable calendar days are included across the product.
 - **Drag-and-drop UX** — global click suppression prevents the synthetic click that follows a drop from triggering the logout button (which would reload the page).
 - **Landing page** with hero, six feature pills, a "closer look" preview row (dashboard, stats, budgets), an FAQ section, and a footer with a GitHub link. Uses inline SVG / CSS mockups of the real UI components so visitors see the actual design. The navbar adapts when you are logged in (Dashboard + Log out) vs. logged out (Log in + Get started).
 - **BrowserRouter** (no `/#/` in the URL) and SPA-friendly routes for Landing, Login, Register, Dashboard, Stats, Budgets, Transactions, Account, Categories (list / new / edit), and **Scan Review**.
-- **Mobile-friendly dashboard** — day cells scale to viewport, money container hides on mobile to give more room, weekday header collapses to single letters, and the dropdown menu is full-width on phones with an in-panel close button.
+- **Mobile-friendly dashboard** — day cells retain compact running totals and activity signals, the weekday header collapses to single letters, transaction search opens inside the navbar, and the dropdown menu is full-width on phones with an in-panel close button.
 - **Loading splash** — the very first paint shows a full-screen "Loading your money" card with the favicon and an animated bar while the user is being rehydrated.
 
 ### 🔐 Auth
 
 - Register, login, logout with JWT in `localStorage` and the user object kept in sync.
-- All app routes are private; Landing, Login, Register are public.
+- All product routes are private; Landing, Login, and Register are public. Invalid or expired sessions are cleared during rehydration and redirected back to Login.
 
 <br>
 
@@ -180,7 +189,7 @@ calendar-money/             # This repo (frontend)
 │   └── assets/docs/         # README screenshots
 ├── src/
 │   ├── components/
-│   │   ├── Dashboard/       # NavBar (search + scan popover), Calendar, Dropdown, Footer
+│   │   ├── Dashboard/       # Month summary, NavBar, Calendar, Dropdown, Footer
 │   │   ├── Stats/           # KpiHero, CashFlowChart, CategoryDonut, RankedCategories,
 │   │   │                    # NotableTransactions, NetWorthChart, PeriodNavigator
 │   │   ├── Day/             # Calendar day cell + drag target
@@ -200,7 +209,7 @@ calendar-money/             # This repo (frontend)
 │   │   ├── Transaction/     # List / New / Edit / ScanReview
 │   │   ├── Category/        # List / New / Edit
 │   │   └── Account/         # Profile + preferences + CSV import/export + PDF export + scan quota + BYOK
-│   ├── util/                # api, theme, weekStart, transactionApi, scanApi, scanUpload,
+│   ├── util/                # api, theme, user, weekStart, transactionApi, scanApi, scanUpload,
 │   │                        # scannedImageHolder, csvTransactions, pdfExport, budgets, dragState,
 │   │                        # functions (date/aggregation math), chartUtils, constants
 │   ├── types.d.ts           # Shared TS interfaces (Category, Transaction, User, Budget,
@@ -208,7 +217,7 @@ calendar-money/             # This repo (frontend)
 │   └── styles/              # One SCSS file per area, all share `variables.scss`
 │                            # (variables, auth, buttons, form, list, list-item, Calendar,
 │                            # Day, Dropdown, Footer, NavBar, Stats, Budgets, Landing,
-│                            # loading, ScanReview)
+│                            # loading, CalendarSummary, ScanReview)
 ├── docs/                    # Backend contracts (e.g. scan-invoice-endpoint)
 ├── eslint.config.js
 ├── vite.config.ts
@@ -232,6 +241,9 @@ The backend lives in a sibling repo: [`calendar-money-api`](https://github.com/n
 - **Bulk endpoint contract** — `POST /transactions/bulk/:userId` accepts `{ categories: [{_id?, name, type, color}], transactions: [{_id?, date, amount, description, category, group?}] }`, creates missing categories by name, dedupes by `(_id)` for transactions, and returns `{ user, imported: { categories, transactions, skipped } }`. The CSV backup and the scan review both go through this single endpoint, so the import path is unified.
 - **Image holding across routes** — the chosen `File` is held in a tiny module-level singleton (`scannedImageHolder`) so the navbar popover, the navigate to `/scan-review`, and the actual `ScanReview` page can all access the same `File` instance without serializing it to `localStorage` (which can't hold a `File`).
 - **Inline category creation** — both `NewTransaction` and `ScanReview` share the same "add new category" panel pattern (name + Income/Expense pill + 8-swatch palette + free-form color). On create, the new category is patched into the user state and auto-selected on the originating row.
+- **Financial language stays accurate** — the frontend describes cumulative transaction net as a running total because the current model has no opening bank balance. It does not invent a safe-to-spend amount or a real net-worth figure.
+- **Mutation responses stay authenticated** — populated API users are normalized back into the frontend's `{ id, loggedIn, transactions, categories }` state shape after saves, imports, moves, and category changes.
+- **Global feedback host** — success and error toasts live at the app root so a message remains visible when an operation navigates back to the calendar.
 
 <br>
 
@@ -301,7 +313,7 @@ npm run preview
 
 - The backend repo is intentionally separate — `calendar-money` is a pure-frontend Vite app. Hosting the static `dist/` on any static host (Netlify, Vercel, GitHub Pages) works as long as the host is configured to serve `index.html` for unknown routes (SPA fallback).
 - The `BrowserRouter` switch (no `/#/` in the URL) requires that the host doesn't strip the path. If you self-host behind a custom server, add a catch-all that serves `index.html`.
-- The mobile dashboard intentionally hides per-day transaction chips to keep day cells scannable on small screens; the per-month summary is shown above the calendar.
+- The mobile dashboard hides the full transaction chips but retains each day’s compact running total and same-day activity signal; opening a day shows the complete contextual view.
 - The repeat expansion limit (12) and the DB-shape CSV format (with `_id`, `category`, `group`) are designed for round-trippable backups — exporting and re-importing on the same account preserves the data and the repeat group relationships. The PDF export (`src/util/pdfExport.ts`) is the read-only, human-readable counterpart: it never participates in imports, so the CSV remains the single restore path.
 - The AI receipt scan is **stateless on the frontend** — no image is ever persisted to `localStorage` or IndexedDB. The file is held in a module-level `File` reference between the navbar popover and the `/scan-review` page, and is released as soon as the user navigates away.
 - The scan quota and the BYOK key are **per-user** and live entirely on the server. The frontend only mirrors them in memory for UI purposes; the next page load refetches the truth from `GET /users/:id/scan-quota` and `GET /users/:id/vision-key`.

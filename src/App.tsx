@@ -19,6 +19,18 @@ import { ThemeProvider } from "./components/ThemeProvider";
 import { useAuth } from "./hooks/useAuth.ts";
 import { UserType, CategoryType, TransactionType } from "./types.d";
 import "./styles/loading.scss";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+function RequireAuth({
+  user,
+  children,
+}: {
+  user: UserType;
+  children: React.ReactNode;
+}) {
+  return user.loggedIn ? children : <Navigate to="/login" replace />;
+}
 
 function App() {
   const [authLoading, setAuthLoading] = useState(true);
@@ -53,6 +65,7 @@ function App() {
   return (
     <ThemeProvider>
       <main className="routes-main">
+      <ToastContainer position="bottom-center" autoClose={3500} theme="dark" />
       {authLoading ? (
         <div className="loading" role="status" aria-live="polite">
           <div className="loading-card">
@@ -85,7 +98,11 @@ function App() {
 
           <Route
             path="/account"
-            element={<Account user={user} setUser={setUser} />}
+            element={
+              <RequireAuth user={user}>
+                <Account user={user} setUser={setUser} />
+              </RequireAuth>
+            }
           />
           <Route
             path="/dashboard"
@@ -108,91 +125,109 @@ function App() {
           <Route
             path="/stats"
             element={
-              <Stats
-                user={user}
-                setUser={setUser}
-                selectedDay={selectedDay}
-                setSelectedDay={setSelectedDay}
-                isDropdownOpen={isDropdownOpen}
-                setIsDropdownOpen={setIsDropdownOpen}
-                setSelectedTransaction={setSelectedTransaction}
-              />
+              <RequireAuth user={user}>
+                <Stats
+                  user={user}
+                  setUser={setUser}
+                  selectedDay={selectedDay}
+                  setSelectedDay={setSelectedDay}
+                  isDropdownOpen={isDropdownOpen}
+                  setIsDropdownOpen={setIsDropdownOpen}
+                  setSelectedTransaction={setSelectedTransaction}
+                />
+              </RequireAuth>
             }
           />
           <Route
             path="/budgets"
             element={
-              <Budgets
-                user={user}
-                setUser={setUser}
-                selectedDay={selectedDay}
-                setSelectedDay={setSelectedDay}
-                isDropdownOpen={isDropdownOpen}
-                setIsDropdownOpen={setIsDropdownOpen}
-              />
+              <RequireAuth user={user}>
+                <Budgets
+                  user={user}
+                  setUser={setUser}
+                  selectedDay={selectedDay}
+                  setSelectedDay={setSelectedDay}
+                  isDropdownOpen={isDropdownOpen}
+                  setIsDropdownOpen={setIsDropdownOpen}
+                />
+              </RequireAuth>
             }
           />
           <Route
             path="/categories"
             element={
-              <CategoryList
-                user={user}
-                setSelectedCategory={setSelectedCategory}
-              />
+              <RequireAuth user={user}>
+                <CategoryList
+                  user={user}
+                  setSelectedCategory={setSelectedCategory}
+                />
+              </RequireAuth>
             }
           />
           <Route
             path="/edit-category"
             element={
-              selectedCategory ? (
-                <EditCategory
-                  user={user}
-                  setUser={setUser}
-                  category={selectedCategory}
-                />
-              ) : (
-                <Navigate to="/dashboard" />
-              )
+              <RequireAuth user={user}>
+                {selectedCategory ? (
+                  <EditCategory
+                    user={user}
+                    setUser={setUser}
+                    category={selectedCategory}
+                  />
+                ) : (
+                  <Navigate to="/dashboard" replace />
+                )}
+              </RequireAuth>
             }
           />
           <Route
             path="/new-category"
-            element={<NewCategory user={user} setUser={setUser} />}
+            element={
+              <RequireAuth user={user}>
+                <NewCategory user={user} setUser={setUser} />
+              </RequireAuth>
+            }
           />
           <Route
             path="/transactions"
             element={
-              <TransactionList
-                user={user}
-                selectedDay={selectedDay}
-                setSelectedDay={setSelectedDay}
-                setSelectedTransaction={setSelectedTransaction}
-              />
+              <RequireAuth user={user}>
+                <TransactionList
+                  user={user}
+                  selectedDay={selectedDay}
+                  setSelectedDay={setSelectedDay}
+                  setSelectedTransaction={setSelectedTransaction}
+                />
+              </RequireAuth>
             }
           />
           <Route
             path="/edit-transaction"
             element={
-              selectedTransaction ? (
-                <EditTransaction
-                  user={user}
-                  setUser={setUser}
-                  transaction={selectedTransaction}
-                />
-              ) : (
-                <Navigate to="/dashboard" />
-              )
+              <RequireAuth user={user}>
+                {selectedTransaction ? (
+                  <EditTransaction
+                    user={user}
+                    setUser={setUser}
+                    transaction={selectedTransaction}
+                  />
+                ) : (
+                  <Navigate to="/dashboard" replace />
+                )}
+              </RequireAuth>
             }
           />
           <Route
             path="/new-transaction"
             element={
-              <NewTransaction
-                user={user}
-                setUser={setUser}
-                selectedDay={selectedDay}
-                setSelectedDay={setSelectedDay}
-              />
+              <RequireAuth user={user}>
+                <NewTransaction
+                  user={user}
+                  setUser={setUser}
+                  selectedDay={selectedDay}
+                  setSelectedDay={setSelectedDay}
+                />
+              </RequireAuth>
             }
           />
           <Route

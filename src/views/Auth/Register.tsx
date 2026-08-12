@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { API_URL } from "../../util/api";
 import useValidateUser from "../../hooks/useValidateUser";
 import Footer from "../../components/Dashboard/Footer";
@@ -89,7 +89,6 @@ function Register() {
 
   return (
     <main className="auth-main">
-      <ToastContainer />
       <header className="landing-nav">
         <Link to="/" className="landing-brand">
           <img src="/favicon.svg" alt="" className="brand-mark" />

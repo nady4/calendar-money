@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { API_URL } from "../../util/api";
 import { UserType, VisionKeyStatus } from "../../types.d";
 import { bulkImportTransactions } from "../../util/transactionApi";
@@ -12,6 +13,7 @@ import useValidateUser from "../../hooks/useValidateUser";
 import useScanQuota from "../../hooks/useScanQuota";
 import exitButton from "../../assets/whiteExitButton.svg";
 import "../../styles/form.scss";
+import { toUserState } from "../../util/user";
 
 interface AccountProps {
   user: UserType;
@@ -23,6 +25,10 @@ const Account = ({ user, setUser }: AccountProps) => {
   const [email, setEmail] = useState(user.email);
   const [password, setPassword] = useState("");
   const [disableSubmitButton, setDisableSubmitButton] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [deleteConfirm, setDeleteConfirm] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [csvStatus, setCsvStatus] = useState<{
     type: "idle" | "loading" | "success" | "error";
     message: string;
@@ -143,7 +149,10 @@ const Account = ({ user, setUser }: AccountProps) => {
   };
 
   const handleUpdateSubmit = async (event: React.FormEvent) => {
-    event?.preventDefault();
+    event.preventDefault();
+    if (isSaving) return;
+    setIsSaving(true);
+    setFormError(null);
 
     const newUser = {
       username,
@@ -164,18 +173,32 @@ const Account = ({ user, setUser }: AccountProps) => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message);
+        throw new Error(data?.message || data?.error || "We couldn’t save your account details.");
       }
 
-      setUser(data);
+      setUser(toUserState(data.user));
+      toast.success("Your account details are saved.");
       navigate("/dashboard");
     } catch (error) {
       console.error(error);
+      setFormError(
+        error instanceof Error
+          ? error.message
+          : "We couldn’t save your account details. Try again."
+      );
+    } finally {
+      setIsSaving(false);
     }
   };
 
-  const handleDeleteSubmit = async (event: React.FormEvent) => {
-    event?.preventDefault();
+  const handleDeleteSubmit = async () => {
+    if (!deleteConfirm) {
+      setDeleteConfirm(true);
+      return;
+    }
+    if (isDeleting) return;
+    setIsDeleting(true);
+    setFormError(null);
 
     try {
       const response = await fetch(`${API_URL}/users/${user.id}`, {
@@ -191,9 +214,13 @@ const Account = ({ user, setUser }: AccountProps) => {
 
       setUser({} as UserType);
       localStorage.removeItem("token");
+      localStorage.removeItem("user");
       navigate("/");
     } catch (error) {
       console.error(error);
+      setFormError("We couldn’t delete your account. Try again.");
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -283,7 +310,7 @@ const Account = ({ user, setUser }: AccountProps) => {
         return;
       }
 
-      if (result.user) setUser(result.user);
+       if (result.user) setUser(toUserState(result.user));
 
       const imported = result.imported;
       setCsvStatus({
@@ -305,10 +332,14 @@ const Account = ({ user, setUser }: AccountProps) => {
 
   return (
     <div className="form">
-      <h2>Account</h2>
+      <p className="form-kicker">Your calendar, your rules</p>
+      <h2>Your account</h2>
+      <p className="form-intro">
+        Update how Calendar Money looks and how it keeps your data available.
+      </p>
       <button
         type="button"
-        aria-label="Close"
+        aria-label="Back to calendar"
         className="exit-button"
         onClick={() => {
           navigate("/dashboard");
@@ -319,6 +350,7 @@ const Account = ({ user, setUser }: AccountProps) => {
       <form onSubmit={handleUpdateSubmit}>
         <label htmlFor="username">Username</label>
         <input
+          id="username"
           type="text"
           placeholder="Username"
           value={username}
@@ -327,6 +359,7 @@ const Account = ({ user, setUser }: AccountProps) => {
         <label htmlFor="email">Email</label>
         <input
           className="email-input"
+          id="email"
           type="email"
           placeholder="Email"
           value={email}
@@ -334,6 +367,7 @@ const Account = ({ user, setUser }: AccountProps) => {
         />
         <label htmlFor="password">Password</label>
         <input
+          id="password"
           type="password"
           placeholder="Password"
           value={password}
@@ -341,14 +375,19 @@ const Account = ({ user, setUser }: AccountProps) => {
         />
         <div className="submit-button-container">
           <button
-            type="button"
+            type="submit"
             className="submit-button"
-            disabled={disableSubmitButton}
-            onClick={handleUpdateSubmit}
+            disabled={disableSubmitButton || isSaving || isDeleting}
           >
-            Submit
+            {isSaving ? "Saving…" : "Save changes"}
           </button>
         </div>
+
+        {formError && (
+          <p className="form-error" role="alert">
+            {formError}
+          </p>
+        )}
 
         <div className="preferences-section">
           <h3 className="csv-title">Preferences</h3>
@@ -425,7 +464,7 @@ const Account = ({ user, setUser }: AccountProps) => {
         </div>
 
         <div className="csv-section">
-          <h3 className="csv-title">AI receipt scanning</h3>
+          <h3 className="csv-title">Receipt scanning</h3>
           <div className="ai-quota">
             <div className="ai-quota-row">
               <span>Today</span>
@@ -559,7 +598,7 @@ const Account = ({ user, setUser }: AccountProps) => {
         </div>
 
         <div className="csv-section">
-          <h3 className="csv-title">Backup &amp; restore data</h3>
+          <h3 className="csv-title">Your data</h3>
           <div className="csv-buttons">
             <button
               type="button"
@@ -603,8 +642,24 @@ const Account = ({ user, setUser }: AccountProps) => {
           )}
         </div>
 
-        <div className="delete-button" onClick={handleDeleteSubmit}>
-          <p className="delete">Delete User</p>
+        <div className={`delete-button ${deleteConfirm ? "is-confirming" : ""}`}>
+          <button
+            type="button"
+            className="delete"
+            onClick={handleDeleteSubmit}
+            disabled={isDeleting}
+          >
+            {deleteConfirm ? "Confirm account deletion" : "Delete account"}
+          </button>
+          {deleteConfirm && !isDeleting && (
+            <button
+              type="button"
+              className="delete-cancel"
+              onClick={() => setDeleteConfirm(false)}
+            >
+              Keep my account
+            </button>
+          )}
         </div>
       </form>
     </div>

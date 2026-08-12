@@ -22,6 +22,50 @@
     color: vars.$text-primary;
   }
 
+  .list-heading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .list-kicker {
+    margin: 0 0 4px;
+    color: vars.$accent;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .list-description {
+    max-width: 34rem;
+    margin: 2px 0 0;
+    color: vars.$text-secondary;
+    font-size: 0.9rem;
+    line-height: 1.45;
+    text-align: center;
+  }
+
+  .type-container {
+    margin-top: 18px;
+
+    .type-boxes {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      color: vars.$text-secondary;
+      font-size: 0.82rem;
+
+      input {
+        width: 16px;
+        height: 16px;
+        margin: 0 0 0 -8px;
+        accent-color: vars.$accent;
+      }
+    }
+  }
+
   .exit-button {
     @extend %exit-button;
   }
@@ -99,12 +143,110 @@
 
     .item {
       width: 100%;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+  }
+
+  .day-story {
+    width: min(520px, 100%);
+    margin-top: 22px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+
+    > div {
+      padding: 12px;
+      background: vars.$bg-card;
+      border: 1px solid vars.$border-subtle;
+      border-radius: vars.$radius-sm;
+
+      span,
+      strong {
+        display: block;
+      }
+
+      span {
+        min-height: 2em;
+        color: vars.$text-muted;
+        font-size: 0.66rem;
+        line-height: 1.25;
+      }
+
+      strong {
+        margin-top: 7px;
+        font-family: vars.$font-mono;
+        font-size: 0.9rem;
+        font-variant-numeric: tabular-nums;
+      }
+    }
+  }
+
+  .is-income {
+    color: vars.$positive;
+  }
+
+  .is-expense,
+  .is-negative {
+    color: vars.$negative;
+  }
+
+  .is-positive {
+    color: vars.$text-primary;
+  }
+
+  .list-empty-state {
+    padding: 28px 18px;
+    text-align: center;
+
+    p,
+    span {
+      display: block;
+      margin: 0;
+    }
+
+    p {
+      color: vars.$text-primary;
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    span {
+      max-width: 26rem;
+      margin: 7px auto 0;
+      color: vars.$text-muted;
+      font-size: 0.84rem;
+      line-height: 1.45;
     }
   }
 }
 
 @media (max-width: 600px) {
   .list {
+    .day-story {
+      grid-template-columns: 1fr;
+
+      > div {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+
+        span {
+          min-height: 0;
+        }
+
+        strong {
+          margin-top: 0;
+        }
+      }
+    }
+
     .items-container {
       max-width: 100%;
     }

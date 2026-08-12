@@ -24,12 +24,14 @@ function Calendar({ user, setUser, selectedDay, setSelectedDay }: CalendarProps)
   const draggedIdRef = useRef<string | null>(null);
 
   useEffect(() => {
-    const days = [];
+    const days: Temporal.PlainDate[] = [];
     const firstDayOfMonth = selectedDay.with({ day: 1 });
     const offset = getGridStartOffset(firstDayOfMonth.dayOfWeek, startOnMonday);
+    const daysInMonth = firstDayOfMonth.daysInMonth;
+    const totalCells = Math.ceil((offset + daysInMonth) / 7) * 7;
     let day = firstDayOfMonth.subtract({ days: offset });
 
-    for (let i = 0; i < 35; i++) {
+    for (let i = 0; i < totalCells; i++) {
       days.push(day);
       day = day.add({ days: 1 });
     }
@@ -46,9 +48,8 @@ function Calendar({ user, setUser, selectedDay, setSelectedDay }: CalendarProps)
             return (
               <div className="weekday-item" key={label}>
                 <p className="weekday">
-                  {window.innerWidth > 600
-                    ? label
-                    : label.slice(0, 1)}
+                  <span className="weekday-full">{label}</span>
+                  <span className="weekday-short">{label.slice(0, 1)}</span>
                 </p>
               </div>
             );

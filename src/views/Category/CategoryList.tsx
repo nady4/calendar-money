@@ -14,7 +14,7 @@ interface CategoryListProps {
 
 function CategoryList({ user, setSelectedCategory }: CategoryListProps) {
   const [categories, setCategories] = useState(
-    user.categories.sort((a: CategoryType, b: CategoryType) =>
+    [...user.categories].sort((a: CategoryType, b: CategoryType) =>
       a.name.localeCompare(b.name)
     ) || []
   );
@@ -36,12 +36,23 @@ function CategoryList({ user, setSelectedCategory }: CategoryListProps) {
     setCategories(user.categories);
   }, [user.categories]);
 
+  const visibleCategories = categories.filter((category: CategoryType) => {
+    if (includeIncome && includeExpense) return true;
+    if (includeIncome) return category.type === "Income";
+    if (includeExpense) return category.type === "Expense";
+    return false;
+  });
+
   return (
     <div className="list">
+      <p className="list-kicker">Make the calendar easier to read</p>
       <h2>Categories</h2>
+      <p className="list-description">
+        Use names and colors that make your own money obvious at a glance.
+      </p>
       <div className="type-container">
         <div className="type-boxes">
-          <label htmlFor="income-box">Income</label>
+          <label htmlFor="income-box">Show income</label>
           <input
             type="checkbox"
             id="income-box"
@@ -54,12 +65,12 @@ function CategoryList({ user, setSelectedCategory }: CategoryListProps) {
             onChange={onTypeChange}
             defaultChecked={includeExpense}
           />
-          <label htmlFor="expense-box">Expense</label>
+          <label htmlFor="expense-box">Show expenses</label>
         </div>
       </div>
       <button
         type="button"
-        aria-label="Close"
+        aria-label="Back to calendar"
         className="exit-button"
         onClick={() => {
           setSelectedCategory(null);
@@ -75,35 +86,30 @@ function CategoryList({ user, setSelectedCategory }: CategoryListProps) {
             navigate("/new-category");
           }}
         >
-          New Category
+          Add category
         </button>
       </div>
       <div className="items-container">
-        {categories
-          .filter((category: CategoryType) => {
-            if (includeIncome && includeExpense) {
-              return true;
-            }
-            if (includeIncome) {
-              return category.type === "Income";
-            }
-            if (includeExpense) {
-              return category.type === "Expense";
-            }
-            return false;
-          })
-          .map((category: CategoryType, index: number) => (
-            <div
-              key={index}
+        {visibleCategories.length === 0 ? (
+          <div className="list-empty-state">
+            <p>No categories match these filters.</p>
+            <span>Choose another view or add a category to keep going.</span>
+          </div>
+        ) : (
+          visibleCategories.map((category: CategoryType) => (
+            <button
+              type="button"
+              key={category._id}
               className="item"
               onClick={() => {
                 setSelectedCategory(category);
                 navigate("/edit-category");
               }}
             >
-              <Category category={category} key={index} />
-            </div>
-          ))}
+              <Category category={category} />
+            </button>
+          ))
+        )}
       </div>
     </div>
   );

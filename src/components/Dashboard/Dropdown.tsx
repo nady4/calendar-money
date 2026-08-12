@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { UserType } from "../../types";
 import { API_URL } from "../../util/api";
 import CatUser from "../../assets/catUser.svg";
@@ -22,9 +22,12 @@ const Dropdown = ({
   user,
   setUser,
   isDropdownOpen,
-  setIsDropdownOpen,
+  setIsDropdownOpen
 }: DropdownProps) => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const itemClass = (path: string) =>
+    `dropdown-item ${location.pathname === path ? "is-active" : ""}`;
 
   const handleLogout = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -32,7 +35,7 @@ const Dropdown = ({
     try {
       const response = await fetch(`${API_URL}/logout`, {
         method: "POST",
-        credentials: "include",
+        credentials: "include"
       });
 
       if (!response.ok) {
@@ -51,7 +54,7 @@ const Dropdown = ({
         password: "",
         transactions: [],
         categories: [],
-        loggedIn: false,
+        loggedIn: false
       });
 
       navigate("/login");
@@ -91,18 +94,20 @@ const Dropdown = ({
         <h3 className="dropdown-email">{user.email}</h3>
       </div>
       <div className="dropdown-body">
-        <div
-          className="dropdown-item"
+        <button
+          type="button"
+          className={itemClass("/account")}
           onClick={() => {
             setIsDropdownOpen(false);
             navigate("/account");
           }}
         >
           <img className="dropdown-item-icon" src={UserIcon} alt="account" />
-          <p className="dropdown-item-text">ACCOUNT</p>
-        </div>
-        <div
-          className="dropdown-item"
+          <p className="dropdown-item-text">Account</p>
+        </button>
+        <button
+          type="button"
+          className={itemClass("/dashboard")}
           onClick={() => {
             setIsDropdownOpen(false);
             navigate("/dashboard");
@@ -113,10 +118,11 @@ const Dropdown = ({
             src={CalendarIcon}
             alt="dashboard"
           />
-          <p className="dropdown-item-text">CALENDAR</p>
-        </div>
-        <div
-          className="dropdown-item"
+          <p className="dropdown-item-text">Calendar</p>
+        </button>
+        <button
+          type="button"
+          className={itemClass("/categories")}
           onClick={() => {
             setIsDropdownOpen(false);
             navigate("/categories");
@@ -127,34 +133,36 @@ const Dropdown = ({
             src={CategoriesIcon}
             alt="categories"
           />
-          <p className="dropdown-item-text">CATEGORIES</p>
-        </div>
-        <div
-          className="dropdown-item"
+          <p className="dropdown-item-text">Categories</p>
+        </button>
+        <button
+          type="button"
+          className={itemClass("/stats")}
           onClick={() => {
             setIsDropdownOpen(false);
             navigate("/stats");
           }}
         >
           <img className="dropdown-item-icon" src={StatsIcon} alt="stats" />
-          <p className="dropdown-item-text">STATS</p>
-        </div>
-        <div
-          className="dropdown-item"
+          <p className="dropdown-item-text">Stats</p>
+        </button>
+        <button
+          type="button"
+          className={itemClass("/budgets")}
           onClick={() => {
             setIsDropdownOpen(false);
             navigate("/budgets");
           }}
         >
           <img className="dropdown-item-icon" src={BudgetIcon} alt="budgets" />
-          <p className="dropdown-item-text">BUDGETS</p>
-        </div>
+          <p className="dropdown-item-text">Budgets</p>
+        </button>
       </div>
       <div className="dropdown-footer">
-        <div className="dropdown-item" onClick={handleLogout}>
+        <button type="button" className="dropdown-item" onClick={handleLogout}>
           <img className="dropdown-item-icon" src={LogoutIcon} alt="logout" />
-          <p className="dropdown-item-text">LOGOUT</p>
-        </div>
+          <p className="dropdown-item-text">Log out</p>
+        </button>
       </div>
     </div>
   );

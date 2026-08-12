@@ -4,6 +4,9 @@ import Dropdown from "../../components/Dashboard/Dropdown";
 import NavBar from "../../components/Dashboard/NavBar";
 import Calendar from "../../components/Dashboard/Calendar";
 import Footer from "../../components/Dashboard/Footer";
+import CalendarSummary from "../../components/Dashboard/CalendarSummary";
+import { useNavigate } from "react-router-dom";
+import "../../styles/CalendarSummary.scss";
 
 interface DashboardProps {
   user: UserType;
@@ -26,6 +29,8 @@ function Dashboard({
   setIsDropdownOpen,
   setSelectedTransaction,
 }: DashboardProps) {
+  const navigate = useNavigate();
+
   return (
     <div className="app-main">
       <Dropdown
@@ -42,6 +47,11 @@ function Dashboard({
         setIsDropdownOpen={setIsDropdownOpen}
         isStatsView={false}
         setSelectedTransaction={setSelectedTransaction}
+      />
+      <CalendarSummary
+        user={user}
+        selectedDay={selectedDay}
+        onAdd={() => navigate("/new-transaction")}
       />
       <Calendar
         user={user}

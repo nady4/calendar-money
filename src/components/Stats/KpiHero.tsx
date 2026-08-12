@@ -47,11 +47,14 @@ const KpiHero = ({ transactions, selectedDay, scope }: KpiHeroProps) => {
     return ((cur - prev) / Math.abs(prev)) * 100;
   };
 
-  const DeltaPill = ({ value }: { value: number }) => {
-    const up = value >= 0;
+  const DeltaPill = ({ value, inverse = false }: { value: number; inverse?: boolean }) => {
+    const favorable = inverse ? value <= 0 : value >= 0;
     return (
-      <span className={`kpi-delta ${up ? "up" : "down"}`}>
-        {up ? "▲" : "▼"} {Math.abs(value).toFixed(1)}%
+      <span
+        className={`kpi-delta ${favorable ? "up" : "down"}`}
+        aria-label={`${Math.abs(value).toFixed(1)} percent ${value >= 0 ? "higher" : "lower"} than the previous period`}
+      >
+        {value >= 0 ? "▲" : "▼"} {Math.abs(value).toFixed(1)}% vs previous
       </span>
     );
   };
@@ -66,7 +69,7 @@ const KpiHero = ({ transactions, selectedDay, scope }: KpiHeroProps) => {
       </div>
       <div className="kpi-grid">
         <div className="kpi-tile kpi-balance">
-          <span className="kpi-label">Net Balance</span>
+           <span className="kpi-label">Net for period</span>
           <span
             className={`kpi-value ${current.balance >= 0 ? "positive" : "negative"}`}
           >
@@ -76,21 +79,21 @@ const KpiHero = ({ transactions, selectedDay, scope }: KpiHeroProps) => {
           <DeltaPill value={delta(current.balance, previous.balance)} />
         </div>
         <div className="kpi-tile">
-          <span className="kpi-label">Income</span>
+           <span className="kpi-label">Coming in</span>
           <span className="kpi-value positive">
             +${formatCurrency(current.income)}
           </span>
           <DeltaPill value={delta(current.income, previous.income)} />
         </div>
         <div className="kpi-tile">
-          <span className="kpi-label">Expenses</span>
+           <span className="kpi-label">Going out</span>
           <span className="kpi-value negative">
             -${formatCurrency(current.expenses)}
           </span>
-          <DeltaPill value={delta(current.expenses, previous.expenses)} />
+           <DeltaPill value={delta(current.expenses, previous.expenses)} inverse />
         </div>
         <div className="kpi-tile">
-          <span className="kpi-label">Savings Rate</span>
+           <span className="kpi-label">Kept from income</span>
           <span className="kpi-value">{savingsRate}%</span>
           <span className="kpi-sub">of income kept</span>
         </div>

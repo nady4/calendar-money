@@ -17,7 +17,7 @@ const RankedCategories = ({ breakdown }: RankedCategoriesProps) => {
     if (list.length === 0) {
       return (
         <p className="ranked-empty">
-          No {type.toLowerCase()} categories in this period.
+           Nothing recorded here for this period.
         </p>
       );
     }
@@ -53,12 +53,12 @@ const RankedCategories = ({ breakdown }: RankedCategoriesProps) => {
   return (
     <div className="ranked-card card">
       <div className="ranked-section">
-        <h3 className="ranked-title">Top Expenses</h3>
+        <h3 className="ranked-title">Where spending concentrated</h3>
         {renderList(breakdown.expenses, totalExpenses, "Expense")}
       </div>
       <div className="ranked-divider" />
       <div className="ranked-section">
-        <h3 className="ranked-title">Top Income Sources</h3>
+        <h3 className="ranked-title">Where money came from</h3>
         {renderList(breakdown.income, totalIncome, "Income")}
       </div>
     </div>

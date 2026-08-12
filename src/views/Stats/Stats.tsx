@@ -11,7 +11,10 @@ import { Temporal } from "@js-temporal/polyfill";
 import { UserType, TransactionType } from "../../types";
 import {
   getMonthCategoryBreakdown,
-  getYearCategoryBreakdown
+  getYearCategoryBreakdown,
+  getMonthTotals,
+  getYearTotals,
+  formatCurrency
 } from "../../util/functions";
 import { months } from "../../util/constants";
 import { useState } from "react";
@@ -54,6 +57,42 @@ const Stats = ({
           selectedDay.year
         );
 
+  const totals =
+    scope === "month"
+      ? getMonthTotals(user.transactions, months[selectedDay.month - 1], selectedDay.year)
+      : getYearTotals(user.transactions, selectedDay.year);
+  const previousDate =
+    scope === "month"
+      ? selectedDay.subtract({ months: 1 })
+      : selectedDay.subtract({ years: 1 });
+  const previousTotals =
+    scope === "month"
+      ? getMonthTotals(
+          user.transactions,
+          months[previousDate.month - 1],
+          previousDate.year
+        )
+      : getYearTotals(user.transactions, previousDate.year);
+  const periodLabel =
+    scope === "month"
+      ? `${months[selectedDay.month - 1]} ${selectedDay.year}`
+      : `${selectedDay.year}`;
+  const biggestExpense = breakdown.expenses[0];
+  const story =
+    totals.income === 0 && totals.expenses === 0
+      ? `There isn’t enough activity in ${periodLabel} to tell a story yet.`
+      : biggestExpense
+        ? `Most of your spending in ${periodLabel} went to ${biggestExpense.name}: $${formatCurrency(
+            biggestExpense.total
+          )}.`
+        : `You have ${totals.balance >= 0 ? "+" : "-"}$${formatCurrency(
+            Math.abs(totals.balance)
+          )} net activity recorded in ${periodLabel}.`;
+  const comparison =
+    previousTotals.expenses > 0
+      ? `You spent ${totals.expenses >= previousTotals.expenses ? "more" : "less"} than the previous ${scope}.`
+      : "The chart below shows how money moved through this period.";
+
   return (
     <div className="stats-view">
       <Dropdown
@@ -73,6 +112,14 @@ const Stats = ({
       />
 
       <div className="stats-container">
+        <section className="stats-intro" aria-labelledby="stats-intro-title">
+          <div>
+            <p className="stats-intro-kicker">A clearer look at your money</p>
+            <h1 id="stats-intro-title">What changed in {periodLabel}?</h1>
+            <p>{story}</p>
+            <span>{comparison}</span>
+          </div>
+        </section>
         <div className="stats-controls">
           <PeriodNavigator
             scope={scope}
@@ -113,12 +160,12 @@ const Stats = ({
           <CategoryDonut
             breakdown={breakdown}
             type="Expense"
-            title="Expenses by Category"
+            title="Where it went"
           />
           <CategoryDonut
             breakdown={breakdown}
             type="Income"
-            title="Income by Category"
+            title="Where it came from"
           />
         </div>
 

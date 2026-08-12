@@ -99,7 +99,7 @@ const ReceiptLightbox = ({ src, alt = "Receipt", onClose }: ReceiptLightboxProps
       >
         ×
       </button>
-      <div className="receipt-lightbox-toolbar" aria-hidden>
+      <div className="receipt-lightbox-toolbar">
         <button
           type="button"
           onClick={() => setScale((s) => Math.max(MIN_SCALE, +(s - SCALE_STEP).toFixed(2)))}

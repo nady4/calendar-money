@@ -1,6 +1,7 @@
 import { Temporal } from "@js-temporal/polyfill";
 import { UserType, TransactionType } from "../types";
 import { API_URL } from "./api";
+import { toUserState } from "./user";
 
 const updateTransactionDate = async (
   userId: string,
@@ -27,7 +28,7 @@ const updateTransactionDate = async (
     console.error("Error moving transaction:", data.error);
     return null;
   }
-  return data.user as UserType;
+  return toUserState(data.user);
 };
 
 const findTransaction = (

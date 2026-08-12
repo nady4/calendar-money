@@ -1,8 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { Temporal } from "@js-temporal/polyfill";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import { v4 as uuid } from "uuid";
 import { CategoryType, ScannedResult, UserType } from "../../types";
 import {
@@ -18,6 +17,7 @@ import ReceiptLightbox from "../../components/ReceiptLightbox";
 import exitButton from "../../assets/whiteExitButton.svg";
 import CloseIcon from "@mui/icons-material/Close";
 import "../../styles/ScanReview.scss";
+import { toUserState } from "../../util/user";
 
 interface ScanReviewProps {
   user: UserType;
@@ -69,13 +69,15 @@ function ScanReview({ user, setUser }: ScanReviewProps) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
-  const { applyFromResponse } = useScanQuota(user.id);
+  const { applyFromResponse, byok, loading: quotaLoading } = useScanQuota(user.id);
+  const byokRef = useRef(byok);
   const [receiptDate, setReceiptDate] = useState(todayString());
   const [applyDateToUndated, setApplyDateToUndated] = useState(true);
   const [bulkStatus, setBulkStatus] = useState<{
     type: "idle" | "loading" | "success" | "error";
     message: string;
   }>({ type: "idle", message: "" });
+  const [retryKey, setRetryKey] = useState(0);
 
   const [showNewCategory, setShowNewCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
@@ -87,10 +89,15 @@ function ScanReview({ user, setUser }: ScanReviewProps) {
   const [newCategoryError, setNewCategoryError] = useState<string | null>(null);
 
   const categoriesDatalist = useRef<HTMLDataListElement>(null);
+  const categoryNamesForScan = useRef(user.categories.map((c) => c.name));
   useCategoryOptions({ user, categoriesDatalist });
 
   useEffect(() => {
-    if (!heldImage) return;
+    byokRef.current = byok;
+  }, [byok]);
+
+  useEffect(() => {
+    if (!heldImage || quotaLoading) return;
     const url = URL.createObjectURL(heldImage);
     setPreviewUrl(url);
     let cancelled = false;
@@ -109,7 +116,8 @@ function ScanReview({ user, setUser }: ScanReviewProps) {
         heldImage,
         localStorage.getItem("token"),
         {
-          existingCategoryNames: user.categories.map((c) => c.name),
+          existingCategoryNames: categoryNamesForScan.current,
+          useMyKey: byokRef.current,
           signal: controller.signal,
           onQuota: applyFromResponse
         }
@@ -117,7 +125,7 @@ function ScanReview({ user, setUser }: ScanReviewProps) {
       if (cancelled) return;
       if (quota) applyFromResponse(quota, Boolean(byok));
       if (scanError || !scanned) {
-        setError(scanError || "Could not read the invoice.");
+        setError(scanError || "We couldn’t read that image. Try a clearer photo.");
         setLoading(false);
         return;
       }
@@ -131,11 +139,12 @@ function ScanReview({ user, setUser }: ScanReviewProps) {
       controller.abort();
       abortRef.current = null;
     };
-  }, [user.id, user.categories, heldImage, applyFromResponse]);
+  }, [user.id, heldImage, applyFromResponse, quotaLoading, retryKey]);
 
   const handleCancelScan = () => {
     abortRef.current?.abort();
     setLoading(false);
+    setError("Scan stopped. You can try the same image again or add the entry yourself.");
   };
 
   useEffect(() => {
@@ -245,11 +254,11 @@ function ScanReview({ user, setUser }: ScanReviewProps) {
 
       const data = await response.json();
       if (!response.ok) {
-        setNewCategoryError(data?.error || "Could not create category.");
+        setNewCategoryError(data?.error || "We couldn’t create that category.");
         return;
       }
 
-      setUser(data.user);
+       setUser(toUserState(data.user));
       setRows((prev) =>
         prev.map((row) => {
           const match =
@@ -274,7 +283,7 @@ function ScanReview({ user, setUser }: ScanReviewProps) {
       setShowNewCategory(false);
     } catch (err) {
       console.error("Error creating category:", err);
-      setNewCategoryError("Could not create category.");
+      setNewCategoryError("We couldn’t create that category. Try again.");
     } finally {
       setIsCreatingCategory(false);
     }
@@ -315,7 +324,7 @@ function ScanReview({ user, setUser }: ScanReviewProps) {
       return;
     }
 
-    if (resultBulk.user) setUser(resultBulk.user);
+    if (resultBulk.user) setUser(toUserState(resultBulk.user));
     const imported = resultBulk.imported;
     const message = imported
       ? `Added ${imported.transactions} transaction${
@@ -333,16 +342,9 @@ function ScanReview({ user, setUser }: ScanReviewProps) {
     navigate("/dashboard");
   };
 
-  const toastConfig = {
-    position: "bottom-center" as const,
-    autoClose: 3000,
-    theme: "dark" as const
-  };
-
   return (
     <div className={`scan-review ${loading ? "is-loading" : ""}`}>
-      <ToastContainer {...toastConfig} />
-      {!loading && <h2>Review scanned transactions</h2>}
+      {!loading && <h2>Check what we found</h2>}
       {previewUrl && (
         <div className="receipt-preview-wrapper">
           <button
@@ -357,7 +359,7 @@ function ScanReview({ user, setUser }: ScanReviewProps) {
           {loading && (
             <div className="loading" role="status" aria-live="polite">
               <img src="/favicon.svg" alt="" className="loading-icon" />
-              <p className="loading-label">Reading your invoice</p>
+               <p className="loading-label">Looking at your receipt</p>
               <div className="loading-bar" aria-hidden>
                 <span />
               </div>
@@ -375,7 +377,7 @@ function ScanReview({ user, setUser }: ScanReviewProps) {
       {!loading && (
         <button
           type="button"
-          aria-label="Close"
+          aria-label="Leave scan review"
           className="exit-button"
           onClick={() => {
             clearHeldImage();
@@ -393,18 +395,30 @@ function ScanReview({ user, setUser }: ScanReviewProps) {
             type="button"
             className="submit-button"
             onClick={() => {
+              setRetryKey((key) => key + 1);
+              setError(null);
+              setRows([]);
+              setLoading(true);
+            }}
+          >
+            Try again
+          </button>
+          <button
+            type="button"
+            className="scan-secondary-action"
+            onClick={() => {
               clearHeldImage();
               navigate("/dashboard");
             }}
           >
-            Back to dashboard
+            Add it yourself
           </button>
         </div>
       )}
 
       {!loading && !error && rows.length === 0 && (
         <div className="scan-review-error">
-          <p>No transactions were detected on this invoice.</p>
+            <p>We couldn’t find a transaction in that image.</p>
           <button
             type="button"
             className="submit-button"
@@ -413,7 +427,7 @@ function ScanReview({ user, setUser }: ScanReviewProps) {
               navigate("/dashboard");
             }}
           >
-            Back to dashboard
+            Add it yourself
           </button>
         </div>
       )}

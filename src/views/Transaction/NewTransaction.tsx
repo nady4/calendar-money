@@ -1,12 +1,20 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Temporal } from "@js-temporal/polyfill";
+import { toast } from "react-toastify";
 import { UserType, CategoryType } from "../../types.d";
 import { API_URL } from "../../util/api";
 import useCategoryOptions from "../../hooks/useCategoryOptions";
 import useValidateTransaction from "../../hooks/useValidateTransaction";
 import exitButton from "../../assets/whiteExitButton.svg";
 import "../../styles/form.scss";
+import {
+  formatCurrency,
+  getDayTotal,
+  getMonthTotal
+} from "../../util/functions";
+import { months } from "../../util/constants";
+import { toUserState } from "../../util/user";
 
 interface NewTransactionProps {
   user: UserType;
@@ -35,6 +43,8 @@ function NewTransaction({
   const [newCategoryColor, setNewCategoryColor] = useState("#5b8cff");
   const [isCreatingCategory, setIsCreatingCategory] = useState(false);
   const [newCategoryError, setNewCategoryError] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
 
   const navigate = useNavigate();
 
@@ -49,10 +59,7 @@ function NewTransaction({
   });
 
   const onAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (
-      event.target.value === "" ||
-      !Number.isInteger(parseInt(event.target.value))
-    ) {
+    if (event.target.value === "") {
       setAmount(0);
       return;
     }
@@ -137,11 +144,11 @@ function NewTransaction({
       const data = await response.json();
 
       if (!response.ok) {
-        setNewCategoryError(data?.error || "Could not create category.");
+        setNewCategoryError(data?.error || "We couldn’t create that category.");
         return;
       }
 
-      setUser(data.user);
+       setUser(toUserState(data.user));
       const created = (data.user as UserType).categories.find(
         (c) => c.name === newCategoryName.trim()
       );
@@ -159,7 +166,7 @@ function NewTransaction({
       setShowNewCategory(false);
     } catch (error) {
       console.error("Error creating category:", error);
-      setNewCategoryError("Could not create category.");
+      setNewCategoryError("We couldn’t create that category. Try again.");
     } finally {
       setIsCreatingCategory(false);
     }
@@ -169,7 +176,10 @@ function NewTransaction({
     newCategoryName.trim().length > 3 && newCategoryType !== "";
 
   const handleSubmit = async (event: React.FormEvent) => {
-    event?.preventDefault();
+    event.preventDefault();
+    if (isSaving) return;
+    setIsSaving(true);
+    setFormError(null);
 
     const newTransaction = {
       date: new Date(selectedDay.year, selectedDay.month - 1, selectedDay.day),
@@ -192,23 +202,53 @@ function NewTransaction({
       const data = await response.json();
 
       if (!response.ok) {
-        console.error("Error creating transaction:", data.error);
+        setFormError(data?.error || "We couldn’t add this entry. Try again.");
         return;
       }
 
-      setUser(data.user);
+      setUser(toUserState(data.user));
+      const savedTotal = getDayTotal(data.user.transactions, selectedDay);
+      toast.success(
+        `Added. ${selectedDay.toLocaleString("en", {
+          month: "long",
+          day: "numeric"
+        })} now ends at $${formatCurrency(savedTotal.balance)}.`
+      );
       navigate("/dashboard");
     } catch (error) {
       console.error("Error creating transaction:", error);
+      setFormError("We couldn’t reach the calendar. Check your connection and try again.");
+    } finally {
+      setIsSaving(false);
     }
   };
 
+  const selectedMonth = months[selectedDay.month - 1];
+  const currentDayTotal = getDayTotal(user.transactions, selectedDay);
+  const currentMonthTotal = getMonthTotal(
+    user.transactions,
+    selectedMonth,
+    selectedDay.year
+  );
+  const signedAmount =
+    category?.type === "Income"
+      ? amount
+      : category?.type === "Expense"
+        ? -amount
+        : 0;
+  const projectedDayTotal = currentDayTotal.balance + signedAmount;
+  const projectedMonthTotal = currentMonthTotal.balance + signedAmount;
+
   return (
     <div className="form">
-      <h2>New Transaction</h2>
+      <p className="form-kicker">Tell your calendar what happened</p>
+      <h2>Add to your calendar</h2>
+      <p className="form-intro">
+        Add something you paid, received, or already know is coming.
+      </p>
       <button
         type="button"
-        aria-label="Close"
+        aria-label="Back to calendar"
         className="exit-button"
         onClick={() => {
           navigate("/dashboard");
@@ -216,17 +256,20 @@ function NewTransaction({
       >
         <img src={exitButton} alt="" />
       </button>
-      <form id="new-transaction-form">
-        <label htmlFor="amount">Amount</label>
+      <form id="new-transaction-form" onSubmit={handleSubmit}>
+        <label htmlFor="amount">How much?</label>
         <input
-          type="text"
+          type="number"
+          inputMode="decimal"
+          min="0"
+          step="0.01"
           name="amount"
           id="amount"
           value={amount}
           onChange={onAmountChange}
         />
 
-        <label htmlFor="description">Description</label>
+        <label htmlFor="description">What is it?</label>
         <input
           type="text"
           name="description"
@@ -235,12 +278,21 @@ function NewTransaction({
           onChange={onDescriptionChange}
         />
 
-        <label htmlFor="category">Category</label>
+        <label htmlFor="category">Where should it go?</label>
+        {user.categories.length === 0 && (
+          <div className="form-empty-hint">
+            <span>Your calendar needs a category before it can add an entry.</span>
+            <button type="button" onClick={() => navigate("/new-category")}>
+              Add a category first
+            </button>
+          </div>
+        )}
         <div className="category-field">
           <input
             className="category-input"
             ref={categoryInput}
             name="category"
+            id="category"
             list="categories-datalist"
             onChange={onCategoryChange}
           />
@@ -383,7 +435,7 @@ function NewTransaction({
           </div>
         )}
 
-        <label htmlFor="date">Date</label>
+        <label htmlFor="date">When?</label>
         <input
           type="date"
           name="date"
@@ -392,7 +444,7 @@ function NewTransaction({
           value={selectedDay.toString().slice(0, 10)}
         />
         <div className="repeat-container">
-          <label className="repeat-label">Repeat</label>
+          <label className="repeat-label">Make it a pattern</label>
           <div className="repeat-options" role="radiogroup" aria-label="Repeat">
             {(
               [
@@ -418,16 +470,38 @@ function NewTransaction({
               </label>
             ))}
           </div>
+          <p className="repeat-help">
+            Repeating entries will appear on their scheduled dates.
+          </p>
         </div>
+
+        {category && amount > 0 && (
+          <div className="transaction-impact" aria-live="polite">
+            <span>After this entry</span>
+            <strong>
+              {selectedDay.toLocaleString("en", { month: "long", day: "numeric" })}: $
+              {formatCurrency(projectedDayTotal)}
+            </strong>
+            <small>
+              {selectedMonth} net: {projectedMonthTotal >= 0 ? "+" : "-"}$
+              {formatCurrency(Math.abs(projectedMonthTotal))}
+            </small>
+          </div>
+        )}
+
+        {formError && (
+          <p className="form-error" role="alert">
+            {formError}
+          </p>
+        )}
 
         <div className="submit-button-container">
           <button
-            type="button"
+            type="submit"
             className="submit-button"
-            disabled={disableSubmitButton}
-            onClick={handleSubmit}
+            disabled={disableSubmitButton || isSaving}
           >
-            Submit
+            {isSaving ? "Adding…" : "Add entry"}
           </button>
         </div>
       </form>

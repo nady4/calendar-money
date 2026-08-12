@@ -22,6 +22,24 @@
     color: vars.$text-primary;
   }
 
+  .form-kicker {
+    margin: 0 0 6px;
+    color: vars.$accent;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .form-intro {
+    max-width: 30rem;
+    margin: 0;
+    color: vars.$text-secondary;
+    font-size: 0.88rem;
+    line-height: 1.45;
+    text-align: center;
+  }
+
   .exit-button {
     @extend %exit-button;
   }
@@ -76,17 +94,102 @@
     }
 
     .repeat-container {
-      margin-top: 20px;
+      margin-top: 15px;
       padding: 0;
       width: 100%;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 10px;
     }
 
     .repeat-label {
+      text-align: center;
       color: vars.$text-secondary;
       font-weight: 600;
+    }
+
+    .repeat-help {
+      width: 100%;
+      margin: 15px 0 0;
+      color: vars.$text-muted;
+      font-size: 0.72rem;
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    .transaction-impact {
+      width: 100%;
+      margin-top: 20px;
+      padding: 13px 14px;
+      background: vars.$accent-soft;
+      border: 1px solid rgba(vars.$accent, 0.35);
+      border-radius: vars.$radius-sm;
+      text-align: left;
+
+      span,
+      strong,
+      small {
+        display: block;
+      }
+
+      span {
+        color: vars.$text-secondary;
+        font-size: 0.68rem;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+
+      strong {
+        margin-top: 4px;
+        color: vars.$text-primary;
+        font-family: vars.$font-mono;
+        font-size: 1rem;
+        font-variant-numeric: tabular-nums;
+      }
+
+      small {
+        margin-top: 4px;
+        color: vars.$text-secondary;
+        font-size: 0.75rem;
+      }
+    }
+
+    .form-error {
+      width: 100%;
+      margin: 14px 0 -8px;
+      color: vars.$negative;
+      font-size: 0.82rem;
+      line-height: 1.4;
+      text-align: center;
+    }
+
+    .form-empty-hint {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 12px;
+      background: vars.$bg-card-elevated;
+      border: 1px solid vars.$border-subtle;
+      border-radius: vars.$radius-sm;
+
+      span {
+        color: vars.$text-muted;
+        font-size: 0.76rem;
+        line-height: 1.35;
+      }
+
+      button {
+        flex: 0 0 auto;
+        padding: 6px 8px;
+        border: 0;
+        background: transparent;
+        color: vars.$accent;
+        cursor: pointer;
+        font-size: 0.76rem;
+        font-weight: 700;
+      }
     }
 
     .repeat-options {
@@ -281,6 +384,24 @@
   .delete-button {
     @extend %delete-button;
     margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+
+    .delete-cancel {
+      padding: 4px 8px;
+      border: 0;
+      background: transparent;
+      color: vars.$text-secondary;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.8rem;
+    }
+
+    &.is-confirming .delete {
+      font-weight: 800;
+    }
   }
 
   .add-button {
@@ -815,6 +936,10 @@
 
     form {
       padding: 24px 20px;
+    }
+
+    .form-intro {
+      max-width: 20rem;
     }
   }
 }

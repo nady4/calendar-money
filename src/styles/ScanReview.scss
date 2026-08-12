@@ -173,6 +173,21 @@
       @extend %submit-button;
       width: 200px;
     }
+
+    .scan-secondary-action {
+      border: 0;
+      background: transparent;
+      color: vars.$text-secondary;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.82rem;
+      font-weight: 700;
+
+      &:focus-visible {
+        outline: 2px solid vars.$accent;
+        outline-offset: 3px;
+      }
+    }
   }
 
   .scan-review-body {

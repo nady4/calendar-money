@@ -196,11 +196,15 @@ const CashFlowChart = ({
     }
   };
 
+  const hasActivity =
+    incomeSeries.some((value) => value !== 0) ||
+    expensesSeries.some((value) => value !== 0);
+
   return (
     <div className="cashflow-card">
       <div className="cashflow-head">
         <div>
-          <h3 className="card-title">Cash Flow</h3>
+          <h3 className="card-title">How money moved</h3>
           <p className="card-subtitle">
             {scope === "month"
               ? `${months[selectedDay.month - 1]} ${selectedDay.year}`
@@ -222,9 +226,15 @@ const CashFlowChart = ({
           </button>
         </div>
       </div>
-      <div className="cashflow-canvas">
-        <Line data={data} options={options as never} />
-      </div>
+      {hasActivity ? (
+        <div className="cashflow-canvas">
+          <Line data={data} options={options as never} />
+        </div>
+      ) : (
+        <p className="chart-empty">
+          Add an entry in this period to see the movement here.
+        </p>
+      )}
     </div>
   );
 };

@@ -17,16 +17,11 @@
     position: relative;
     height: 70px;
     width: 100%;
-    display: flex;
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr) auto;
+    gap: 16px;
     align-items: center;
-    justify-content: space-between;
-
-    div {
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+    padding: 0 20px;
 
     .gradient-border-top {
       width: 100%;
@@ -38,7 +33,12 @@
     }
 
     .menu-button-container {
-      width: 5%;
+      width: 40px;
+      height: 100%;
+      justify-self: start;
+      padding: 0;
+      border: 0;
+      background: transparent;
       cursor: pointer;
       transition: 0.2s ease-in-out;
       z-index: 3;
@@ -66,56 +66,38 @@
       }
     }
 
-    .money-container {
-      cursor: pointer;
-      transition: 0.2s ease-in-out;
-      width: 500px;
-
-      .money-item {
-        display: flex;
-        align-items: center;
-        margin: 0 10px;
-
-        img {
-          height: 20px;
-          width: 20px;
-          margin-right: 5px;
-        }
-
-        .money {
-          font-family: "JetBrains Mono", monospace;
-          font-size: 16px;
-          font-weight: 500;
-          line-height: 24px;
-        }
-
-        .balance {
-          color: vars.$text-primary;
-          padding-right: 50px;
-        }
-
-        .income {
-          color: vars.$positive;
-        }
-
-        .expenses {
-          color: vars.$negative;
-        }
-      }
-    }
-
     .date-change-container {
       position: absolute;
       left: 50%;
       top: 50%;
       transform: translate(-50%, -50%);
       width: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
 
       .date-container {
+        display: block;
+        height: auto;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        color: inherit;
+        font-family: inherit;
+        cursor: pointer;
+
+        &:focus-visible {
+          outline: 2px solid vars.$accent;
+          outline-offset: 5px;
+          border-radius: vars.$radius-sm;
+        }
+
         text-align: center;
         margin: 0 30px;
 
         .date {
+          margin: 0;
           cursor: pointer;
           font-size: 18px;
           font-weight: 600;
@@ -151,8 +133,10 @@
 
     .search-container {
       position: relative;
-      width: 340px;
-      margin-left: 400px;
+      grid-column: 2;
+      justify-self: end;
+      width: min(340px, 100%);
+      margin-left: 0;
 
       .search-bar {
         display: flex;
@@ -211,6 +195,14 @@
         z-index: 10;
         box-shadow: vars.$shadow-pop;
 
+        .search-empty {
+          margin: 0;
+          padding: 14px;
+          color: vars.$text-muted;
+          font-size: 0.8rem;
+          line-height: 1.4;
+        }
+
         .search-result-item {
           display: flex;
           flex-direction: row;
@@ -221,6 +213,12 @@
           padding: 10px 14px;
           box-sizing: border-box;
           cursor: pointer;
+          border-left: 0;
+          border-right: 0;
+          background: transparent;
+          color: inherit;
+          font: inherit;
+          text-align: left;
           transition: background-color 0.15s ease;
           border-bottom: 1px solid vars.$border-subtle;
 
@@ -280,11 +278,31 @@
     }
 
     .buttons-container {
-      width: 150px;
+      grid-column: 3;
+      width: auto;
+      min-width: 132px;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 10px;
+
+      .mobile-search-button {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        border: 1px solid vars.$border-subtle;
+        border-radius: 50%;
+        background: vars.$bg-card-elevated;
+        color: vars.$text-secondary;
+
+        &:focus-visible {
+          outline: 2px solid vars.$accent;
+          outline-offset: 2px;
+        }
+      }
 
       .scan-container {
         position: relative;
@@ -538,6 +556,19 @@
     transition: all 0.2s ease-in-out;
 
     .month-container {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      font-family: inherit;
+      cursor: pointer;
+
+      &:focus-visible {
+        outline: 2px solid vars.$accent;
+        outline-offset: -3px;
+        border-radius: vars.$radius-sm;
+      }
+
       width: 8%;
       display: flex;
       flex-direction: column;
@@ -648,13 +679,44 @@
 }
 
 /* 📱 Mobile */
+@media (max-width: 1100px) {
+  .navbar {
+    .navbar-top {
+      .search-container {
+        display: none;
+
+        &.mobile-search-open {
+          position: absolute;
+          display: block;
+          height: auto;
+          top: 64px;
+          left: 20px;
+          width: calc(100% - 40px);
+          margin: 0;
+          z-index: 20;
+
+          .search-results {
+            top: 44px;
+          }
+        }
+      }
+
+      .buttons-container .mobile-search-button {
+        display: inline-flex;
+      }
+    }
+  }
+}
+
 @media (max-width: 600px) {
   .navbar {
     height: 64px;
 
-    .navbar-top {
+      .navbar-top {
       height: 64px;
       padding: 0 10px;
+      grid-template-columns: 36px minmax(0, 1fr) auto;
+      gap: 8px;
 
       .gradient-border-top {
         top: 64px;
@@ -670,10 +732,6 @@
           height: 28px;
           width: 28px;
         }
-      }
-
-      .money-container {
-        display: none;
       }
 
       .date-change-container {
@@ -699,7 +757,20 @@
       }
 
       .search-container {
-        display: none;
+        &.mobile-search-open {
+          position: absolute;
+          display: block;
+          height: auto;
+          top: 58px;
+          left: 12px;
+          width: calc(100% - 24px);
+          margin: 0;
+          z-index: 20;
+
+          .search-results {
+            top: 44px;
+          }
+        }
       }
 
       .scan-container {
@@ -714,6 +785,28 @@
           right: -6px;
           left: auto;
           min-width: 160px;
+        }
+      }
+
+      .buttons-container {
+        min-width: 0;
+      }
+
+      .buttons-container .mobile-search-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        border: 1px solid vars.$border-subtle;
+        border-radius: 50%;
+        background: vars.$bg-card-elevated;
+        color: vars.$text-secondary;
+
+        &:focus-visible {
+          outline: 2px solid vars.$accent;
+          outline-offset: 2px;
         }
       }
 

@@ -45,7 +45,7 @@ const NetWorthChart = ({ transactions }: NetWorthChartProps) => {
     labels: points.map((p) => formatDateLabel(p.date)),
     datasets: [
       {
-        label: "Net Balance",
+         label: "Running total",
         data: points.map((p) => p.balance),
         borderColor: COLOUR_BALANCE,
         backgroundColor: toRgba(COLOUR_BALANCE, 0.12),
@@ -108,8 +108,8 @@ const NetWorthChart = ({ transactions }: NetWorthChartProps) => {
     <div className="networth-card">
       <div className="networth-head">
         <div>
-          <h3 className="card-title">All-Time Net Worth</h3>
-          <p className="card-subtitle">Cumulative balance across all time</p>
+          <h3 className="card-title">Your running total over time</h3>
+          <p className="card-subtitle">The net activity recorded across your calendar</p>
         </div>
         <div className="networth-stat">
           <span className="networth-value">
@@ -124,9 +124,15 @@ const NetWorthChart = ({ transactions }: NetWorthChartProps) => {
           )}
         </div>
       </div>
-      <div className="networth-canvas">
-        <Line data={data} options={options as never} />
-      </div>
+      {points.length === 0 ? (
+        <p className="networth-empty">
+          Add an entry to see how your recorded money changes over time.
+        </p>
+      ) : (
+        <div className="networth-canvas">
+          <Line data={data} options={options as never} />
+        </div>
+      )}
     </div>
   );
 };

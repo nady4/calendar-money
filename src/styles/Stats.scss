@@ -27,6 +27,45 @@
     flex-wrap: wrap;
   }
 
+  .stats-intro {
+    padding: 22px 24px;
+    background: vars.$bg-card;
+    border: 1px solid vars.$border-subtle;
+    border-radius: vars.$radius-card;
+    box-shadow: vars.$shadow-card;
+
+    .stats-intro-kicker {
+      margin: 0 0 7px;
+      color: vars.$accent;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.4rem, 2.4vw, 2rem);
+      letter-spacing: -0.04em;
+      line-height: 1.08;
+    }
+
+    p:not(.stats-intro-kicker) {
+      max-width: 45rem;
+      margin: 9px 0 0;
+      color: vars.$text-primary;
+      font-size: 0.98rem;
+      line-height: 1.45;
+    }
+
+    span {
+      display: block;
+      margin-top: 6px;
+      color: vars.$text-secondary;
+      font-size: 0.8rem;
+    }
+  }
+
   .stats-scope-toggle {
     display: inline-flex;
     background: vars.$bg-card;
@@ -298,8 +337,14 @@
   position: relative;
 }
 
+.chart-empty {
+  margin: 14px 0 8px;
+  color: vars.$text-muted;
+  font-size: 0.86rem;
+}
+
 /* ---- Net Worth ---- */
-.networth-stat {
+  .networth-stat {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -323,6 +368,12 @@
       color: vars.$negative;
     }
   }
+}
+
+.networth-empty {
+  margin: 8px 0 0;
+  color: vars.$text-muted;
+  font-size: 0.86rem;
 }
 
 /* ---- Donuts ---- */
@@ -610,7 +661,7 @@
     text-align: left;
     font-size: 13px;
     transition: transform 0.15s ease;
-    color: white;
+    color: vars.$text-primary;
 
     &:hover {
       transform: scale(1.02);

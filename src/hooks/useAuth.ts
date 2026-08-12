@@ -5,7 +5,7 @@ import { UserType } from "../types.d";
 const refreshUserData = async (
   userId: string,
   setUser: React.Dispatch<React.SetStateAction<UserType>>
-) => {
+): Promise<boolean> => {
   try {
     const response = await fetch(`${API_URL}/users/${userId}`, {
       method: "GET",
@@ -19,7 +19,7 @@ const refreshUserData = async (
 
     if (!response.ok) {
       console.error("Error refreshing user data:", data.error);
-      return;
+      return false;
     }
 
     setUser({
@@ -31,8 +31,10 @@ const refreshUserData = async (
       transactions: data.user.transactions,
       categories: data.user.categories,
     });
+    return true;
   } catch (error) {
     console.error("Error refreshing user data:", error);
+    return false;
   }
 };
 
@@ -47,12 +49,38 @@ export function useAuth(
 
       try {
         if (user.id) {
-          await refreshUserData(user.id, setUser);
+          const refreshed = await refreshUserData(user.id, setUser);
+          if (!refreshed) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            setUser({
+              id: "",
+              username: "",
+              email: "",
+              password: "",
+              loggedIn: false,
+              transactions: [],
+              categories: []
+            });
+          }
         } else {
           const storedUser = localStorage.getItem("user");
           if (storedUser) {
             const userData = JSON.parse(storedUser);
-            await refreshUserData(userData._id, setUser);
+            const refreshed = await refreshUserData(userData._id, setUser);
+            if (!refreshed) {
+              localStorage.removeItem("token");
+              localStorage.removeItem("user");
+              setUser({
+                id: "",
+                username: "",
+                email: "",
+                password: "",
+                loggedIn: false,
+                transactions: [],
+                categories: []
+              });
+            }
           }
         }
       } finally {

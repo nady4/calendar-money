@@ -2,7 +2,7 @@ import { useState, useMemo, useRef, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMediaQuery } from "@mui/material";
 import { Temporal } from "@js-temporal/polyfill";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SearchIcon from "@mui/icons-material/Search";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
@@ -13,19 +13,13 @@ import { setHeldImage } from "../../util/scannedImageHolder";
 import { prepareScanFile } from "../../util/scanUpload";
 import useScanQuota from "../../hooks/useScanQuota";
 import {
-  getDayTotal,
   getMonthTotal,
-  getMonthExpenses,
-  getMonthIncome,
   formatCurrency
 } from "../../util/functions";
 import { months } from "../../util/constants";
 import LeftIcon from "@mui/icons-material/ChevronLeft";
 import RightIcon from "@mui/icons-material/ChevronRight";
 import WhiteMenuButton from "../../assets/whiteMenuButton.svg";
-import balanceIcon from "../../assets/balance.svg";
-import incomeIcon from "../../assets/income.svg";
-import expensesIcon from "../../assets/expenses.svg";
 import "../../styles/NavBar.scss";
 
 interface NavBarProps {
@@ -54,13 +48,14 @@ const NavBar = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isScanOpen, setIsScanOpen] = useState(false);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const [isScanDragOver, setIsScanDragOver] = useState(false);
   const isMobile = useMediaQuery("(max-width:600px)");
   const scanContainerRef = useRef<HTMLDivElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { quota, byok } = useScanQuota(user.id);
-  const quotaExhausted = quota.usedDay >= quota.limitDay;
+  const quotaExhausted = !byok && quota.usedDay >= quota.limitDay;
 
   useEffect(() => {
     if (!isScanOpen) return;
@@ -177,6 +172,7 @@ const NavBar = ({
     setSelectedTransaction(transaction);
     setSearchQuery("");
     setIsSearchFocused(false);
+    setIsMobileSearchOpen(false);
     navigate("/edit-transaction");
   };
 
@@ -186,31 +182,6 @@ const NavBar = ({
         getMonthTotal(user.transactions, month, selectedDay.year)
       ),
     [user.transactions, selectedDay.year]
-  );
-
-  const total = useMemo(
-    () => getDayTotal(user.transactions, Temporal.Now.plainDateISO()),
-    [user.transactions]
-  );
-
-  const income = useMemo(
-    () =>
-      getMonthIncome(
-        user.transactions,
-        months[selectedDay.month - 1],
-        selectedDay.year
-      ),
-    [user.transactions, selectedDay.month, selectedDay.year]
-  );
-
-  const expenses = useMemo(
-    () =>
-      getMonthExpenses(
-        user.transactions,
-        months[selectedDay.month - 1],
-        selectedDay.year
-      ),
-    [user.transactions, selectedDay.month, selectedDay.year]
   );
 
   const handleLeftArrowClick = () => {
@@ -231,13 +202,14 @@ const NavBar = ({
 
   return (
     <div className="navbar">
-      <ToastContainer position="bottom-center" autoClose={4000} theme="dark" />
       <div className="navbar-top">
         <div className="gradient-border-top"></div>
-        <div
+        <button
+          type="button"
           className={`menu-button-container ${
             isDropdownOpen ? "is-hidden" : ""
           }`}
+          aria-label="Open menu"
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
         >
           <img
@@ -246,35 +218,7 @@ const NavBar = ({
             alt="menu"
             height={"40px"}
           />
-        </div>
-
-        <div className="money-container">
-          <div
-            className="money-item balance-container"
-            onClick={() => navigate("/dashboard")}
-          >
-            <img src={balanceIcon} alt="balance" />
-            <p
-              className={`money balance ${total.balance >= 0 ? "positive" : "negative"}`}
-            >
-              ${formatCurrency(total.balance)}
-            </p>
-          </div>
-          <div
-            className="money-item income-container"
-            onClick={() => navigate("/stats")}
-          >
-            <img src={incomeIcon} alt="income" />
-            <p className="money income">+${formatCurrency(income)}</p>
-          </div>
-          <div
-            className="money-item expenses-container"
-            onClick={() => navigate("/stats")}
-          >
-            <img src={expensesIcon} alt="expenses" />
-            <p className="money expenses">-${formatCurrency(expenses)}</p>
-          </div>
-        </div>
+        </button>
 
         {!isStatsView && (
           <div className="date-change-container">
@@ -282,9 +226,12 @@ const NavBar = ({
               <LeftIcon fontSize="medium" />
             </button>
 
-            <div
+            <button
+              type="button"
               className="date-container"
               onClick={() => setIsNavBarOpen(!isNavBarOpen)}
+              aria-expanded={isNavBarOpen}
+              aria-label="Choose month"
             >
               <p className="date">
                 <span className="date-month">
@@ -295,7 +242,7 @@ const NavBar = ({
                   {selectedDay.toLocaleString("en", { year: "numeric" })}
                 </span>
               </p>
-            </div>
+            </button>
 
             <button className="arrow" onClick={handleRightArrowClick}>
               <RightIcon fontSize="medium" />
@@ -303,7 +250,9 @@ const NavBar = ({
           </div>
         )}
 
-        <div className="search-container">
+        <div
+          className={`search-container ${isMobileSearchOpen ? "mobile-search-open" : ""}`}
+        >
           <div className="search-bar">
             <SearchIcon className="search-icon" fontSize="small" />
             <input
@@ -317,15 +266,24 @@ const NavBar = ({
             />
           </div>
 
-          {isSearchFocused && searchResults.length > 0 && (
+          {isSearchFocused && searchQuery.trim() && (
             <div className="search-results">
-              {searchResults.map((t) => {
+              {searchResults.length === 0 ? (
+                <p className="search-empty">No calendar entries match that search.</p>
+              ) : searchResults.map((t) => {
                 const isIncome = t.category?.type === "Income";
                 return (
-                  <div
+                  <button
+                    type="button"
                     key={t._id}
                     className="search-result-item"
                     onMouseDown={() => handleSelectResult(t)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        handleSelectResult(t);
+                      }
+                    }}
                   >
                     <div className="search-result-info">
                       <p className="search-result-description">
@@ -346,25 +304,34 @@ const NavBar = ({
                       {isIncome ? "+" : "-"}$
                       {formatCurrency(Math.abs(t.amount))}
                     </p>
-                  </div>
+                  </button>
                 );
               })}
             </div>
           )}
         </div>
         <div className="buttons-container">
+          <button
+            type="button"
+            className="mobile-search-button"
+            aria-label="Search transactions"
+            aria-expanded={isMobileSearchOpen}
+            onClick={() => setIsMobileSearchOpen((open) => !open)}
+          >
+            <SearchIcon fontSize="small" />
+          </button>
           <div className="scan-container" ref={scanContainerRef}>
             <button
               type="button"
               className="scan-button"
-              aria-label="Scan invoice"
+              aria-label="Scan a receipt"
               aria-haspopup="true"
               aria-expanded={isScanOpen}
-              disabled={quotaExhausted}
+              aria-disabled={quotaExhausted}
               title={
                 quotaExhausted
-                  ? "Daily scan limit reached. Resets at midnight."
-                  : "Scan a receipt"
+                   ? "Daily receipt limit reached. Resets at midnight."
+                   : "Scan a receipt"
               }
               onClick={handleScanClick}
             >
@@ -386,7 +353,7 @@ const NavBar = ({
                   disabled={quotaExhausted}
                 >
                   <PhotoCameraIcon fontSize="small" />
-                  <span>Take photo</span>
+                           <span>Take a photo</span>
                 </button>
                 <button
                   type="button"
@@ -395,7 +362,7 @@ const NavBar = ({
                   disabled={quotaExhausted}
                 >
                   <UploadFileIcon fontSize="small" />
-                  <span>Upload image</span>
+                           <span>Upload a receipt</span>
                 </button>
                 <div className="scan-quota" aria-live="polite">
                   {byok ? (
@@ -431,7 +398,7 @@ const NavBar = ({
                       </div>
                       {quotaExhausted && (
                         <p className="scan-quota-warning">
-                          Daily limit reached. Resets at midnight.
+                           Daily receipt limit reached. Resets at midnight.
                         </p>
                       )}
                     </>
@@ -462,9 +429,10 @@ const NavBar = ({
 
           <div className="logo-container">
             <button
+              type="button"
               className="logo-button-container"
-              onClick={() => navigate("/")}
-              aria-label="Go to landing"
+              onClick={() => navigate("/dashboard")}
+              aria-label="Go to calendar"
             >
               <img className="logo-button" src="/favicon.svg" alt="logo" />
             </button>
@@ -485,12 +453,14 @@ const NavBar = ({
               (data.balance >= 0 ? "positive-month" : "negative-month");
 
             return (
-              <div
+              <button
+                type="button"
                 key={index}
                 className={`month-container ${isActive ? "active-month" : ""}`}
                 onClick={() =>
                   setSelectedDay(selectedDay.with({ month: index + 1 }))
                 }
+                aria-label={`${month} ${selectedDay.year}: ${formatCurrency(data.balance)} net`}
               >
                 <div className="month-header">
                   <p className={`month ${mobileClass || ""}`}>
@@ -509,7 +479,7 @@ const NavBar = ({
                     =${formatCurrency(data.balance)}
                   </p>
                 </div>
-              </div>
+              </button>
             );
           })}
         </div>

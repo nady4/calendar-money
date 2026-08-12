@@ -32,7 +32,7 @@ const CategoryDonut = ({ breakdown, type, title }: CategoryDonutProps) => {
       <div className="donut-card">
         <h3 className="donut-title">{title}</h3>
         <p className="donut-empty">
-          No {type.toLowerCase()} categories for this period.
+           Nothing recorded here for this period.
         </p>
       </div>
     );

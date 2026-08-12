@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import { HuePicker } from "react-color";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { UserType } from "../../types.d";
 import { API_URL } from "../../util/api";
 import exitButton from "../../assets/whiteExitButton.svg";
 import "../../styles/form.scss";
+import { toUserState } from "../../util/user";
 
 interface NewCategoryProps {
   user: UserType;
@@ -16,6 +18,8 @@ function NewCategory({ user, setUser }: NewCategoryProps) {
   const [color, setColor] = useState("#ff0000");
   const [type, setType] = useState("");
   const [disableSubmitButton, setDisableSubmitButton] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
 
   const incomeBox = useRef<HTMLInputElement>(null);
   const expenseBox = useRef<HTMLInputElement>(null);
@@ -46,7 +50,10 @@ function NewCategory({ user, setUser }: NewCategoryProps) {
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
-    event?.preventDefault();
+    event.preventDefault();
+    if (isSaving) return;
+    setIsSaving(true);
+    setFormError(null);
 
     const newCategory = {
       name,
@@ -67,23 +74,29 @@ function NewCategory({ user, setUser }: NewCategoryProps) {
       const data = await response.json();
 
       if (!response.ok) {
-        console.error("Error updating categories:", data.error);
+        setFormError(data?.error || "We couldn’t add this category. Try again.");
         return;
       }
 
-      setUser(data.user);
+      setUser(toUserState(data.user));
+      toast.success(`${name} is ready to use on your calendar.`);
       navigate("/dashboard");
     } catch (error) {
       console.error("Error updating categories:", error);
+      setFormError("We couldn’t reach the calendar. Check your connection and try again.");
+    } finally {
+      setIsSaving(false);
     }
   };
 
   return (
     <div className="form">
-      <h2>New Category</h2>
+      <p className="form-kicker">Make your money easier to recognize</p>
+      <h2>Add a category</h2>
+      <p className="form-intro">Choose a name and color that make sense in your life.</p>
       <button
         type="button"
-        aria-label="Close"
+        aria-label="Back to calendar"
         className="exit-button"
         onClick={() => {
           navigate("/dashboard");
@@ -92,8 +105,8 @@ function NewCategory({ user, setUser }: NewCategoryProps) {
         <img src={exitButton} alt="" />
       </button>
       <form id="new-category-form" onSubmit={handleSubmit}>
-        <label htmlFor="name" className="label">
-          Name
+          <label htmlFor="name" className="label">
+            What should it be called?
         </label>
         <input
           type="text"
@@ -104,13 +117,13 @@ function NewCategory({ user, setUser }: NewCategoryProps) {
           onChange={onNameChange}
         />
 
-        <label htmlFor="color" className="label" style={{ color: color }}>
-          Color
+          <label htmlFor="color" className="label" style={{ color: color }}>
+            Pick a color
         </label>
         <HuePicker color={color} onChangeComplete={onColorChange} />
         <div className="type-container">
           <label htmlFor="type" className="label">
-            Type
+            Does money come in or go out?
           </label>
           <div className="type-boxes">
             <label htmlFor="income-box" className="type-option is-income">
@@ -133,13 +146,18 @@ function NewCategory({ user, setUser }: NewCategoryProps) {
             </label>
           </div>
         </div>
+        {formError && (
+          <p className="form-error" role="alert">
+            {formError}
+          </p>
+        )}
         <div className="submit-button-container">
           <button
             type="submit"
             className="submit-button"
-            disabled={disableSubmitButton}
+            disabled={disableSubmitButton || isSaving}
           >
-            Submit
+            {isSaving ? "Adding…" : "Add category"}
           </button>
         </div>
       </form>

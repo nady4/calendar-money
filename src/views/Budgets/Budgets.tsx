@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { Temporal } from "@js-temporal/polyfill";
+import { useNavigate } from "react-router-dom";
 import NavBar from "../../components/Dashboard/NavBar";
 import Dropdown from "../../components/Dashboard/Dropdown";
 import PeriodNavigator from "../../components/Stats/PeriodNavigator";
@@ -44,6 +45,8 @@ const Budgets = ({
   const [limit, setLimit] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editLimit, setEditLimit] = useState("");
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setBudgets(getBudgets(user.id));
@@ -78,9 +81,21 @@ const Budgets = ({
   }, [breakdown]);
 
   const periodBudgets = budgets.filter((b) => b.period === period);
+  const totalLimit = periodBudgets.reduce(
+    (sum, budget) => sum + budget.limit,
+    0
+  );
+  const totalSpent = periodBudgets.reduce(
+    (sum, budget) => sum + (spentByName[budget.categoryName] || 0),
+    0
+  );
+  const totalRoom = totalLimit - totalSpent;
 
   const canAdd =
-    categoryId !== "" && limit !== "" && parseFloat(limit) > 0 && expenseCategories.find((c) => c._id === categoryId);
+    categoryId !== "" &&
+    limit !== "" &&
+    parseFloat(limit) > 0 &&
+    expenseCategories.find((c) => c._id === categoryId);
 
   const handleAdd = (e: React.FormEvent) => {
     e.preventDefault();
@@ -108,7 +123,12 @@ const Budgets = ({
   };
 
   const handleDelete = (budget: BudgetType) => {
+    if (deletingId !== budget.id) {
+      setDeletingId(budget.id);
+      return;
+    }
     setBudgets(deleteBudget(user.id, budget.id));
+    setDeletingId(null);
   };
 
   const categoryColor = (name: string) =>
@@ -135,8 +155,12 @@ const Budgets = ({
       <div className="budgets-container">
         <div className="budgets-header">
           <div>
-            <h2 className="budgets-title">Budgets</h2>
-            <p className="budgets-sub">{period}</p>
+            <h2 className="budgets-title">Spending budgets</h2>
+            <p className="budgets-sub">
+              {period === "monthly"
+                ? "A little room to make decisions"
+                : "A wider view of the year"}
+            </p>
           </div>
           <PeriodNavigator
             scope={period === "monthly" ? "month" : "year"}
@@ -159,13 +183,34 @@ const Budgets = ({
           </div>
         </div>
 
+        <p className="budgets-storage-note">Saved on this device</p>
+
+        {periodBudgets.length > 0 && (
+          <div className="budgets-story">
+            <span>
+              You&apos;ve used ${formatCurrency(totalSpent)} of $
+              {formatCurrency(totalLimit)}
+              {period === "monthly" ? " this month" : " this year"}.
+            </span>
+            <strong className={totalRoom >= 0 ? "is-room" : "is-over"}>
+              {totalRoom >= 0
+                ? `$${formatCurrency(totalRoom)} of room remains.`
+                : `$${formatCurrency(Math.abs(totalRoom))} beyond your limits.`}
+            </strong>
+          </div>
+        )}
+
         {expenseCategories.length === 0 ? (
-          <p className="budgets-empty">
-            Add an expense category first to set budgets.
-          </p>
+          <div className="budgets-empty-state">
+            <p>Your guardrails start with a spending category.</p>
+            <span>Add one before setting a limit.</span>
+            <button type="button" onClick={() => navigate("/new-category")}>
+              Add expense category
+            </button>
+          </div>
         ) : (
           <form className="budget-form card" onSubmit={handleAdd}>
-            <h3 className="card-title">New Budget</h3>
+            <h3 className="card-title">Set a budget</h3>
             <div className="budget-form-row">
               <label className="budget-field">
                 <span className="budget-label">Category</span>
@@ -189,7 +234,11 @@ const Budgets = ({
                 </select>
               </label>
               <label className="budget-field">
-                <span className="budget-label">Limit ($)</span>
+                <span className="budget-label">
+                  {period === "monthly"
+                    ? "Monthly room ($)"
+                    : "Yearly room ($)"}
+                </span>
                 <input
                   type="number"
                   className="budget-input"
@@ -205,7 +254,7 @@ const Budgets = ({
                 className="budget-add-btn"
                 disabled={!canAdd}
               >
-                Add
+                Set limit
               </button>
             </div>
           </form>
@@ -213,7 +262,15 @@ const Budgets = ({
 
         <div className="budget-list">
           {periodBudgets.length === 0 ? (
-            <p className="budgets-empty">No budgets for this period yet.</p>
+            <div className="budgets-empty-state budgets-empty-list">
+              <p>
+                No budget for this {period === "monthly" ? "month" : "year"}{" "}
+                yet.
+              </p>
+              <span>
+                Set one when a category would help you make a decision.
+              </span>
+            </div>
           ) : (
             periodBudgets.map((b) => {
               const spent = spentByName[b.categoryName] || 0;
@@ -231,7 +288,7 @@ const Budgets = ({
                     />
                     <span className="budget-item-name">{b.categoryName}</span>
                     <span className="budget-limit">
-                      Limit: ${formatCurrency(b.limit)}
+                      Room: ${formatCurrency(b.limit)}
                     </span>
                   </div>
 
@@ -268,13 +325,11 @@ const Budgets = ({
                           />
                         </div>
                         <div className="budget-progress-labels">
-                          <span>
-                            Spent ${formatCurrency(spent)}
-                          </span>
+                          <span>Used ${formatCurrency(spent)}</span>
                           <span className={over ? "over" : "ok"}>
                             {over
-                              ? `Over by $${formatCurrency(-remaining)}`
-                              : `$${formatCurrency(remaining)} left`}
+                              ? `$${formatCurrency(-remaining)} beyond this limit`
+                              : `$${formatCurrency(remaining)} room remains`}
                           </span>
                         </div>
                       </div>
@@ -292,8 +347,16 @@ const Budgets = ({
                           className="budget-btn danger"
                           onClick={() => handleDelete(b)}
                         >
-                          Delete
+                          {deletingId === b.id ? "Confirm removal" : "Remove"}
                         </button>
+                        {deletingId === b.id && (
+                          <button
+                            className="budget-btn"
+                            onClick={() => setDeletingId(null)}
+                          >
+                            Keep it
+                          </button>
+                        )}
                       </div>
                     </>
                   )}

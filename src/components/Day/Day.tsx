@@ -1,7 +1,9 @@
 import { useState, useEffect, memo, useRef, DragEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { Temporal } from "@js-temporal/polyfill";
+import { toast } from "react-toastify";
 import {
+  getDayActivity,
   getDayTotal,
   getDayTransactions,
   formatCurrency
@@ -37,17 +39,26 @@ function Day({
     expenses: 0,
     balance: 0
   });
+  const [activity, setActivity] = useState({
+    income: 0,
+    expenses: 0,
+    balance: 0
+  });
   const [transactions, setTransactions] = useState<TransactionType[]>([]);
   const [isDragOver, setIsDragOver] = useState(false);
   const [draggingId, setDraggingId] = useState<string | null>(null);
-  const isActiveMonth = selectedDay.month === date.month;
-  const isActiveDay = date.equals(Temporal.Now.plainDate("gregory"));
+  const today = Temporal.Now.plainDate("gregory");
+  const isActiveMonth =
+    selectedDay.year === date.year && selectedDay.month === date.month;
+  const isActiveDay = date.equals(today);
+  const isSelectedDay = date.equals(selectedDay);
   const navigate = useNavigate();
   const dragCounter = useRef(0);
 
   useEffect(() => {
     setTransactions(getDayTransactions(user.transactions, date));
     setTotal(getDayTotal(user.transactions, date));
+    setActivity(getDayActivity(user.transactions, date));
   }, [date, user.transactions]);
 
   const openTransactions = () => {
@@ -55,6 +66,13 @@ function Day({
     if (justDropped.isRecent()) return;
     setSelectedDay(date);
     navigate("/transactions");
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      openTransactions();
+    }
   };
 
   const handleItemDragStart = (e: DragEvent<HTMLDivElement>, id: string) => {
@@ -123,16 +141,43 @@ function Day({
       date,
       localStorage.getItem("token")
     );
-    if (updated) setUser(updated);
+    if (updated) {
+      setUser(updated);
+      toast.success(
+        `Moved to ${date.toLocaleString("en", { month: "long", day: "numeric" })}.`
+      );
+    } else {
+      toast.error("We couldn’t move that entry. Try again.");
+    }
   };
+
+  const visibleTransactions = transactions.slice(0, 4);
+  const remainingCount = Math.max(
+    0,
+    transactions.length - visibleTransactions.length
+  );
+  const dayLabel = date.toLocaleString("en", {
+    month: "long",
+    day: "numeric",
+    year: "numeric"
+  });
 
   return (
     <div
       className={`${isActiveDay ? "active-day" : "inactive-day"}
         ${isActiveMonth ? "active-month" : "inactive-month"} ${
-          total.balance < 0 ? "negative" : "positive"
-        } calendar-day ${isDragOver ? "drag-over" : ""}`}
+          activity.balance < 0 ? "negative" : "positive"
+        } ${isSelectedDay ? "selected-day" : ""} calendar-day ${isDragOver ? "drag-over" : ""}`}
       onClick={openTransactions}
+      onKeyDown={handleKeyDown}
+      role="button"
+      tabIndex={0}
+      aria-current={isActiveDay ? "date" : undefined}
+      aria-label={`${dayLabel}. ${
+        transactions.length === 0
+          ? "Nothing planned."
+          : `${transactions.length} ${transactions.length === 1 ? "entry" : "entries"}.`
+      } Running total ${formatCurrency(total.balance)} dollars.`}
       onDragEnter={handleDayDragEnter}
       onDragOver={handleDayDragOver}
       onDragLeave={handleDayDragLeave}
@@ -146,8 +191,13 @@ function Day({
           <p className="day-date">{date.day}</p>
         </div>
       </div>
+      {transactions.length === 0 && (
+        <div className="day-activity day-activity-empty" aria-hidden="true">
+          quiet
+        </div>
+      )}
       <div className="transactions-container">
-        {transactions.map((transaction: TransactionType) => {
+        {visibleTransactions.map((transaction: TransactionType) => {
           return (
             <div
               className={`day-item ${
@@ -162,22 +212,20 @@ function Day({
               <div
                 className="item-color"
                 style={{
-                  backgroundColor:
-                    transaction.category.type === "Income"
-                      ? "#4caf50"
-                      : "#f44336"
+                  backgroundColor: transaction.category.color
                 }}
               ></div>
               <div className="item-amount">
                 {transaction.category.type === "Income" ? "+" : "-"}$
                 {formatCurrency(transaction.amount)}
               </div>
-              <div className="item-description">
-                {transaction.description}
-              </div>
+              <div className="item-description">{transaction.description}</div>
             </div>
           );
         })}
+        {remainingCount > 0 && (
+          <div className="day-more">+{remainingCount} more</div>
+        )}
       </div>
     </div>
   );

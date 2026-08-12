@@ -1,12 +1,16 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Temporal } from "@js-temporal/polyfill";
+import { toast } from "react-toastify";
 import { API_URL } from "../../util/api";
 import useCategoryOptions from "../../hooks/useCategoryOptions";
 import useValidateTransaction from "../../hooks/useValidateTransaction";
 import { UserType, TransactionType } from "../../types";
 import exitButton from "../../assets/whiteExitButton.svg";
 import "../../styles/form.scss";
+import { formatCurrency, getDayTotal, getMonthTotal } from "../../util/functions";
+import { months } from "../../util/constants";
+import { toUserState } from "../../util/user";
 
 interface EditTransactionProps {
   user: UserType;
@@ -25,6 +29,10 @@ function EditTransaction({ user, setUser, transaction }: EditTransactionProps) {
     transaction.repeat || null
   );
   const [disableSubmitButton, setDisableSubmitButton] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
 
   const categoriesDatalist = useRef<HTMLDataListElement>(null);
   const categoryInput = useRef<HTMLInputElement>(null);
@@ -41,7 +49,7 @@ function EditTransaction({ user, setUser, transaction }: EditTransactionProps) {
   });
 
   const onAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAmount(parseFloat(event.target.value));
+    setAmount(event.target.value === "" ? 0 : parseFloat(event.target.value));
   };
 
   const onDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -78,7 +86,10 @@ function EditTransaction({ user, setUser, transaction }: EditTransactionProps) {
   };
 
   const handleUpdateSubmit = async (event: React.FormEvent) => {
-    event?.preventDefault();
+    event.preventDefault();
+    if (isSaving) return;
+    setIsSaving(true);
+    setFormError(null);
 
     const newTransaction = {
       id: transaction._id,
@@ -87,6 +98,7 @@ function EditTransaction({ user, setUser, transaction }: EditTransactionProps) {
       description,
       category,
       repeats,
+      group: transaction.group,
     };
 
     try {
@@ -102,19 +114,38 @@ function EditTransaction({ user, setUser, transaction }: EditTransactionProps) {
       const data = await response.json();
 
       if (!response.ok) {
-        console.error("Error updating transaction:", data.error);
+        setFormError(data?.error || "We couldn’t save this entry. Try again.");
         return;
       }
 
-      setUser(data.user);
+      setUser(toUserState(data.user));
+      const savedTotal = getDayTotal(data.user.transactions, date);
+      toast.success(
+        `Saved. ${date.toLocaleString("en", {
+          month: "long",
+          day: "numeric"
+        })} now ends at $${formatCurrency(savedTotal.balance)}.`
+      );
       navigate("/dashboard");
     } catch (error) {
       console.error("Error updating transaction:", error);
+      setFormError("We couldn’t reach the calendar. Check your connection and try again.");
+    } finally {
+      setIsSaving(false);
     }
   };
 
-  const handleDeleteSubmit = async (event: React.FormEvent) => {
-    event?.preventDefault();
+  const handleDeleteSubmit = async (
+    event: React.FormEvent | React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+    if (!deleteConfirm) {
+      setDeleteConfirm(true);
+      return;
+    }
+    if (isDeleting) return;
+    setIsDeleting(true);
+    setFormError(null);
 
     try {
       const response = await fetch(`${API_URL}/transactions/${user.id}`, {
@@ -129,23 +160,47 @@ function EditTransaction({ user, setUser, transaction }: EditTransactionProps) {
       const data = await response.json();
 
       if (!response.ok) {
-        console.error("Error deleting transaction:", data.error);
+        setFormError(data?.error || "We couldn’t remove this entry. Try again.");
         return;
       }
 
-      setUser(data.user);
+      setUser(toUserState(data.user));
+      toast.success(
+        transaction.group
+          ? "Removed this repeating series from your calendar."
+          : "Removed from your calendar."
+      );
       navigate("/dashboard");
     } catch (error) {
       console.error("Error deleting transaction:", error);
+      setFormError("We couldn’t reach the calendar. Check your connection and try again.");
+    } finally {
+      setIsDeleting(false);
     }
   };
 
+  const selectedMonth = months[date.month - 1];
+  const withoutCurrent = user.transactions.filter((item) => item._id !== transaction._id);
+  const currentDayTotal = getDayTotal(withoutCurrent, date);
+  const currentMonthTotal = getMonthTotal(
+    withoutCurrent,
+    selectedMonth,
+    date.year
+  );
+  const signedAmount = category?.type === "Income" ? amount : -amount;
+  const projectedDayTotal = currentDayTotal.balance + signedAmount;
+  const projectedMonthTotal = currentMonthTotal.balance + signedAmount;
+
   return (
     <div className="form">
-      <h2>Edit Transaction</h2>
+      <p className="form-kicker">Keep your calendar honest</p>
+      <h2>Change this entry</h2>
+      <p className="form-intro">
+        Update what happened or adjust what is coming next.
+      </p>
       <button
         type="button"
-        aria-label="Close"
+         aria-label="Back to calendar"
         className="exit-button"
         onClick={() => {
           navigate("/dashboard");
@@ -153,29 +208,35 @@ function EditTransaction({ user, setUser, transaction }: EditTransactionProps) {
       >
         <img src={exitButton} alt="" />
       </button>
-      <form id="edit-transaction-form">
-        <label htmlFor="amount">Amount</label>
+      <form id="edit-transaction-form" onSubmit={handleUpdateSubmit}>
+        <label htmlFor="amount">How much?</label>
         <input
-          type="text"
+          type="number"
+          inputMode="decimal"
+          min="0"
+          step="0.01"
+          id="amount"
           name="amount"
           value={amount}
           onChange={onAmountChange}
         />
 
-        <label htmlFor="description">Description</label>
+        <label htmlFor="description">What is it?</label>
         <input
           type="text"
           name="description"
+          id="description"
           value={description}
           onChange={onDescriptionChange}
         />
 
-        <label htmlFor="category">Category</label>
+        <label htmlFor="category">Where should it go?</label>
         <div className="category-field">
           <input
             className="category-input"
             ref={categoryInput}
             name="category"
+            id="category"
             list="categories"
             onChange={onCategoryChange}
             placeholder={category?.name || ""}
@@ -194,7 +255,7 @@ function EditTransaction({ user, setUser, transaction }: EditTransactionProps) {
         </div>
         <datalist id="categories" ref={categoriesDatalist}></datalist>
 
-        <label htmlFor="date">Date</label>
+        <label htmlFor="date">When?</label>
         <input
           type="date"
           name="date"
@@ -203,7 +264,7 @@ function EditTransaction({ user, setUser, transaction }: EditTransactionProps) {
           value={date.toString().slice(0, 10)}
         />
         <div className="repeat-container">
-          <label className="repeat-label">Repeat</label>
+          <label className="repeat-label">Make it a pattern</label>
           <div className="repeat-options" role="radiogroup" aria-label="Repeat">
             {(
               [
@@ -229,20 +290,58 @@ function EditTransaction({ user, setUser, transaction }: EditTransactionProps) {
               </label>
             ))}
           </div>
+          <p className="repeat-help">
+            {transaction.group
+              ? "This entry belongs to a repeating series. Saving changes the series."
+              : "Repeating entries are saved as scheduled dates on your calendar."}
+          </p>
         </div>
+        <div className="transaction-impact" aria-live="polite">
+          <span>After this entry</span>
+          <strong>
+            {date.toLocaleString("en", { month: "long", day: "numeric" })}: $
+            {formatCurrency(projectedDayTotal)}
+          </strong>
+          <small>
+            {selectedMonth} net: {projectedMonthTotal >= 0 ? "+" : "-"}$
+            {formatCurrency(Math.abs(projectedMonthTotal))}
+          </small>
+        </div>
+        {formError && (
+          <p className="form-error" role="alert">
+            {formError}
+          </p>
+        )}
         <button
-          type="button"
+          type="submit"
           className="submit-button"
-          disabled={disableSubmitButton}
-          onClick={handleUpdateSubmit}
+          disabled={disableSubmitButton || isSaving || isDeleting}
         >
-          Submit
+          {isSaving ? "Saving…" : "Save changes"}
         </button>
       </form>
-      <div className="delete-button">
-        <button className="delete" onClick={handleDeleteSubmit}>
-          Delete Transaction
+      <div className={`delete-button ${deleteConfirm ? "is-confirming" : ""}`}>
+        <button
+          type="button"
+          className="delete"
+          onClick={handleDeleteSubmit}
+          disabled={isDeleting}
+        >
+          {deleteConfirm
+            ? transaction.group
+              ? "Remove this repeating series"
+              : "Confirm removal"
+            : "Remove from calendar"}
         </button>
+        {deleteConfirm && !isDeleting && (
+          <button
+            type="button"
+            className="delete-cancel"
+            onClick={() => setDeleteConfirm(false)}
+          >
+            Keep entry
+          </button>
+        )}
       </div>
     </div>
   );

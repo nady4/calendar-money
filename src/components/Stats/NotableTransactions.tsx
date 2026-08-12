@@ -99,14 +99,14 @@ const NotableTransactions = ({
     <div className="notable-card card">
       <List
         list={topExpenses}
-        title="Biggest Expenses"
-        fallback="No expenses in this period."
+        title="Entries that shaped spending"
+        fallback="No spending entries in this period."
       />
       <div className="notable-divider" />
       <List
         list={topIncome}
-        title="Largest Income"
-        fallback="No income in this period."
+        title="Entries that brought money in"
+        fallback="No income entries in this period."
       />
     </div>
   );

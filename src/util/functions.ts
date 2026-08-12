@@ -25,42 +25,74 @@ const getDayTransactions = (
     date: toPlainDate(transaction.date) as Temporal.PlainDate
   }));
 
-  const exactDateMatches = processedTransactions.filter(
+  // Repeat series are expanded into dated rows by the API. Treat those rows as
+  // the source of truth so the calendar and totals always describe the same data.
+  return processedTransactions
+    .filter(
     (transaction) =>
       Temporal.PlainDate.compare(
         transaction.date as Temporal.PlainDate,
         day
       ) === 0
-  );
-
-  const weeklyRepeats = processedTransactions.filter((transaction) => {
-    if (transaction.repeat === "weekly") {
-      if (day.dayOfWeek !== transaction.date.dayOfWeek) return false;
-      const txWeek = transaction.date.year * 52 + transaction.date.dayOfWeek;
-      const dayWeek = day.year * 52 + day.dayOfWeek;
-      return dayWeek >= txWeek;
-    }
-    return false;
-  });
-
-  const monthlyRepeats = processedTransactions.filter((transaction) => {
-    if (transaction.repeat === "monthly") {
-      if (day.day !== transaction.date.day) return false;
-      const txKey = transaction.date.year * 12 + transaction.date.month;
-      const dayKey = day.year * 12 + day.month;
-      return dayKey >= txKey;
-    }
-    return false;
-  });
-
-  return [...exactDateMatches, ...weeklyRepeats, ...monthlyRepeats].sort(
+    )
+    .sort(
     (a, b) => {
       return Temporal.PlainDate.compare(
         a.date as Temporal.PlainDate,
         b.date as Temporal.PlainDate
       );
     }
-  );
+    );
+};
+
+const getDayActivity = (
+  transactions: TransactionType[],
+  day: Temporal.PlainDate
+): TotalType => {
+  const activity: TotalType = { income: 0, expenses: 0, balance: 0 };
+
+  transactions.forEach((transaction) => {
+    const date = toPlainDate(transaction.date);
+    if (!date.equals(day)) return;
+
+    if (transaction.category.type === "Income") {
+      activity.income += transaction.amount;
+    } else {
+      activity.expenses += transaction.amount;
+    }
+  });
+
+  activity.balance = activity.income - activity.expenses;
+  return activity;
+};
+
+const getUpcomingTransactions = (
+  transactions: TransactionType[],
+  from: Temporal.PlainDate,
+  days = 7,
+  limit = 4
+): TransactionType[] => {
+  const lastDay = from.add({ days });
+
+  return transactions
+    .map((transaction) => ({
+      ...transaction,
+      date: toPlainDate(transaction.date) as Temporal.PlainDate
+    }))
+    .filter((transaction) => {
+      const date = transaction.date as Temporal.PlainDate;
+      return (
+        Temporal.PlainDate.compare(date, from) >= 0 &&
+        Temporal.PlainDate.compare(date, lastDay) <= 0
+      );
+    })
+    .sort((a, b) =>
+      Temporal.PlainDate.compare(
+        a.date as Temporal.PlainDate,
+        b.date as Temporal.PlainDate
+      )
+    )
+    .slice(0, limit);
 };
 
 const getDaysWithTransactionsTotal = (
@@ -605,6 +637,8 @@ const formatCompactCurrency = (amount: number): string => {
 
 export {
   getDayTransactions,
+  getDayActivity,
+  getUpcomingTransactions,
   getDayTotal,
   getMonthTotal,
   getDailyMonthTotals,
