@@ -1,7 +1,7 @@
 <h1 align="center"> Calendar Money </h1>
 
 <p align="center">
-💸 A personal finance app that turns your income and expenses into a calendar, so you can plan your life.
+🗓️ A personal finance app that turns your income and expenses into a calendar, so you can plan your life.
 </p>
 
 <br>
