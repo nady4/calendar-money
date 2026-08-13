@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://money.nady4.com/sitemap.xml

@@ -431,8 +431,8 @@ const NavBar = ({
             <button
               type="button"
               className="logo-button-container"
-              onClick={() => navigate("/dashboard")}
-              aria-label="Go to calendar"
+              onClick={() => navigate("/")}
+              aria-label="Go to landing"
             >
               <img className="logo-button" src="/favicon.svg" alt="logo" />
             </button>

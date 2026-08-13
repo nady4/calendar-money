@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { API_URL } from "../../util/api";
 import { UserType } from "../../types.d";
+import { useSeo } from "../../hooks/useSeo";
 import Footer from "../../components/Dashboard/Footer";
 import "react-toastify/dist/ReactToastify.css";
 import "../../styles/auth.scss";
@@ -12,6 +13,13 @@ function Login({
 }: {
   setUser: React.Dispatch<React.SetStateAction<UserType>>;
 }) {
+  useSeo({
+    title: "Log in · Calendar Money",
+    description:
+      "Log in to Calendar Money and open your calendar of income, expenses, and projected balances.",
+    path: "/login",
+  });
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 

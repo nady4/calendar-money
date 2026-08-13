@@ -1,0 +1,52 @@
+# Calendar Money
+
+> Your money has a calendar. A personal finance app that turns your income and expenses into a calendar, so you can plan your life. Every day shows its projected balance; add income and expenses to the dates they happen and see exactly what moves your balance.
+
+## Key pages
+
+- [Home / Landing](https://money.nady4.com/): marketing page with features, preview screenshots, FAQ, and sign-up call to action.
+- [Register](https://money.nady4.com/register): create a free account.
+- [Login](https://money.nady4.com/login): sign in to an existing account.
+- [Terms of Service](https://money.nady4.com/terms)
+- [Privacy Policy](https://money.nady4.com/privacy)
+- [Sitemap](https://money.nady4.com/sitemap.xml)
+
+## App routes (require login)
+
+- `/dashboard`: calendar showing daily projected balances, drag-and-drop transaction editing, global search.
+- `/stats`: cash flow metrics, category breakdowns, net worth over time, monthly/yearly views.
+- `/budgets`: per-category spending limits with live progress bars and over-budget alerts.
+- `/transactions`: full transaction list and search.
+- `/categories`: custom income/expense categories with colors and labels.
+- `/new-transaction`, `/edit-transaction`, `/scan-review`: create, edit, and AI receipt-scan review flows.
+- `/account`: account settings, including optional bring-your-own vision API key for receipt scanning.
+- `/new-category`, `/edit-category`: category management.
+
+## Features
+
+- Calendar-based projected balances: every day shows its projected balance based on scheduled income and expenses.
+- Drag-and-drop transaction edits: move a transaction to another day and the date updates instantly.
+- Smart statistics: cash flow, category breakdowns, net worth over time, monthly and yearly views.
+- Category budgets: spending limits with live progress bars and over-budget alerts.
+- Custom categories: colors and labels for income and expenses.
+- AI receipt scanning: upload a receipt photo, the vision API extracts the transaction (optional BYOK API key; daily and monthly quotas).
+- Global search, dark mode, CSV export, PDF export.
+
+## Tech stack
+
+- Frontend: Vite + React 18 + TypeScript, react-router-dom v7, MUI, Chart.js, Sass, jsPDF, Zod.
+- Backend (separate repo): Node.js + Express + Mongoose (MongoDB), JWT auth, AI scan endpoints.
+- Hosting: static SPA hosting with a catch-all rewrite to `index.html` for client-side routes (e.g. Vercel/Netlify).
+
+## Repositories
+
+- Frontend: https://github.com/nady4/calendar-money
+- Backend: https://github.com/nady4/calendar-money-api
+
+## Notes for LLMs and crawlers
+
+- The app is a client-side rendered SPA; all routes share a single `index.html` shell.
+- Auth routes require a user account and are not intended for indexing.
+- The app sets no tracking cookies and includes no third-party analytics.
+- Backend wire format for the scan flow: `docs/scan-invoice-backend-contract.md` in the frontend repo.
+- Contact: dev@nady4.com

@@ -3,11 +3,19 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { API_URL } from "../../util/api";
 import useValidateUser from "../../hooks/useValidateUser";
+import { useSeo } from "../../hooks/useSeo";
 import Footer from "../../components/Dashboard/Footer";
 import "react-toastify/dist/ReactToastify.css";
 import "../../styles/auth.scss";
 
 function Register() {
+  useSeo({
+    title: "Create your account · Calendar Money",
+    description:
+      "Create a free Calendar Money account and start tracking your income and expenses on a calendar.",
+    path: "/register",
+  });
+
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

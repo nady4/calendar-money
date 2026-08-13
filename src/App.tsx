@@ -1,19 +1,6 @@
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { Temporal } from "@js-temporal/polyfill";
-import Login from "./views/Auth/Login";
-import Register from "./views/Auth/Register.tsx";
-import Dashboard from "./views/Dashboard/Dashboard.tsx";
-import CategoryList from "./views/Category/CategoryList";
-import NewCategory from "./views/Category/NewCategory.tsx";
-import EditCategory from "./views/Category/EditCategory.tsx";
-import TransactionList from "./views/Transaction/TransactionList.tsx";
-import NewTransaction from "./views/Transaction/NewTransaction.tsx";
-import EditTransaction from "./views/Transaction/EditTransaction.tsx";
-import ScanReview from "./views/Transaction/ScanReview.tsx";
-import Account from "./views/Account/Account.tsx";
-import Stats from "./views/Stats/Stats.tsx";
-import Budgets from "./views/Budgets/Budgets.tsx";
 import Landing from "./views/Landing/Landing.tsx";
 import { ThemeProvider } from "./components/ThemeProvider";
 import { useAuth } from "./hooks/useAuth.ts";
@@ -21,6 +8,42 @@ import { UserType, CategoryType, TransactionType } from "./types.d";
 import "./styles/loading.scss";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+const Login = lazy(() => import("./views/Auth/Login"));
+const Register = lazy(() => import("./views/Auth/Register.tsx"));
+const Dashboard = lazy(() => import("./views/Dashboard/Dashboard.tsx"));
+const CategoryList = lazy(() => import("./views/Category/CategoryList"));
+const NewCategory = lazy(() => import("./views/Category/NewCategory.tsx"));
+const EditCategory = lazy(() => import("./views/Category/EditCategory.tsx"));
+const TransactionList = lazy(
+  () => import("./views/Transaction/TransactionList.tsx")
+);
+const NewTransaction = lazy(
+  () => import("./views/Transaction/NewTransaction.tsx")
+);
+const EditTransaction = lazy(
+  () => import("./views/Transaction/EditTransaction.tsx")
+);
+const ScanReview = lazy(() => import("./views/Transaction/ScanReview.tsx"));
+const Account = lazy(() => import("./views/Account/Account.tsx"));
+const Stats = lazy(() => import("./views/Stats/Stats.tsx"));
+const Budgets = lazy(() => import("./views/Budgets/Budgets.tsx"));
+const Terms = lazy(() => import("./views/Legal/Terms.tsx"));
+const Privacy = lazy(() => import("./views/Legal/Privacy.tsx"));
+
+function RouteFallback() {
+  return (
+    <div className="loading" role="status" aria-live="polite">
+      <div className="loading-card">
+        <img src="/favicon.svg" alt="" className="loading-icon" />
+        <p className="loading-label">Loading your money</p>
+        <div className="loading-bar" aria-hidden>
+          <span />
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function RequireAuth({
   user,
@@ -77,8 +100,11 @@ function App() {
           </div>
         </div>
       ) : (
-        <Routes>
-          <Route path="/" element={<Landing user={user} />} />
+        <Suspense fallback={<RouteFallback />}>
+          <Routes>
+            <Route path="/" element={<Landing user={user} />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/privacy" element={<Privacy />} />
           <Route
             path="/register"
             element={
@@ -240,7 +266,8 @@ function App() {
               )
             }
           />
-        </Routes>
+          </Routes>
+        </Suspense>
       )}
       </main>
     </ThemeProvider>

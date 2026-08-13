@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import "../../styles/Landing.scss";
 import { useState } from "react";
 import { UserType } from "../../types";
+import { useSeo } from "../../hooks/useSeo";
 
 const features = [
   {
@@ -38,7 +39,49 @@ const features = [
   }
 ];
 
+const faqs = [
+  {
+    q: "Is it free?",
+    a: "Yes. Calendar Money is a personal project, so you can sign up and start tracking today at no cost.",
+  },
+  {
+    q: "Where is my data stored?",
+    a: "Your account, categories and transactions live on a remote backend so you can log in from any device.",
+  },
+  {
+    q: "Can I move a transaction to a different day?",
+    a: "Yes. Pick up any transaction in the calendar and drop it on the day you want, and the date updates instantly.",
+  },
+  {
+    q: "Can I make recurring transactions?",
+    a: "Yes. When creating a transaction, choose \"Make it a pattern\" and it repeats weekly or monthly automatically.",
+  },
+  {
+    q: "Can I scan receipts instead of typing them?",
+    a: "Yes. Upload a photo of an invoice or receipt and the app extracts the transaction with AI. Scans are limited per day and month to keep things fair.",
+  },
+  {
+    q: "Can I export my data?",
+    a: "Yes. You can download a CSV backup of all your transactions from the transaction list at any time.",
+  },
+  {
+    q: "Is there a mobile app?",
+    a: "No native app, but Calendar Money works in any browser and can be installed to your home screen like an app.",
+  },
+  {
+    q: "Can I customize the look?",
+    a: "Yes. Switch between dark and light mode and pick an accent color from the account settings.",
+  },
+];
+
 const Landing = ({ user }: { user: UserType }) => {
+  useSeo({
+    title: "Calendar Money - Your money has a calendar",
+    description:
+      "A free personal finance app that turns your income and expenses into a calendar, so you can plan your life. See projected balances, track budgets, and understand where your money goes.",
+    path: "",
+  });
+
   const [hoveredFeature, setHoveredFeature] = useState<string>("calendar");
 
   return (
@@ -118,6 +161,7 @@ const Landing = ({ user }: { user: UserType }) => {
               src="/assets/docs/dashboard.png"
               alt="Calendar Money dashboard"
               className="screenshot-img"
+              fetchPriority="high"
             />
           </div>
         </div>
@@ -231,46 +275,28 @@ const Landing = ({ user }: { user: UserType }) => {
       <section className="faq" id="faq">
         <h2 className="section-title">FAQ</h2>
         <div className="faq-grid">
-          <div>
-            <h3>Is it free?</h3>
-            <p>
-              Yes. Calendar Money is a personal project, so you can sign up and
-              start tracking today at no cost.
-            </p>
-          </div>
-          <div>
-            <h3>Where is my data stored?</h3>
-            <p>
-              Your account, categories and transactions live on a remote backend
-              so you can log in from any device.
-            </p>
-          </div>
-          <div>
-            <h3>Can I move a transaction to a different day?</h3>
-            <p>
-              Yes. Pick up any transaction in the calendar and drop it on the
-              day you want, and the date updates instantly.
-            </p>
-          </div>
-          <div>
-            <h3>Do I need to install anything?</h3>
-            <p>
-              No. It runs in your browser. Bookmark it, and your calendar is one
-              tap away.
-            </p>
-          </div>
+          {faqs.map((f) => (
+            <div key={f.q}>
+              <h3>{f.q}</h3>
+              <p>{f.a}</p>
+            </div>
+          ))}
         </div>
       </section>
 
       <footer className="landing-footer">
         <span>© Calendar Money · built by nady4</span>
-        <a
-          href="https://github.com/nady4/calendar-money"
-          target="_blank"
-          rel="noreferrer"
-        >
-          GitHub
-        </a>
+        <nav className="landing-footer-links" aria-label="Legal">
+          <Link to="/terms">Terms of Service</Link>
+          <Link to="/privacy">Privacy Policy</Link>
+          <a
+            href="https://github.com/nady4/calendar-money"
+            target="_blank"
+            rel="noreferrer"
+          >
+            GitHub
+          </a>
+        </nav>
       </footer>
     </div>
   );

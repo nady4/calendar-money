@@ -646,6 +646,11 @@
       transform: scale(1.05);
     }
   }
+
+  .landing-footer-links {
+    display: flex;
+    gap: 20px;
+  }
 }
 
 /* ---------- Responsive ---------- */
