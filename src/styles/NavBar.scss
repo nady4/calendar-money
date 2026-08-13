@@ -510,11 +510,6 @@
           .logo-button {
             height: 20px;
             width: 20px;
-            filter: var(
-              --accent-filter,
-              brightness(0) saturate(100%) invert(56%) sepia(85%)
-                saturate(2476%) hue-rotate(177deg) brightness(96%) contrast(96%)
-            );
             transition:
               transform 0.18s ease,
               filter 0.18s ease;
@@ -524,15 +519,6 @@
             transform: scale(1.08);
             border-color: var(--accent);
             box-shadow: 0 4px 14px var(--accent-strong);
-
-            .logo-button {
-              filter: var(
-                --accent-filter-hover,
-                brightness(0) saturate(100%) invert(56%) sepia(85%)
-                  saturate(2476%) hue-rotate(177deg) brightness(110%)
-                  contrast(100%)
-              );
-            }
           }
           &:active {
             transform: scale(0.95);
@@ -712,7 +698,7 @@
   .navbar {
     height: 64px;
 
-      .navbar-top {
+    .navbar-top {
       height: 64px;
       padding: 0 10px;
       grid-template-columns: 36px minmax(0, 1fr) auto;
