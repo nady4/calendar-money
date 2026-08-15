@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { Temporal } from "@js-temporal/polyfill";
 import { toast } from "react-toastify";
 import {
-  getDayActivity,
   getDayTotal,
   getDayTransactions,
   formatCurrency
@@ -39,11 +38,6 @@ function Day({
     expenses: 0,
     balance: 0
   });
-  const [activity, setActivity] = useState({
-    income: 0,
-    expenses: 0,
-    balance: 0
-  });
   const [transactions, setTransactions] = useState<TransactionType[]>([]);
   const [isDragOver, setIsDragOver] = useState(false);
   const [draggingId, setDraggingId] = useState<string | null>(null);
@@ -58,7 +52,6 @@ function Day({
   useEffect(() => {
     setTransactions(getDayTransactions(user.transactions, date));
     setTotal(getDayTotal(user.transactions, date));
-    setActivity(getDayActivity(user.transactions, date));
   }, [date, user.transactions]);
 
   const openTransactions = () => {
@@ -166,7 +159,7 @@ function Day({
     <div
       className={`${isActiveDay ? "active-day" : "inactive-day"}
         ${isActiveMonth ? "active-month" : "inactive-month"} ${
-          activity.balance < 0 ? "negative" : "positive"
+          total.balance < 0 ? "negative" : "positive"
         } ${isSelectedDay ? "selected-day" : ""} calendar-day ${isDragOver ? "drag-over" : ""}`}
       onClick={openTransactions}
       onKeyDown={handleKeyDown}

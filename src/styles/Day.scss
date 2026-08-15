@@ -222,7 +222,7 @@
 }
 
 .calendar-day.negative {
-  border-color: rgba(vars.$negative, 0.28);
+  border-color: vars.$negative;
 
   .day-header .day-balance {
     color: vars.$negative;
@@ -335,5 +335,9 @@
     .day-header {
       background-color: rgba(vars.$accent, 0.16);
     }
+  }
+
+  .calendar-day.negative {
+    border-color: vars.$negative;
   }
 }
