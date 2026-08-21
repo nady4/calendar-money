@@ -16,6 +16,13 @@ const formatCurrency = (amount: number): string => {
   });
 };
 
+const formatDayBalance = (amount: number): string => {
+  return amount.toLocaleString("en-US", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: Math.abs(amount) >= 1000 ? 0 : 2
+  });
+};
+
 const getDayTransactions = (
   transactions: TransactionType[],
   day: Temporal.PlainDate
@@ -645,6 +652,7 @@ export {
   getMonthlyTotalFromCategories,
   getYearlyTotalFromCategories,
   formatCurrency,
+  formatDayBalance,
   getMonthIncome,
   getMonthExpenses,
   getMonthCategoryBreakdown,

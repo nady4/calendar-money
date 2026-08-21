@@ -87,3 +87,21 @@
     }
   }
 }
+
+@media (min-width: 601px) and (max-width: 1366px) and (max-height: 800px) {
+  .calendar-main {
+    padding: 8px 16px;
+
+    .calendar-container {
+      .weekday-list {
+        height: 36px;
+        gap: 8px;
+      }
+
+      .calendar {
+        gap: 8px;
+        grid-auto-rows: minmax(150px, auto);
+      }
+    }
+  }
+}

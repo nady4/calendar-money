@@ -5,7 +5,8 @@ import { toast } from "react-toastify";
 import {
   getDayTotal,
   getDayTransactions,
-  formatCurrency
+  formatCurrency,
+  formatDayBalance
 } from "../../util/functions";
 import { updateTransactionDate } from "../../util/transactionApi";
 import { UserType, TransactionType } from "../../types.d";
@@ -178,7 +179,7 @@ function Day({
     >
       <div className="day-header">
         <div className="day-balance-container">
-          <p className="day-balance">${formatCurrency(total.balance)}</p>
+          <p className="day-balance">${formatDayBalance(total.balance)}</p>
         </div>
         <div className="day-date-container">
           <p className="day-date">{date.day}</p>
