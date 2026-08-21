@@ -1,6 +1,17 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
+function packageName(id: string): string {
+  const parts = id.split(/[\\/]/);
+  const i = parts.lastIndexOf("node_modules");
+  if (i === -1 || i + 1 >= parts.length) return "";
+  let name = parts[i + 1];
+  if (name.startsWith("@") && i + 2 < parts.length) {
+    name = `${name}/${parts[i + 2]}`;
+  }
+  return name;
+}
+
 // https://vite.dev/config/
 export default defineConfig({
   css: {
@@ -16,31 +27,36 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           if (!id.includes("node_modules")) return undefined;
+          const pkg = packageName(id);
           if (
-            id.includes("@mui") ||
-            id.includes("@emotion") ||
-            id.includes("react-color")
-          )
-            return "vendor-mui";
-          if (id.includes("chart.js") || id.includes("react-chartjs-2"))
-            return "vendor-charts";
-          if (
-            id.includes("jspdf") ||
-            id.includes("html2canvas") ||
-            id.includes("dompurify") ||
-            id.includes("canvg")
-          )
-            return "vendor-pdf";
-          if (id.includes("heic-decode") || id.includes("libheif"))
-            return "vendor-scan";
-          if (id.includes("moment")) return "vendor-moment";
-          if (
-            id.includes("react-router") ||
-            id.includes("react-dom") ||
-            id.includes("scheduler") ||
-            id.includes("react/")
+            pkg === "react" ||
+            pkg === "react-dom" ||
+            pkg === "scheduler" ||
+            pkg.startsWith("react-router")
           )
             return "vendor-react";
+          if (
+            pkg.startsWith("@mui") ||
+            pkg.startsWith("@emotion") ||
+            pkg === "react-color"
+          )
+            return "vendor-mui";
+          if (pkg === "chart.js" || pkg === "react-chartjs-2")
+            return "vendor-charts";
+          if (
+            pkg === "jspdf" ||
+            pkg === "html2canvas" ||
+            pkg === "dompurify" ||
+            pkg === "canvg"
+          )
+            return "vendor-pdf";
+          if (
+            pkg === "heic-decode" ||
+            pkg === "libheif-js" ||
+            pkg === "fast-png"
+          )
+            return "vendor-scan";
+          if (pkg === "moment") return "vendor-moment";
           return "vendor-misc";
         },
       },
