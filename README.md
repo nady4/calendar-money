@@ -3,6 +3,9 @@
 <p align="center">
 🗓️ A personal finance app that turns your income and expenses into a calendar, so you can plan your life.
 </p>
+<p align="center">
+Built with React 18, TypeScript, Vite, Sass, Chart.js and Zod.
+</p>
 
 <br>
 
