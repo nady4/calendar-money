@@ -4,7 +4,7 @@
 🗓️ A personal finance app that turns your income and expenses into a calendar, so you can plan your life.
 </p>
 <p align="center">
-Built with React 18, TypeScript, Vite, Sass, Chart.js and Zod.
+Full-stack cash flow management web application built with React, Vite, TypeScript, Node.js, Express, and MongoDB. Featuring an interactive calendar with drag-and-drop transactions, instant search, AI-powered receipt scanning, advanced Chart.js analytics, category-based budgeting, CSV/PDF backup and restore, adaptive responsive layouts, and a customizable UI.
 </p>
 
 <br>
